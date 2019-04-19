@@ -1,6 +1,6 @@
 ﻿/*!
 admin.js
-(c) 2017 IG PROG, www.igprog.hr
+(c) 2017-2019 IG PROG, www.igprog.hr
 */
 angular.module('app', [])
 
@@ -347,6 +347,22 @@ angular.module('app', [])
     // });
     //}
     //load();
+
+    $scope.tranResp = null;
+    $scope.translateProducts = function () {
+            $http({
+                url: 'Products.asmx/TranslateProducts',
+                method: 'POST',
+                data: ''
+            })
+         .then(function (response) {
+             $scope.tranResp = JSON.parse(response.data.d);
+         },
+         function (response) {
+             alert(response.data.d);
+         });
+    }
+
 
 }])
 

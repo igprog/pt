@@ -265,32 +265,6 @@ public class Products : System.Web.Services.WebService {
                                                 , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
                                                 , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, supplier);
                             command.CommandText = sql;
-
-                            //command.CommandText = @"INSERT OR REPLACE INTO product 
-                            //                  VALUES (@sku, @colorname, @size, @style, @brand, @modelimageurl, @shortdesc_en, @longdesc_en, @gender_en, @category_en, @colorhex, @colorgroup_id, @isnew, @colorimageurl, @packshotimageurl, @category_code, @brand_code, @gender_code, @weight, @colorswatch, @outlet, @caseqty, @supplier)";
-                            //command.Parameters.Add(new SQLiteParameter("sku", p.sku));
-                            //command.Parameters.Add(new SQLiteParameter("colorname", p.colorname));
-                            //command.Parameters.Add(new SQLiteParameter("size", p.size));
-                            //command.Parameters.Add(new SQLiteParameter("style", p.style));
-                            //command.Parameters.Add(new SQLiteParameter("brand", p.brand));
-                            //command.Parameters.Add(new SQLiteParameter("modelimageurl", p.modelimageurl));
-                            //command.Parameters.Add(new SQLiteParameter("shortdesc_en", p.shortdesc_en));
-                            //command.Parameters.Add(new SQLiteParameter("longdesc_en", p.longdesc_en));
-                            //command.Parameters.Add(new SQLiteParameter("gender_en", p.gender_en));
-                            //command.Parameters.Add(new SQLiteParameter("category_en", p.category_en.Replace("&", "and")));
-                            //command.Parameters.Add(new SQLiteParameter("colorhex", p.colorhex));
-                            //command.Parameters.Add(new SQLiteParameter("colorgroup_id", p.colorgroup_id));
-                            //command.Parameters.Add(new SQLiteParameter("isnew", p.isnew));
-                            //command.Parameters.Add(new SQLiteParameter("colorimageurl", p.colorimageurl));
-                            //command.Parameters.Add(new SQLiteParameter("packshotimageurl", p.packshotimageurl));
-                            //command.Parameters.Add(new SQLiteParameter("category_code", p.category_en.Replace("&","And").Replace(" ","")));
-                            //command.Parameters.Add(new SQLiteParameter("brand_code", p.brand.Replace("&", "And").Replace(" ", "").Replace("'","")));
-                            //command.Parameters.Add(new SQLiteParameter("gender_code", p.gender_en.Replace(" ", "").Replace("'", "")));
-                            //command.Parameters.Add(new SQLiteParameter("weight", p.weight));
-                            //command.Parameters.Add(new SQLiteParameter("colorswatch", p.colorswatch));
-                            //command.Parameters.Add(new SQLiteParameter("outlet", p.outlet));
-                            //command.Parameters.Add(new SQLiteParameter("caseqty", p.caseqty));
-                            //command.Parameters.Add(new SQLiteParameter("supplier", utt));
                             command.ExecuteNonQuery();
                         }
 
@@ -301,28 +275,6 @@ public class Products : System.Web.Services.WebService {
                                                 , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
                                                 , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier);
                             command.CommandText = sql;
-
-                            //command.CommandText = @"INSERT OR REPLACE INTO style VALUES 
-                            //            (@style, @gsmweight, @sizes, @colors, @outlet, @coo, @imageurl, @altimageurl, @fabric_en, @cut_en, @details_en, @carelabels_en, @carelabellogos, @category_en, @category, @specimageurl, @isnew, @supplier)";
-                            //command.Parameters.Add(new SQLiteParameter("style", s.style));
-                            //command.Parameters.Add(new SQLiteParameter("gsmweight", s.gsmweight));
-                            //command.Parameters.Add(new SQLiteParameter("sizes", s.sizes));
-                            //command.Parameters.Add(new SQLiteParameter("colors", s.colors));
-                            //command.Parameters.Add(new SQLiteParameter("outlet", s.outlet));
-                            //command.Parameters.Add(new SQLiteParameter("coo", s.coo));
-                            //command.Parameters.Add(new SQLiteParameter("imageurl", s.imageurl));
-                            //command.Parameters.Add(new SQLiteParameter("altimageurl", s.altimageurl));
-                            //command.Parameters.Add(new SQLiteParameter("fabric_en", s.fabric_en));
-                            //command.Parameters.Add(new SQLiteParameter("cut_en", s.cut_en));
-                            //command.Parameters.Add(new SQLiteParameter("details_en", s.details_en));
-                            //command.Parameters.Add(new SQLiteParameter("carelabels_en", s.carelabels_en));
-                            //command.Parameters.Add(new SQLiteParameter("carelabellogos", s.carelabellogos));
-                            //command.Parameters.Add(new SQLiteParameter("category_en", s.category_en.Replace("&", "and")));
-                            //command.Parameters.Add(new SQLiteParameter("category", s.category_en.Replace("&", "And").Replace(" ", "")));
-                            //command.Parameters.Add(new SQLiteParameter("specimageurl", s.specimageurl));
-                            //command.Parameters.Add(new SQLiteParameter("isnew", s.isnew));
-                            //command.Parameters.Add(new SQLiteParameter("supplier", utt));
-
                             command.ExecuteNonQuery();
                         }
 
@@ -332,23 +284,6 @@ public class Products : System.Web.Services.WebService {
                                                 , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
                                                 , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, supplier);
                             command.CommandText = sql;
-
-
-                            //command.CommandText = @"INSERT INTO stock VALUES 
-                            //            (@style, @color, @size, @sku, @uttstock, @suppstock, @price, @specialprice, @specialstart, @specialend, @currency, @uom, @supplier)";
-                            //command.Parameters.Add(new SQLiteParameter("style", s.style));
-                            //command.Parameters.Add(new SQLiteParameter("color", s.color));
-                            //command.Parameters.Add(new SQLiteParameter("size", s.size));
-                            //command.Parameters.Add(new SQLiteParameter("sku", s.sku));
-                            //command.Parameters.Add(new SQLiteParameter("uttstock", s.uttstock));
-                            //command.Parameters.Add(new SQLiteParameter("suppstock", s.suppstock));
-                            //command.Parameters.Add(new SQLiteParameter("price", s.price));
-                            //command.Parameters.Add(new SQLiteParameter("specialprice", s.specialprice));
-                            //command.Parameters.Add(new SQLiteParameter("specialstart", s.specialstart));
-                            //command.Parameters.Add(new SQLiteParameter("specialend", s.specialend));
-                            //command.Parameters.Add(new SQLiteParameter("currency", s.currency));
-                            //command.Parameters.Add(new SQLiteParameter("uom", s.uom));
-                            //command.Parameters.Add(new SQLiteParameter("supplier", utt));
                             command.ExecuteNonQuery();
                         }
 
@@ -357,15 +292,6 @@ public class Products : System.Web.Services.WebService {
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
                                                 , s.style, s.size, s.name_en, s.value, supplier);
                             command.CommandText = sql;
-
-
-                            //command.CommandText = @"INSERT INTO size VALUES 
-                            //            (@style, @size, @name_en, @value, @supplier)";
-                            //command.Parameters.Add(new SQLiteParameter("style", s.style));
-                            //command.Parameters.Add(new SQLiteParameter("size", s.size));
-                            //command.Parameters.Add(new SQLiteParameter("name_en", s.name_en));
-                            //command.Parameters.Add(new SQLiteParameter("value", s.value));
-                            //command.Parameters.Add(new SQLiteParameter("supplier", utt));
                             command.ExecuteNonQuery();
                         }
 
@@ -391,7 +317,6 @@ public class Products : System.Web.Services.WebService {
                             command.CommandText = sql;
                             command.ExecuteNonQuery();
                         }
-
 
                         transaction.Commit();
                     }
@@ -795,19 +720,6 @@ public class Products : System.Web.Services.WebService {
                 }
             }
 
-            //TODO: filter search Tran
-            /*
-            string lang = "hr";  // TOD: add as parameter
-            List<ProductData> xxLike = xx.Where(a => (a.sku.ToLower().Contains(search.ToLower())) 
-                                                || (a.style.ToLower().Contains(search.ToLower()))
-                                                || (a.brand.ToLower().Contains(search.ToLower()))
-                                                || (t.Tran(a.shortdesc_en.ToLower(), lang).Contains(search.ToLower()))).ToList();
-                                                */
-
-
-            //xx = xx.Where(a => a.longdesc_en.ToLower().Contains(search.ToLower())).ToList();
-
-           // xxx.products = xxLike;
             xxx.products = xx;
             xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(category, null, null) : null;
             xxx.response.time = DateTime.Now.ToString();
@@ -897,6 +809,44 @@ public class Products : System.Web.Services.WebService {
             return JsonConvert.SerializeObject(x, Formatting.Indented);
         } catch (Exception e) { return e.Message; }
     }
+
+    [WebMethod]
+    public string TranslateProducts() {
+        try {
+            Translate t = new Translate();
+            string lang = "hr";
+            string[] ss = t.Translations(lang);
+            string keyTitle = null;
+            string title = null;
+            string sql = "";
+            using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                using (var command = new SQLiteCommand(connection)) {
+                    using (var transaction = connection.BeginTransaction()) {
+                        if (ss != null) {
+                            foreach (string s in ss) {
+                                string[] _s = s.Split(':');
+                                if (_s.Count() == 2) {
+                                    keyTitle = t.KeyTitle(_s).Replace("'", "").ToUpper();
+                                    title = t.Title(s).Replace("'", "").ToUpper();
+                                    sql = string.Format(@"UPDATE translation SET shortdesc_hr = '{0}'
+                                                        WHERE shortdesc_en = '{1}'"
+                                                        , title, keyTitle);
+                                    command.CommandText = sql;
+                                    command.ExecuteNonQuery();
+                                }
+                            }
+                            transaction.Commit();
+                            connection.Close();
+                        }
+                    }
+                }
+            }
+            return JsonConvert.SerializeObject("Update completed successfully", Formatting.Indented); ;
+        } catch (Exception e) { return e.Message; }
+    }
+
+
 
 
 

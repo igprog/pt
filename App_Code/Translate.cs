@@ -23,8 +23,8 @@ namespace Igprog {
                     foreach (string s in ss) {
                         string[] _s = s.Split(':');
                         if (_s.Count() == 2) {
-                            if (_s[0].Replace("\"", "").Replace("\r", "").Replace("\n","").Replace("{\r\n", "").Trim().ToLower().ToString() == title.ToLower()) {
-                                title = s.Split(':')[1].Replace("\"", "").Replace("\r\n}", "").Trim().ToString();
+                            if(KeyTitle(_s) == title.ToLower()) {
+                                title = Title(s);
                             }
                         }
                     }
@@ -33,6 +33,25 @@ namespace Igprog {
                     return title;
                 }
             } catch (Exception e) { return (title); }
+        }
+
+        public string[] Translations(string lang) {
+            string[] ss = null;
+            string path = string.Format("~/assets/json/translations/{0}/main.json", lang);
+            string path1 = HttpContext.Current.Server.MapPath(path);
+            if (File.Exists(HttpContext.Current.Server.MapPath(path))) {
+                string json = File.ReadAllText(HttpContext.Current.Server.MapPath(path));
+                ss = Regex.Split(json, ",\r\n");
+            }
+            return ss;
+        }
+
+        public string KeyTitle(string[] _s) {
+            return _s[0].Replace("\"", "").Replace("\r", "").Replace("\n", "").Replace("{\r\n", "").Replace("{", "").Trim().ToLower().ToString();
+        }
+
+        public string Title(string s) {
+            return s.Split(':')[1].Replace("\"", "").Replace("\r\n}", "").Trim().ToString();
         }
     }
 

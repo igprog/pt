@@ -129,10 +129,10 @@
                         </td>
                         <!--<td>{{x.userId}}</td>-->
                         <!--<td>
-                            <ul>
-                                <li ng-repeat="y in x.items">{{y.sku}} ({{y.quantity}})</li>
-                            </ul>
-                        </td>-->
+                        <ul>
+                            <li ng-repeat="y in x.items">{{y.sku}} ({{y.quantity}})</li>
+                        </ul>
+                    </td>-->
                         <td class="nowrap">{{x.netPrice | number:2}}</td>
                         <td class="nowrap">{{x.grossPrice | number:2}}</td>
                         <td class="nowrap">{{x.deliveryPrice | number:2}}</td>
@@ -167,8 +167,7 @@
                 </table>
 
                 <!--orderOptions:
-                <pre>{{orderOptions}}</pre>-->
-
+            <pre>{{orderOptions}}</pre>-->
                 <!--<pre>{{d | json}}</pre>-->
             </div>
 
@@ -269,7 +268,7 @@
                     </div>
                     <div class="col-sm-6">
                         Note
-                        <textarea ng-model="o.note" type="text" class="form-control"  rows="4" />
+                        <textarea ng-model="o.note" type="text" class="form-control" rows="4" />
                     </div>
                 </div>
                 <div class="row">
@@ -299,57 +298,59 @@
                             <input ng-model="o.sendToPrint" type="checkbox" /> <span class="check"></span>Send to print
                         </label>
                         <div class="lead text-center well">
-                        <div class="large">Gross price: {{o.grossPrice}} kn</div>
-                        <div class="small">Net price: {{o.netPrice}} kn</div>
+                            <div class="large">Gross price: {{o.grossPrice}} kn</div>
+                            <div class="small">Net price: {{o.netPrice}} kn</div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-6 well">
-                        <label>Items</label>
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <th>sku</th>
-                                    <th>qty</th>
-                                    <th>color</th>
-                                    <th>size</th>
-                                    <th><a href="" class="btn btn-warning" ng-click="checkStock()"><i class="fa fa-check"></i> Check stock</a></th>
-                                </tr>
-                                <tr ng-repeat="x in items track by $index">
-                                    <td class="nowrap">{{x.sku}}</td>
-                                    <td><input ng-model="x.qty" type="number" min="0" class="form-control" style="width:100px" /></td>
-                                    <td><input ng-model="x.color" class="form-control" /></td>
-                                    <td><input ng-model="x.size" class="form-control" /></td>
-                                    <td><label class="label label-{{x.isoderable=='Orderable'?'success':'danger'}} mt5">{{x.isoderable}}</label></td>
-                                </tr>
-                            </table>
+                    <div class="row">
+                        <div class="col-sm-6 well">
+                            <label>Items</label>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <th>sku</th>
+                                        <th>qty</th>
+                                        <th>color</th>
+                                        <th>size</th>
+                                        <th><a href="" class="btn btn-warning" ng-click="checkStock()"><i class="fa fa-check"></i> Check stock</a></th>
+                                    </tr>
+                                    <tr ng-repeat="x in items track by $index">
+                                        <td class="nowrap">{{x.sku}}</td>
+                                        <td><input ng-model="x.qty" type="number" min="0" class="form-control" style="width:100px" /></td>
+                                        <td><input ng-model="x.color" class="form-control" /></td>
+                                        <td><input ng-model="x.size" class="form-control" /></td>
+                                        <td><label class="label label-{{x.isoderable=='Orderable'?'success':'danger'}} mt5">{{x.isoderable}}</label></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div ng-if="config.debug">
+                                <label>Stock request</label>
+                                <pre>{{stockRequest | json}}</pre>
+                            </div>
                         </div>
-                        <div ng-if="config.debug">
-                            <label>Stock request</label>
-                            <pre>{{stockRequest | json}}</pre>
+                        <div class="col-sm-6">
+                            <a href="" class="btn btn-success m10" ng-click="sendOrder(o)"><i class="fa fa-paper-plane-o"></i> Send order</a>
+                            <label>Send order request</label>
+                            <pre>{{sendOrderRequest | json}}</pre>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <a href="" class="btn btn-success m10" ng-click="sendOrder(o)"><i class="fa fa-paper-plane-o"></i> Send order</a>
-                        <label>Send order request</label>
-                        <pre>{{sendOrderRequest | json}}</pre>
+                    <div class="row well">
+                        <div class="col-sm-6">
+                            <label>Stock response</label>
+                            <pre class="alert alert-danger">{{stockResponse | json}}</pre>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Order response</label>
+                            <pre class="alert alert-danger">{{orderResponse | json}}</pre>
+                        </div>
+
                     </div>
-                </div>
-                <div class="row well">
-                    <div class="col-sm-6">
-                        <label>Stock response</label>
-                        <pre class="alert alert-danger">{{stockResponse | json}}</pre>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>Order response</label>
-                        <pre class="alert alert-danger">{{orderResponse | json}}</pre>
-                    </div>
-                    
                 </div>
             </div>
         </div>
     </script>
+
 
     <script type="text/ng-template" id="users">
         <div ng-controller="usersCtrl" class="container">
@@ -493,8 +494,11 @@
             <h2>Products</h2>
             <a href="utt.html" target="_blank" class="btn btn-success">Update Products (UTT)</a>
             <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
+            <a href="" target="_blank" class="btn btn-primary" ng-click="translateProducts()">Translate Products (main.json => product.ddb)</a>
+            <span class="badge">{{tranResp}}</span>
             <!--<pre>{{d}}</pre>-->
         </div>
+
     </script>
 
     <script type="text/ng-template" id="featured">
