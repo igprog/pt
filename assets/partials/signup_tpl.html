@@ -1,0 +1,105 @@
+﻿<div class="accordeon-entry" style="display: block;">
+    <div class="accordeon-entry" style="display: block;">
+        <div class="row">
+            <div class="col-md-6 information-entry">
+                <div class="article-container style-1">
+                    <div style="height: 80px">
+                        <label class="lead">{{'billing address' | translate}}</label>
+                    </div>
+                    <form>
+                        <label>{{'first name' | translate}}</label>
+                        <input ng-model="u.firstName" type="text" value="" placeholder="{{'enter first name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'last name' | translate}}</label>
+                        <input ng-model="u.lastName" type="text" value="" placeholder="{{'enter last name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'company name' | translate}}</label>
+                        <input ng-model="u.companyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'pin' | translate}}</label>
+                        <input ng-model="u.pin" type="text" value="" placeholder="{{'enter pin' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'street and number' | translate}}</label>
+                        <input ng-model="u.address" type="text" value="" placeholder="{{'enter street and number' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'postal code' | translate}}</label>
+                        <input ng-model="u.postalCode" type="text" value="" placeholder="{{'enter postal code' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'city' | translate}}</label>
+                        <input ng-model="u.city" type="text" value="" placeholder="{{'enter city' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <label>{{'country' | translate}}</label>
+                        <div class="dropdown" >
+                            <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.country.Name | translate}}</button>
+                            <ul class="dropdown-menu" >
+                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6 information-entry">
+                <div class="article-container style-1">
+                    <div style="height: 80px">
+                        <label class="lead">{{'delivery address' | translate}}</label>
+                        <label class="checkbox-entry">
+                            <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                        </label>
+                    </div>
+                    <form>
+                        <label>{{'first name' | translate}}</label>
+                        <input ng-model="u.deliveryFirstName" type="text" value="" placeholder="{{'enter first name' | translate}}" class="simple-field" required>
+                        <label>{{'last name' | translate}}</label>
+                        <input ng-model="u.deliveryLastName" type="text" value="" placeholder="{{'enter last name' | translate}}" class="simple-field" required>
+                        <label>{{'company name' | translate}}</label>
+                        <input ng-model="u.deliveryCompanyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" required>
+                        <label>{{'address' | translate}}</label>
+                        <input ng-model="u.deliveryAddress" type="text" value="" placeholder="{{'enter street and number' | translate}}" class="simple-field" required>
+                        <label>{{'postal code' | translate}}</label>
+                        <input ng-model="u.deliveryPostalCode" type="text" value="" placeholder="{{'enter postal code' | translate}}" class="simple-field" required>
+                        <label>{{'city' | translate}}</label>
+                        <input ng-model="u.deliveryCity" type="text" value="" placeholder="{{'enter city' | translate}}" class="simple-field" required>
+                        <label>{{'country' | translate}}</label>
+                        <div class="dropdown">
+                            <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.deliveryCountry.Name | translate}}</button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <hr />
+            <div class="col-sm-6">
+                <label class="lead">{{'contact' | translate}}</label>
+                <form>
+                    <label>{{'phone' | translate}}</label>
+                    <input ng-model="u.phone" type="text" value="" placeholder="{{'enter phone' | translate}}" class="simple-field">
+                </form>
+            </div>
+            <div ng-if="!isGuest" class="col-sm-6">
+                <label class="lead">{{'login data' | translate}}</label>
+                <form>
+                    <label>{{'email' | translate}}</label>
+                    <input ng-model="u.email" type="text" value="" placeholder="{{'enter email' | translate}}" class="simple-field">
+                    <label>{{'confirm email' | translate}}</label>
+                    <input ng-model="u.emailConfirm" type="text" value="" placeholder="{{'confirm email' | translate}}" class="simple-field">
+                    <label>{{'password' | translate}}</label>
+                    <div class="input-group">
+                        <input ng-model="u.password" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
+                        <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                    </div>
+                    <label style="margin-top:24px">{{'confirm password' | translate}}</label>
+                    <div class="input-group">
+                        <input ng-model="u.passwordConfirm" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
+                        <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row m10">
+            <hr />
+            <a href="" class="btn btn-primary pull-right" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
+        </div>
+        <div ng-if="alertmsg" class="alert alert-{{alertclass}} m10 text-right">
+            {{alertmsg | translate}}
+        </div>
+        <pre ng-if="config.debug">{{u | json}}</pre>
+        <pre ng-if="config.debug">{{countries | json}}</pre>
+    </div>
+</div>

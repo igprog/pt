@@ -1,0 +1,1405 @@
+﻿/*!
+app.js
+(c) 2017 IG PROG, www.igprog.hr
+*/
+angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
+
+.config(['$translateProvider', '$translatePartialLoaderProvider', '$httpProvider', function ($translateProvider, $translatePartialLoaderProvider, $httpProvider) {
+
+        $translateProvider.useLoader('$translatePartialLoader', {
+            urlTemplate: './assets/json/translations/{lang}/{part}.json'
+        });
+        $translateProvider.preferredLanguage('hr');
+        $translatePartialLoaderProvider.addPart('main');
+        $translateProvider.useSanitizeValueStrategy('escape');
+
+
+        //--------------disable catche---------------------
+        if (!$httpProvider.defaults.headers.get) {
+            $httpProvider.defaults.headers.get = {};
+        }
+        $httpProvider.defaults.headers.get['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+        $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+        $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+        //-------------------------------------------------
+
+    }])
+
+.controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window) {
+
+    if (angular.isDefined($sessionStorage.u)) {
+        $rootScope.u = JSON.parse($sessionStorage.u);
+    }
+
+    var getConfig = function () {
+        $http.get('./config/config.json')
+          .then(function (response) {
+              $sessionStorage.config = response.data;
+              $rootScope.config = response.data;
+          });
+    };
+    if (!angular.isDefined($sessionStorage.config)) {
+        getConfig();
+    } else {
+        $rootScope.config = $sessionStorage.config;
+    }
+
+    //$scope.sort = 'uttprice';
+    //$scope.sortorder = 'ASC';
+    //$scope.colorFilter = '';
+    ////  $scope.distinct.brand = '';
+
+    //$scope.setSortOrder = function () {
+    //    $scope.sortorder = $scope.sortorder == 'ASC' ? 'DESC' : 'ASC';
+    //}
+
+    var loadCategories = function () {
+        $http({
+            url: 'Products.asmx/GetCategories',
+            method: 'POST',
+            data: { }
+        })
+      .then(function (response) {
+         $scope.categories = JSON.parse(response.data.d);
+        //  loadProducts(1000);
+      },
+      function (response) {
+          alert(JSON.parse(response.data.d));
+      });
+    }
+    loadCategories();
+
+    var loadFeatured = function () {
+        $http({
+            url: 'Featured.asmx/Load',
+            method: 'POST',
+            data: ''
+        })
+     .then(function (response) {
+         $scope.featured = JSON.parse(response.data.d);  //TODO
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+    loadFeatured();
+
+    var loadNewProducts = function () {
+        $http({
+            url: 'Featured.asmx/LoadNewProducts',
+            method: 'POST',
+            data: ''
+        })
+     .then(function (response) {
+         $scope.newProducts = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+    loadNewProducts();
+
+    $scope.href = function (x) {
+        $window.location.href = x;
+    }
+
+    var initFeatured = function () {
+        $http({
+            url: 'Featured.asmx/Init',
+            method: 'POST',
+            data: ''
+        })
+     .then(function (response) {
+         $scope.featuredTypes = JSON.parse(response.data.d).types;
+         $scope.featuredType = $scope.featuredTypes.featured;
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+    initFeatured();
+
+    $scope.isShowFeatured = false;
+    $scope.showFeatured = function () {
+        $scope.isShowFeatured = $scope.isShowFeatured == true ? false : true;
+    }
+
+    $scope.toggleFeatureType = function (x) {
+        $scope.featuredType = angular.copy(x);
+        $scope.showFeatured();
+    }
+
+    $scope.toggleNew = function (code, title) {
+        $scope.featuredType.code = angular.copy(code);
+        $scope.featuredType.title = angular.copy(title);
+        $scope.showFeatured();
+    }
+
+    $rootScope.logout = function () {
+        $sessionStorage.u = null;
+        $rootScope.u = null;
+        $rootScope.o = null;
+
+       // $scope.href('login.html');  //TODO
+    }
+
+}])
+
+.controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader) {
+
+    var getConfig = function () {
+        $http.get('./config/config.json')
+          .then(function (response) {
+              $sessionStorage.config = response.data;
+              $rootScope.config = response.data;
+          });
+    };
+    if (!angular.isDefined($sessionStorage.config)) {
+        getConfig();
+    } else {
+        $rootScope.config = $sessionStorage.config;
+    }
+
+    //$rootScope.u = !angular.isDefined($sessionStorage.u) ? $scope.initUser() : JSON.parse($sessionStorage.u);
+
+
+    $scope.setLanguage = function (x) {
+        $rootScope.config.language = x;
+        $sessionStorage.config.language = x;
+        $translate.use(x.code);
+        $translatePartialLoader.addPart('main');
+    };
+    if (angular.isDefined($sessionStorage.config)) {
+        $scope.setLanguage($sessionStorage.config.language);
+    }
+    
+    $scope.setCurrency = function (x) {
+        $rootScope.config.currency = x;
+        $localStorage.config.currency = x;
+    };
+
+    /******* Test mail ***********
+    $scope.testMail1 = function () {
+        $http({
+            url: 'Mail.asmx/TestMail1',
+            method: 'POST',
+            data: { }
+        })
+      .then(function (response) {
+          alert(response.data.d);
+      },
+      function (response) {
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    $scope.testMail2 = function () {
+        $http({
+            url: 'Mail.asmx/TestMail2',
+            method: 'POST',
+            data: {}
+        })
+      .then(function (response) {
+          alert(response.data.d);
+      },
+      function (response) {
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    $scope.sendto = 'igprog@yahoo.com';
+    $scope.subject = 'Registracija - Promo-Tekstil.com';
+    $scope.body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+    '<p>Poštovani [First name, Last name, Company]</p>,' +
+    '<p>Zahvaljujemo na registraciji na Promo-Tekstil.com</p>' +
+    '<p>Vaši korisnički podaci za prijavu:</p>' +
+    '<p>Korisničko ime: [username]</p>' +
+    '<p>Lozinka: [password]</p>' +
+    '<p>Prijavite se klikom na poveznicu: [login-link]</p>' +
+    '<p>Vaš korisnički profil možete uređivati na poveznici: [user-area-link]</p>' +
+    '<br/>' +
+    '<p>Želimo vam ugodnu kupovinu.</p>' +
+    '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila [info@promo-tekstil.com].</p>' +
+    '<br/>' +
+    '<p>Srdačno,</p>' +
+    '<br/>' +
+    '<p>Vaš Promo-Tekstil.com Tim</p>';
+    
+
+    $scope.testMailPhp = function () {
+        $http({
+            url: 'https://promo-tekstil.com/assets/php/mailer/testmail.php',
+            method: 'POST',
+            data: { sendto: $scope.sendto, subject: $scope.subject, body: $scope.body }
+        })
+     .then(function (response) {
+         alert(response.data);
+     },
+     function (response) {
+         alert(response.data);
+     });
+    }
+
+    ******* end Test mail ***********/
+
+}])
+
+.controller('productsCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate) {
+
+
+}])
+
+.controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
+    $scope.isloading = false;
+    $scope.group = "";
+    $scope.displayFilters = false;
+    var type = "";
+    if (location.search.substring(1, 6) == 'brand') {
+        $scope.group = location.search.substring(7);
+        type = "brand";
+        $scope.current = location.search.substring(7);
+    }
+    if (location.search.substring(1, 7) == 'gender') {
+        $scope.group = location.search.substring(8);
+        type = "gender";
+        $scope.current = location.search.substring(8);
+    }
+    if (location.search.substring(1, 6) == 'isnew') {
+        $scope.group = location.search.substring(7);
+        type = "isnew";
+        $scope.current = "new models";
+    }
+    if (location.search.substring(1, 7) == 'outlet') {
+        $scope.group = location.search.substring(8);
+        type = "outlet";
+        $scope.current = "outlet";
+    }
+
+
+    if (location.search.substring(1, 9) == 'category') {
+        $scope.category = location.search.substring(10);
+        $scope.current = location.search.substring(10);
+    } else {
+        $scope.category = "";
+    }
+
+    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 16;
+    $scope.page = 1;
+    $scope.searchQuery = '';
+    $scope.filters = false;
+
+    $scope.sort = 'price';
+    $scope.sortOrder = 'ASC';
+    $scope.colorFilter = '';
+
+    $scope.setSortOrder = function () {
+        $scope.sortOrder = $scope.sortOrder == 'ASC' ? 'DESC' : 'ASC';
+        $scope.setFilter();
+    }
+
+    var setPages = function (x) {
+        $scope.pages = [];
+        for (i = 1; i < (x / $scope.show) + 1; i++) {
+            $scope.pages.push(i);
+        }
+    }
+
+    var load = function (limit, category) {
+        $scope.isloading = true;
+        $http({
+            url: 'Products.asmx/GetProductsByCategory',
+            method: 'POST',
+            data: { limit: $scope.show, category: category, sort: $scope.sort, order: $scope.sortOrder }
+        })
+      .then(function (response) {
+          $scope.isloading = false;
+          $sessionStorage.d = response.data.d;
+          $scope.d = JSON.parse(response.data.d);
+          setPages($scope.d.response.count);
+          $scope.filter = {
+              price: $scope.d.response.maxPrice,
+              size: '',
+              brand: ''
+          }
+      },
+      function (response) {
+          $scope.isloading = false;
+          alert(JSON.parse(response.data.d));
+      });
+    }
+    
+    var loadGroup = function () {
+        $scope.isloading = true;
+        $http({
+            url: 'Products.asmx/GetProductsByGroup',
+            method: 'POST',
+            data: { limit: $scope.show, group: $scope.group, type: type }
+        })
+      .then(function (response) {
+          $scope.isloading = false;
+          $sessionStorage.d = response.data.d;
+          $scope.d = JSON.parse(response.data.d);
+          setPages($scope.d.response.count);
+          $scope.filter = {
+              price: $scope.d.response.maxPrice,
+              size: '',
+              brand: ''
+          }
+      },
+      function (response) {
+          $scope.isloading = false;
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    if (!angular.isDefined($scope.d) && $scope.group == '') {
+    //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
+        //  var category = location.search.substring(10);
+        $scope.category = location.search.substring(10) == '' ? 'T-Shirt' : location.search.substring(10);
+        load($scope.show, $scope.category);
+    }
+
+    if ($scope.group != '') {
+        loadGroup();
+    }
+
+
+    $scope.href = function (x) {
+        $window.location.href = x;
+      //  $localStorage.load = 'true';
+    }
+
+    var searchProducts = function (limit, category) {
+        $scope.isloading = true;
+        $http({
+            url: 'Products.asmx/SearchProducts',
+            method: 'POST',
+            data: { limit: limit, page: $scope.page, category: category, search: $scope.searchQuery, filter: $scope.d.distinct, group: $scope.group, type: type, sort: $scope.sort, order: $scope.sortOrder }
+        })
+      .then(function (response) {
+          $scope.isloading = false;
+          var res = JSON.parse(response.data.d);
+          $scope.d.products = res.products;
+          $scope.d.response = res.response;
+          $scope.filter.price = $scope.d.response.maxPrice;
+          if ($scope.searchQuery != '') { $scope.d.distinct = res.distinct; }
+          setPages($scope.d.response.count);
+          $window.scrollTo(0, 0);
+      },
+      function (response) {
+          $scope.isloading = false;
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    $scope.setFilter = function () {
+        $scope.page = 1;
+        $scope.searchQuery = '';
+        searchProducts($scope.show, $scope.category);
+        $scope.filters = true;
+    }
+
+    $scope.colorFilter = function (x) {
+        angular.forEach($scope.d.distinct.colorGroup, function (value, key) {
+            if (value.colorfamily_en == x.colorfamily_en) {
+                value.isselected = true;
+            } else {
+                value.isselected = false;
+            }
+        })
+        $scope.setFilter();
+    }
+
+    $scope.setPage = function (x) {
+        $scope.page = x;
+        searchProducts($scope.show, $scope.category);
+    }
+
+    $scope.setColorFilter = function(x) {
+        $scope.colorFilter = x;
+        searchProducts($scope.show, $scope.category);
+    }
+
+    $scope.search = function () {
+        $scope.page = 1;
+        searchProducts($scope.show, $scope.category);
+    }
+
+    $scope.clearFilters = function () {
+        $scope.filters = false;
+        $scope.href('shop.html?category:' + $scope.category);
+    }
+
+    $scope.showFilters = function () {
+        $scope.displayFilters = $scope.displayFilters == false ? true : false;
+    }
+
+}])
+
+.controller('productCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$window', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $window, $localStorage) {
+    var querystring = location.search.substring(7);
+    var style = querystring;
+    var color = null;
+
+    $scope.limit = 50;
+    $scope.addedToCart = false;
+    $scope.enableButton = false;
+
+    var getConfig = function () {
+        $http.get('./config/config.json')
+          .then(function (response) {
+              $sessionStorage.config = response.data;
+              $rootScope.config = response.data;
+          });
+    };
+    if (!angular.isDefined($sessionStorage.config)) { getConfig(); }
+
+
+    $scope.stockGroupedByColor = [];
+    $scope.loading = false;
+    var getStockGroupedByColor = function (style) {
+        $scope.loading = true;
+        $http({
+            url: 'Products.asmx/GetStockGroupedByColor',
+            method: 'POST',
+            data: { style: style }
+        })
+      .then(function (response) {
+          $scope.stockGroupedByColor = JSON.parse(response.data.d);
+          $scope.loading = false;
+      },
+      function (response) {
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    var load = function (style, color) {
+        $http({
+            url: 'Products.asmx/GetProduct',
+            method: 'POST',
+            data: { style: style, color: color }
+        })
+       .then(function (response) {
+           $scope.p = JSON.parse(response.data.d);
+         //  $scope.packshotimageurl = $scope.p.packshotimageurl;
+           if ($scope.p.shortdesc_en != null) {
+               $window.document.title = 'Promo-Tekstil - ' + $translate.instant($scope.p.shortdesc_en);
+               location.hash = '#/' + unescape($translate.instant($scope.p.shortdesc_en)).replace(/\s/g, "-");;
+           }
+
+           getStockGroupedByColor(style);
+
+
+           //var maxStock = 0;
+           //angular.forEach($scope.p.stock, function (value, key) {
+           //    if (value.uttstock + value.suppstock > maxStock) {
+           //        maxStock = value.uttstock + value.suppstock;
+           //    }
+           //})
+           //$rootScope.maxStockList = [];
+           //for (i = 0; i < maxStock; i++) {
+           //    $rootScope.maxStockList.push(i);
+           //}
+           $scope.choosen = {
+               sku: '',
+               imageurl: $scope.p.modelimageurl,
+               style: $scope.p.style,
+               shortdesc_en: '',
+               quantity: 1,
+               size: '',
+               color: '',
+               price: []
+           }
+       },
+       function (response) {
+           alert(JSON.parse(response.data.d));
+       });
+    };
+    load(style, color);
+    //if ($localStorage.load == 'true') {
+    //    alert($localStorage.load);
+    //    load(querystring);
+    //} else {
+    //    $scope.packshotimageurl = JSON.parse($localStorage.packshotimageurl);
+    //}
+    
+
+    $scope.setSize = function (x) {
+        $scope.choosen.size = x;
+    }
+
+    $scope.setColor = function (x) {
+        $scope.choosen.color = x;
+    }
+
+    $scope.plus = function (x) {
+        if ($scope.choosen.quantity + x < 1) { return false; }
+        $scope.choosen.quantity = $scope.choosen.quantity + x;
+    }
+
+    if (localStorage.cart != undefined && localStorage.cart != '') {
+        $scope.cart = JSON.parse(localStorage.cart);
+    } else {
+        $scope.cart = [];
+        localStorage.cart = [];
+    }
+
+    if (localStorage.groupingcart != undefined && localStorage.groupingcart != '') {
+        $rootScope.groupingCart = JSON.parse(localStorage.groupingcart);
+    } else {
+        $rootScope.groupingCart = [];
+        localStorage.groupingcart = [];
+    }
+
+    $scope.updateCart = function () {
+        localStorage.groupingcart = JSON.stringify($rootScope.groupingCart);
+    }
+
+    $scope.clearAll = function () {
+        localStorage.clear();
+        $scope.cart = [];
+        $rootScope.groupingCart = [];
+    }
+
+    $scope.remove = function (x) {
+        for (var i = $scope.cart.length - 1; i >= 0; i--) {
+            if ($scope.cart[i].style == x.style) {
+                $scope.cart.splice(i, 1);
+            }
+        }
+        groupingCart($scope.cart);
+        localStorage.cart = JSON.stringify($scope.cart);
+    }
+
+    $scope.removeVariant = function (x) {
+        angular.forEach($scope.cart, function (value, key) {
+            if (value.sku == x.sku) {
+                $scope.cart.splice(key, 1);
+            }
+        })
+        groupingCart($scope.cart);
+        localStorage.cart = JSON.stringify($scope.cart);
+    }
+
+    var groupingCart = function (x) {
+        $http({
+            url: 'Cart.asmx/GroupingCart',
+            method: 'POST',
+            data: { cart: x, product: $scope.p }
+        })
+       .then(function (response) {
+           $rootScope.groupingCart = JSON.parse(response.data.d);
+           localStorage.groupingcart = response.data.d;
+           priceSumTotal($rootScope.groupingCart);
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    };
+
+    $scope.chartMsg = {
+        msg: '', css: 'success', icon: 'check'
+    }
+
+    $scope.addToCart = function (x) {
+        var proceede = false;
+        angular.forEach(x, function (value, key) {
+            angular.forEach(value.stock, function (val, key) {
+                var obj = [];
+                if (val.quantity > 0 && val.quantity <= val.uttstock * 1 + val.suppstock * 1) {
+                    obj = val;
+                    $scope.cart.push(obj);
+                    proceede = true;
+                }
+            })
+        })
+        if (proceede == false) {
+            $scope.chartMsg.msg = $translate.instant('choose color and size');
+            $scope.chartMsg.css = 'danger';
+            $scope.chartMsg.icon = 'exclamation';
+            return false;
+        }
+        localStorage.cart = JSON.stringify($scope.cart);
+        groupingCart($scope.cart);
+        $scope.addedToCart = true;
+        $scope.chartMsg.msg = $translate.instant('product successfully added to your cart');
+        $scope.chartMsg.css = 'success';
+        $scope.chartMsg.icon = 'check';
+    }
+
+    $scope.delivery = function (x) {
+        if (x.quantity > 0) {
+            if (x.quantity <= x.uttstock) {
+                return { title: '', css: 'label label-success', css_bg: 'bg-success' };
+            } else {
+                return { title: 'not available', css: 'label label-danger', css_bg: 'bg-danger text-center' };
+            }
+            //if (x.quantity > x.uttstock && x.quantity <= x.uttstock * 1 + x.suppstock * 1) {
+            //    return { title: '', css: 'label label-primary', css_bg: 'bg-success' };
+            //}
+            //if (x.quantity > x.uttstock * 1 + x.suppstock * 1) {
+            //    return { title: 'not available', css: 'label label-danger', css_bg: 'bg-danger text-center' };
+            //}
+        }
+    }
+
+    //$scope.totalStock = function (x) {
+    //    return x.uttstock * 1 + x.suppstock * 1;
+    //}
+
+    $scope.priceSum = function (x) {
+        var total = { net: 0, gross: 0 };
+        angular.forEach(x, function (value, key) {
+            angular.forEach(value.stock, function (val, key) {
+                if (val.quantity > 0 && val.quantity <= val.uttstock * 1 + val.suppstock * 1) {
+                    total.net = total.net + (val.myprice.net * val.quantity);
+                    total.gross = total.gross + (val.myprice.gross * val.quantity);
+                }
+            })
+        })
+        return total;
+    }
+
+    $scope.productPriceTotal = function (x) {
+        var total = { net: 0, gross: 0 };
+        angular.forEach(x, function (value, key) {
+            total.net = total.net + value.myprice.net * value.quantity;
+            total.gross = total.gross + value.myprice.gross * value.quantity;
+        })
+        return total;
+    }
+
+    priceSumTotal = function (x) {
+        $rootScope.priceTotal = { net: 0, gross: 0 };
+        angular.forEach(x, function (value, key) {
+            angular.forEach(value.data, function (v, key) {
+                if (v.quantity > 0) {
+                    $rootScope.priceTotal.net = $rootScope.priceTotal.net + (v.myprice.net * v.quantity);
+                    $rootScope.priceTotal.gross = $rootScope.priceTotal.gross + (v.myprice.gross * v.quantity);
+                }
+            })
+        })
+    }
+    if (angular.isDefined(localStorage.groupingcart) && localStorage.groupingcart != '') {
+        priceSumTotal(JSON.parse(localStorage.groupingcart));
+    } else {
+        $rootScope.priceTotal = { net: 0, gross: 0 };
+    }
+
+    $scope.priceSumTotal = function () {
+        priceSumTotal($rootScope.groupingCart);
+    }
+
+    $rootScope.multipleColorStyle = function (x, c) {
+        var length = x.colorhex.split('/').length;
+        return 'background-color:' + c + '; width:30px; height:' + 30/length + 'px';
+    }
+
+    $rootScope.multipleColorStyle2 = function (x, c) {
+        var length = x.colorhex.split('/').length;
+        return 'background-color:' + c + '; width:20px; height:' + 20 / length + 'px';
+    }
+
+    $scope.filterColors = [];
+    $scope.filterColor = function (x) {
+        $scope.filterColors.push(x.colorhex);
+        load(style, x.color);
+    }
+
+    $scope.checkColorfilter = function (filterColors, color) {
+        if (filterColors.length == 0) {
+            return true;
+        }
+        if (filterColors.indexOf(color) > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    $scope.clearFilters = function () {
+        $scope.filterColors = [];
+    }
+
+    $scope.setColorImage = function (x) {
+        load(style, x.color);
+    }
+
+    $scope.mainImgIdx = 0;
+    $scope.selectImg = function (idx) {
+        $scope.mainImgIdx = idx;
+    }
+
+    //$scope.priceTotal = [];
+    //$scope.getTotalPrice = function (x) {
+    //    $http({
+    //        url: 'Cart.asmx/GetTotalPrice',
+    //        method: 'POST',
+    //        data: { groupingCart: x, user: $rootScope.u }
+    //    })
+    //   .then(function (response) {
+    //       $scope.totals = JSON.parse(response.data.d);
+    //   },
+    //   function (response) {
+    //       alert(response.data.d);
+    //   });
+    //}
+
+
+
+}])
+
+.controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
+    $scope.currentStep = 1;
+    $scope.cart = !angular.isDefined(localStorage.cart) || localStorage.cart == '' ? [] : JSON.parse(localStorage.cart);
+    $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
+
+    $scope.userType = 'register';
+    $scope.email = null;
+    $scope.password = null;
+
+    $scope.alertmsg = null;
+    $scope.alertclass = 'info';
+
+    var getCountries = function () {
+        $http({
+            url: 'Users.asmx/GetCountries',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $scope.countries = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    getCountries();
+
+    $scope.setCountry = function (x) {
+        $rootScope.u.country = x;
+    }
+
+    $scope.setDeliveryCountry = function (x) {
+        $rootScope.u.deliveryCountry = x;
+    }
+
+    $scope.login = function (email, password, isCheckout) {
+        $scope.alertmsg = null;
+        $http({
+            url: 'Users.asmx/Login',
+            method: 'POST',
+            data: { userName: email, password: password }
+        })
+     .then(function (response) {
+         $rootScope.u = JSON.parse(response.data.d);
+         $sessionStorage.u = response.data.d;
+         if ($rootScope.u.userId == null) {
+             $scope.loginMsg = $translate.instant("wrong username or password");
+             $scope.loginMsgClass = 'message-box message-danger';
+             $scope.showLoginMsg = true;
+         } else {
+             if (isCheckout == true) {
+                 $scope.nextStep('deliveryTpl', 2);
+             } else {
+                // $window.location.href = 'user.html';
+                 $scope.successLoginMsg = $translate.instant("you have successfully logged in into") + " " + $rootScope.config.appname;
+                 $scope.loginMsgClass = 'message-box message-success';
+                 $scope.showSuccessLoginMsg = true;
+             }
+         }
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+
+    $scope.initUser = function (isguest) {
+        $http({
+            url: 'Users.asmx/Init',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $rootScope.u = JSON.parse(response.data.d);
+         $scope.isGuest = isguest;
+         $scope.setDeliveryAddress($scope.sameDeliveryAddress);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+   // $rootScope.u = !angular.isDefined($sessionStorage.u) ? $scope.initUser() : JSON.parse($sessionStorage.u);
+
+    $scope.toggleTpl = function (x) {
+        $scope.tpl = x;
+    }
+
+    $scope.toggleUserTpl = function (x) {
+        $scope.userTpl = x;
+    }
+
+    if (!angular.isDefined($sessionStorage.u) || $sessionStorage.u == null) {
+        $scope.initUser(false);
+        $scope.toggleTpl('registerTpl');
+    } else {
+        $rootScope.u = JSON.parse($sessionStorage.u);
+        $scope.toggleTpl('deliveryTpl');
+    }
+
+    var initOrder = function () {
+        $http({
+            url: 'Orders.asmx/Init',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $scope.order = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    initOrder();
+
+    $scope.showSignupTpl = function () {
+        $scope.signupTpl = true;
+    }
+
+ 
+    $scope.signup = function (u, isCheckout) {
+        $scope.alertmsg = null;
+        if (functions.isNullOrEmpty(u.firstName)) {
+            $scope.alertmsg = $translate.instant('first name is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.lastName)) {
+            $scope.alertmsg = $translate.instant('last name is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.address)) {
+            $scope.alertmsg = $translate.instant('address is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.postalCode)) {
+            $scope.alertmsg = $translate.instant('postal code is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.city)) {
+            $scope.alertmsg = $translate.instant('city is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.country.Name)) {
+            $scope.alertmsg = $translate.instant('country is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryFirstName)) {
+            $scope.alertmsg = $translate.instant('delivery first name is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryLastName)) {
+            $scope.alertmsg = $translate.instant('delivery last name is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryAddress)) {
+            $scope.alertmsg = $translate.instant('delivery address is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryPostalCode)) {
+            $scope.alertmsg = $translate.instant('delivery postal code is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryCity)) {
+            $scope.alertmsg = $translate.instant('delivery city is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.deliveryCountry.Name)) {
+            $scope.alertmsg = $translate.instant('delivery country is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.email)) {
+            $scope.alertmsg = $translate.instant('email is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (u.email != u.emailConfirm) {
+            $scope.alertmsg = $translate.instant('emails are not the same');
+            return false;
+        }
+        if (functions.isNullOrEmpty(u.password)) {
+            $scope.alertmsg = $translate.instant('password is required');
+            $scope.alertclass = 'danger';
+            return false;
+        }
+        if (u.password != u.passwordConfirm) {
+            $scope.alertmsg = $translate.instant('passwords are not the same');
+            return false;
+        }
+
+
+        $http({
+            url: 'Users.asmx/Signup',
+            method: 'POST',
+            data: { x: u }
+        })
+         .then(function (response) {
+             $scope.alertmsg = $translate.instant(response.data.d);
+             var sendto = u.email;
+             var subject = $translate.instant('registration') + ' - Promo-Tekstil.com';
+             var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+             '<br/>' +
+             '<hr/>' +
+             '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
+             '<p>' + $translate.instant('thank you for registering on') + ' Promo-Tekstil.com</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('your account information is as follows') + ':</p>' +
+             '<p>' + $translate.instant('user name') + ': ' + u.email + '</p>' + 
+             '<p>' + $translate.instant('password') + Lozinka + ': ' + u.password + '</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://promo-tekstil.com/login.html">https://promo-tekstil.com/login.html</a></p>' +
+             '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://promo-tekstil.com/user.html">https://promo-tekstil.com/user.html</a></p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:info@promo-tekstil.com?Subject=Upit" target="_top">info@promo-tekstil.com</a>.</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('best regards') + ',</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
+             sendMail(sendto, subject, body, null);
+             if (isCheckout == true) {
+                 $scope.nextStep('shippingMethodTpl', 3);
+             }
+         },
+         function (response) {
+             $scope.alertmsg = response.data.Message;
+         });
+    }
+
+    $scope.checkoutSignup = function (u) {
+        $scope.signup(u, true);
+    }
+
+
+    var sendMail = function (sendto, subject, body, cc) {
+        $http({
+            url: 'https://promo-tekstil.com/assets/php/mailer/sendmail.php',
+            method: 'POST',
+            data: { sendto:sendto, subject:subject, body:body, cc:cc }
+        })
+     .then(function (response) {
+        // alert(response.data);
+     },
+     function (response) {
+         alert(response.data);
+     });
+    }
+
+    $scope.confirm = function (u, tpl, step) {
+            $http({
+                url: 'Users.asmx/Update',
+                method: 'POST',
+                data: { x: u }
+            })
+        .then(function (response) {
+            $scope.nextStep(tpl, step);
+        },
+        function (response) {
+        alert(response.data.d);
+        });
+    }
+
+   var clearCart = function () {
+        localStorage.clear();
+        $scope.cart = [];
+        $rootScope.groupingCart = [];
+   }
+
+   $scope.accept = false;
+   $scope.acceptAlert = false;
+   $scope.sendtoprint = false;
+   $scope.saveOrder = function (u, accept, sendtoprint) {
+       if (accept == false) {
+           $scope.acceptAlert = true;
+           return false;
+       }
+        $scope.order.userId = u.userId;
+        $scope.order.orderDate = new Date().toLocaleDateString();
+        $scope.order.price = $scope.price;
+            $http({
+                url: 'Orders.asmx/Save',
+                method: 'POST',
+                data: { user: u, order: $scope.order, cart: $rootScope.groupingCart, lang: $sessionStorage.config.language.code, sendToPrint: sendtoprint }
+            })
+       .then(function (response) {
+           if (response.data.d.startsWith($translate.instant('no stock for'))) {
+               alert(response.data.d);
+           }
+           //if (response.data.d.startsWith("No Stock for")) {
+           //    alert(response.data.d);
+           //}
+
+           $scope.order = JSON.parse(response.data.d);
+
+           items = '';
+           var li = '';
+           angular.forEach($scope.order.items, function (value, key) {
+               if (value != null) {
+                   li = li + '<li>' + value.style + ' - ' + $translate.instant(value.shortdesc_en) + ', sku:' + value.sku + ', ' + $translate.instant(value.color) + ', ' + value.size + ', ' + value.quantity + ' ' + $translate.instant('piece') + '</li>';
+               }
+           })
+           if (li != '') { items = '<ul>' + li + '</ul>'; }
+
+           var deliveryAddress = '<br />' + 
+               $scope.order.deliveryFirstName + ' ' + $scope.order.deliveryLastName + '<br />' +
+               $scope.order.deliveryCompanyName + '<br />' +
+               $scope.order.deliveryAddress + ', ' + $scope.order.deliveryPostalCode + ' ' + $scope.order.deliveryCity + '<br/>' +
+               $translate.instant($scope.order.deliveryCountry) + '<br />';
+
+             var sendto = u.email;
+             var subject = $translate.instant('new order') + ' - Promo-Tekstil.com';
+             var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+             '<br/>' +
+             '<hr/>' +
+             '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
+             '<p>' + $translate.instant('thank you for placing your order') +'</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('order details') + ': ' +
+             '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
+             '<p>' + $translate.instant('order status') + ': ' + $translate.instant($scope.order.status.title) + '</p>' +
+             '<p>' + $translate.instant('ordered products') + ': ' + items + '</p>' +
+             '<p>' + $translate.instant('total') + ': ' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
+             '<p>' + $translate.instant('delivery address') + ': ' + deliveryAddress + '</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
+             '<p>' + $translate.instant('delivery type') + ': ' + $translate.instant($scope.order.deliveryType.title) + '.</p>' +
+             '<br/>' +
+             '<label>' + $translate.instant('payment details') + '</label>' +
+                '<hr />' +
+                '<ul>' +
+                    '<li>IBAN: HR4424020061100647760</li>' +
+                    '<li>Erste&Steiermärkische Bank d.d.</li>' +
+                    '<li>Lateralus j.d.o.o.</li>' +
+                    '<li>' + $translate.instant('payment model') + ': HR99</li>' +
+                    '<li>' + $translate.instant('amount') + ': <strong>' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' </strong>' + $rootScope.config.currency.symbol + '</li>' +
+                    '<li>' + $translate.instant('description of payment') + ': ' + $scope.order.number + '</li>' +
+                '</ul>' +
+                '<hr />' +
+             '<br/>' +
+             '<p>' + $translate.instant('after receiving your payment we will ship your products') + '.</p>' +
+             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + '.</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('best regards') + ',</p>' +
+             '<br/>' +
+             '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com ' + $translate.instant('team') + '</a></p>';
+             sendMail(sendto, subject, body, null);
+
+           //TODO
+            var bodyToMe =
+               '<p>' + $translate.instant('new order') + ': ' +
+               '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
+               '<p>' + $translate.instant('order status') + ': ' + $translate.instant($scope.order.status.title) + '</p>' +
+               '<p>' + $translate.instant('ordered products') + ': ' + items + '</p>' +
+               '<p>' + $translate.instant('total') + ': ' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
+               '<p>' + $translate.instant('delivery address') + ': ' + deliveryAddress + '</p>' +
+               '<br/>' +
+               '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
+               '<p>' + $translate.instant('delivery type') + ': ' + $translate.instant($scope.order.deliveryType.title) + '.</p>';
+            sendMail($rootScope.config.email, subject, bodyToMe, $rootScope.config.emailcc);
+
+             $scope.nextStep('orderConfirmationTpl', 6);
+             clearCart();
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+
+    $scope.showForgotPassword = function () {
+        $scope.forgotPass = true;
+    }
+
+    $scope.forgotPassword = function (u) {
+        $http({
+            url: 'Users.asmx/ForgotPassword',
+            method: 'POST',
+            data: { email: u.email }
+        })
+     .then(function (response) {
+         var user = JSON.parse(response.data.d);
+         var sendto = user.email;
+          //  + $translate.instant('account information'); //  $translate.instant('account information') + ' - Promo-Tekstil.com';  //TODO - Translate not working
+
+        // var subject = 'account information - Promo-Tekstil.com'; //  $translate.instant('account information') + ' - Promo-Tekstil.com';  //TODO - Translate not working
+         var subject = $translate.instant('account information') + ' - Promo-Tekstil.com';
+         var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+         '<br/>' +
+         '<hr/>' +
+         '<p>' + $translate.instant('dear') + ', ' + user.firstName + ' ' + user.lastName + ', ' + user.companyName + '</p>' +
+         '<br/>' +
+         '<p>' + $translate.instant('your account information is as follows') + ':</p>' +
+         '<p>Korisničko ime: ' + user.userName + '</p>' +
+         '<p>Lozinka: ' + user.password + '</p>' +
+         '<br/>' +
+         '<p>Prijavite se klikom na poveznicu: <a href="https://promo-tekstil.com/login.html">https://promo-tekstil.com/login.html</a></p>' +
+         '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://promo-tekstil.com/signup.html">https://promo-tekstil.com/signup.html</a></p>' +
+         '<br/>' +
+         '<p>Želimo vam ugodnu kupovinu.</p>' +
+         '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:info@promo-tekstil.com?Subject=Upit" target="_top">info@promo-tekstil.com</a>.</p>' +
+         '<br/>' +
+         '<p>Srdačno,</p>' +
+         '<br/>' +
+         '<p>Vaš <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
+
+         sendMail(sendto, subject, body, null);
+
+         $scope.loginMsg = $translate.instant("your account information has been sent to the email address");
+         $scope.loginMsgClass = 'info';
+         $scope.showLoginMsg = true;
+     },
+     function (response) {
+         $scope.loginMsg = $translate.instant(response.data.Message);
+         $scope.loginMsgClass = 'warning';
+         $scope.showLoginMsg = true;
+     });
+    }
+
+    var gotoAnchor = function (x) {
+        $window.location.href = '#' + x;
+    };
+
+    $scope.nextStep = function (tpl, step) {
+        if (step == 3) {
+            $http({
+                url: 'Orders.asmx/GetOrderOptionsJson',
+                method: 'POST',
+                data: ''
+            })
+               .then(function (response) {
+                   $rootScope.orderOptions = JSON.parse(response.data.d);
+                   //$scope.toggleTpl(tpl);
+                   //$scope.currentStep = step;
+                   //gotoAnchor('checkout');
+               },
+               function (response) {
+                   alert(response.data.d);
+               });
+        }
+        if (step == 5) {
+            getTotalPrice($rootScope.groupingCart);
+        }
+        $scope.toggleTpl(tpl);
+        $scope.currentStep = step;
+        gotoAnchor('checkout');
+
+
+
+
+
+        //if (step == 3) {
+        //    $http({
+        //        url: 'Orders.asmx/GetOrderOptionsJson',
+        //        method: 'POST',
+        //        data: ''
+        //    })
+        //       .then(function (response) {
+        //           $rootScope.orderOptions = JSON.parse(response.data.d);
+        //           $scope.toggleTpl(tpl);
+        //           $scope.currentStep = step;
+        //           gotoAnchor('checkout');
+        //       },
+        //       function (response) {
+        //           alert(response.data.d);
+        //       });
+        //    } else {
+        //        $scope.toggleTpl(tpl);
+        //        $scope.currentStep = step;
+        //        gotoAnchor('checkout');
+        //    }
+    }
+
+    $scope.setProgressBarClass = function (x) {
+        if ($scope.currentStep == x) {
+            return 'active';
+        }
+        if ($scope.currentStep > x) {
+            return 'visited';
+        }
+        if ($scope.currentStep < x) {
+            return '';
+        }
+    }
+
+    $scope.showPassword = function () {
+        $scope.showpass = $scope.showpass == true ? false : true;
+    }
+
+    $scope.updateUser = function (u) {
+        $scope.alertmsg = null;
+        $http({
+            url: 'Users.asmx/Update',
+            method: 'POST',
+            data: { x: u }
+        })
+     .then(function (response) {
+         $sessionStorage.u = JSON.stringify($rootScope.u)
+         $scope.alertmsg = response.data.d;
+     },
+     function (response) {
+         $scope.alertmsg = response.data.d;
+     });
+    }
+
+    var get = function () {
+        $http({
+            url: 'Orders.asmx/Get',
+            method: 'POST',
+            data: { userId: $rootScope.u.userId }
+        })
+     .then(function (response) {
+         $rootScope.o = JSON.parse(response.data.d);
+         if (angular.isDefined($sessionStorage.u)) {
+             $scope.toggleUserTpl('editUserTpl');
+         }
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    if (angular.isDefined($rootScope.u) && $rootScope.u != null) { get(); };
+
+    $scope.sameDeliveryAddress = true;
+    $scope.setDeliveryAddress = function (isTheSame) {
+        if (isTheSame == true) {
+            $rootScope.u.deliveryFirstName = $rootScope.u.firstName;
+            $rootScope.u.deliveryLastName = $rootScope.u.lastName;
+            $rootScope.u.deliveryCompanyName = $rootScope.u.companyName;
+            $rootScope.u.deliveryAddress = $rootScope.u.address;
+            $rootScope.u.deliveryPostalCode = $rootScope.u.postalCode;
+            $rootScope.u.deliveryCity = $rootScope.u.city;
+            $rootScope.u.deliveryCountry = $rootScope.u.country;
+        } else {
+            $rootScope.u.deliveryFirstName = '';
+            $rootScope.u.deliveryLastName = '';
+            $rootScope.u.deliveryCompanyName = '';
+            $rootScope.u.deliveryAddress = '';
+            $rootScope.u.deliveryPostalCode = '';
+            $rootScope.u.deliveryCity = '';
+            $rootScope.u.deliveryCountry = '';
+        }
+    }
+
+    $scope.productPriceTotal = function (x) {
+        var total = { net: 0, gross: 0 };
+        angular.forEach(x, function (value, key) {
+            total.net = total.net + value.myprice.net * value.quantity;
+            total.gross = total.gross + value.myprice.gross * value.quantity;
+        })
+        return total;
+    }
+
+    $scope.priceTotal = [];
+    var getTotalPrice = function (x) {
+        $http({
+            url: 'Orders.asmx/GetTotalPrice',
+            method: 'POST',
+            data: { groupingCart:x, user:$rootScope.u, course:$rootScope.config.currency.course }
+        })
+       .then(function (response) {
+           $scope.price = JSON.parse(response.data.d);
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+
+}])
+
+.controller('contactCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
+
+    $scope.d = {
+        firstName: null,
+        lastName: null,
+        email: null,
+        message: null
+    }
+    $scope.alertmsg = null;
+
+    $scope.issent = false;
+    $scope.isrequired = false;
+    $scope.send = function (d) {
+        if (functions.isNullOrEmpty(d.firstName)) {
+            $scope.alertmsg = $translate.instant('first name is required');
+            return false;
+        }
+        if (functions.isNullOrEmpty(d.email)) {
+            $scope.alertmsg = $translate.instant('email is required');
+            return false;
+        }
+        if (functions.isNullOrEmpty(d.message)) {
+            $scope.alertmsg = $translate.instant('message is required');
+            return false;
+        }
+
+
+        $scope.issent = false;
+        var subject = $translate.instant('inquiry') + ' - Promo-Tekstil.com';
+        var body = '<p>' + $translate.instant('inquiry') + ':</p>' +
+        '<p>' + $translate.instant('first name') + ': ' + d.firstName + '</p>' +
+        '<p>' + $translate.instant('last name') + ': ' + d.lastName + '</p>' +
+        '<p>' + $translate.instant('email') + ': ' + d.email + '</p>' +
+        '<br/>' +
+        '<p>Upit: ' + d.message + '</p>';
+        $http({
+            url: 'https://promo-tekstil.com/assets/php/mailer/sendmail.php',
+            method: 'POST',
+            data: { sendto:$rootScope.config.email, subject:subject, body:body, cc:null }
+        })
+     .then(function (response) {
+         $scope.issent = true;
+         $scope.alertmsg = null;
+         $scope.response = response.data;
+         $window.location.href = '#msg';
+     },
+     function (response) {
+         $scope.issent = false;
+         $scope.alertmsg = null;
+         alert(response.data);
+     });
+    }
+
+}])
+
+.controller('cartCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, $localStorage) {
+    $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
+    $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
+    var getTotalPrice = function (x) {
+        $http({
+            url: 'Orders.asmx/GetTotalPrice',
+            method: 'POST',
+            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
+        })
+       .then(function (response) {
+           $scope.price = JSON.parse(response.data.d);
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+    getTotalPrice($rootScope.groupingCart);
+}])
+
+
+
+
+;

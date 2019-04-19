@@ -1,0 +1,102 @@
+﻿<div class="content-push" ng-controller="contactCtrl" style="min-height:400px">
+
+    <div class="information-blocks">
+        <ng-include ng-if="config.language.code=='hr'" src="'tpl_hr'"></ng-include>
+        <ng-include ng-if="config.language.code=='en'" src="'tpl_en'"></ng-include>
+    </div>
+
+</div>
+
+<script type="text/ng-template" id="tpl_en">
+    <div style="padding-bottom: 50px;"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1401.264066520318!2d14.3588442!3d45.3785162!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xeaf9804212137379!2sMegaMajice.com!5e0!3m2!1shr!2shr!4v1523370284349" width="1124" height="450" frameborder="0" style="border:0" allowfullscreen></iframe></div>
+    <div class="row">
+        <div class="col-md-4 information-entry">
+            <h3 class="block-title main-heading">We're here for you</h3>
+            <div class="article-container style-1">
+                <p>If you have any questions or doubts feel free to contact us. We'll be glad to help and answer any question</p>
+                <h5>Company address</h5>
+                <p>
+                    Promo Tekstil - Lateralus j.d.o.o.<br />
+                    Žegoti 27<br />
+                    Kastav<br />
+                    PGŽ 51215<br />
+                    Croatia<br />
+                </p>
+                <h5>Contact Informations</h5>
+                <p>
+                    Email: info@promo-tekstil.com<br />
+                    Phone: +385 91 644 02 01
+                </p>
+            </div>
+        </div>
+        <ng-include src="'form_tpl'"></ng-include>
+    </div>
+</script>
+
+<script type="text/ng-template" id="tpl_hr">
+    <div style="padding-bottom: 50px;"><iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1401.264066520318!2d14.3588442!3d45.3785162!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xeaf9804212137379!2sMegaMajice.com!5e0!3m2!1shr!2shr!4v1523370284349" width="1124" height="450" frameborder="0" style="border:0" allowfullscreen></iframe></div>
+    <div class="row">
+        <div class="col-md-4 information-entry">
+            <h3 class="block-title main-heading">Tu smo zbog Vas</h3>
+            <div class="article-container style-1">
+                <p>Ukoliko imate bilo kakvih pitanja slobodno nas kontaktirajte. Mi smo tu da odgovorimo na sva Vaša pitanja</p>
+                <h5>Adresa tvrtke</h5>
+                <p>
+                    Promo Tekstil - Lateralus j.d.o.o.<br />
+                    Žegoti 27<br />
+                    Kastav<br />
+                    PGŽ 51215<br />
+                    Hrvatska<br />
+                </p>
+                <h5>Kontakt infomacije</h5>
+                <p>
+                    Email: info@promo-tekstil.com<br />
+                    Telefon: +385 91 644 02 01
+                </p>
+            </div>
+        </div>
+        <ng-include src="'form_tpl'"></ng-include>
+    </div>
+</script>
+
+<script type="text/ng-template" id="form_tpl">
+    <div class="col-md-8 information-entry">
+        <div ng-if="!issent">
+            <h3 class="block-title main-heading">{{'get in touch' | translate}}</h3>
+            <form>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="text-capitalize">{{'your name' | translate}} <span>*</span></label>
+                        <input ng-model="d.firstName" class="simple-field" type="text" placeholder="{{'your name (required)' | translate}}" required value="" />
+                        <div class="clear"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="text-capitalize">{{'your surname' | translate}}</label>
+                        <input ng-model="d.lastName" class="simple-field" type="text" placeholder="{{'your surname' | translate}}" value="" />
+                        <div class="clear"></div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="text-capitalize">{{'your email' | translate}} <span>*</span></label>
+                        <input ng-model="d.email" class="simple-field" type="email" placeholder="{{'your email address (required)' | translate}}" required value="" />
+                        <label class="text-capitalize">{{'your message' | translate}} <span>*</span></label>
+                        <textarea ng-model="d.message" class="simple-field" placeholder="{{'your message content (required)' | translate}}" required></textarea>
+                        <div class="button style-10" ng-click="send(d)">{{'send message' | translate}}<input type="submit" value="" /></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="mt20">
+            <div id="msg" ng-if="alertmsg" class="message-box message-danger">
+                <div class="message-icon"><i class="fa fa-exclamation"></i></div>
+                <div class="message-text"><b>{{alertmsg}}</b></div>
+            </div>
+            <div id="msg" ng-if="issent" class="message-box message-success">
+                <div class="message-icon"><i class="fa fa-check"></i></div>
+                <div class="message-text"><b>{{response}}</b></div>
+            </div>
+        </div>
+        
+    </div>
+</script>
+
+

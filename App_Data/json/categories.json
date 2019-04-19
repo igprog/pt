@@ -1,0 +1,82 @@
+[
+  {
+    "code": "Bag",
+    "isselected": true,
+    "order": 16
+  },
+  {
+    "code": "Bodywarmer",
+    "isselected": true,
+    "order": 17
+  },
+  {
+    "code": "Cap",
+    "isselected": true,
+    "order": 18
+  },
+  {
+    "code": "CorporateWear",
+    "isselected": true,
+    "order": 19
+  },
+  {
+    "code": "Jacket",
+    "isselected": true,
+    "order": 4
+  },
+  {
+    "code": "Kid",
+    "isselected": true,
+    "order": 5
+  },
+  {
+    "code": "MarketingTools",
+    "isselected": false,
+    "order": 6
+  },
+  {
+    "code": "PolarAndSoftshell",
+    "isselected": true,
+    "order": 7
+  },
+  {
+    "code": "Poloshirt",
+    "isselected": true,
+    "order": 3
+  },
+  {
+    "code": "SpecialOrder",
+    "isselected": false,
+    "order": 9
+  },
+  {
+    "code": "Sport",
+    "isselected": true,
+    "order": 10
+  },
+  {
+    "code": "Sweatshirt",
+    "isselected": true,
+    "order": 2
+  },
+  {
+    "code": "T-Shirt",
+    "isselected": true,
+    "order": 0
+  },
+  {
+    "code": "Towel",
+    "isselected": true,
+    "order": 13
+  },
+  {
+    "code": "TrousersAndAccessories",
+    "isselected": true,
+    "order": 14
+  },
+  {
+    "code": "Windbreaker",
+    "isselected": true,
+    "order": 15
+  }
+]

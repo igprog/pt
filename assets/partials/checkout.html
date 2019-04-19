@@ -1,0 +1,406 @@
+﻿<div id="checkout" class="content-push" ng-controller="userCtrl">
+
+
+
+    <div class="breadcrumb-box">
+        <a href="index.html">{{'home' | translate}}</a>
+        <a href="#">{{'checkout' | translate}}</a>
+    </div>
+
+    <ng-include src="'checkoutProgressBarTpl'"></ng-include>
+
+    <div style="margin-top:150px; min-height:400px">
+        <ng-include src="tpl"></ng-include>
+    </div>
+    
+    <pre ng-if="config.debug">{{u | json}}</pre>
+    <pre ng-if="config.debug">{{order | json}}</pre>
+
+</div>
+
+
+<script type="text/ng-template" id="checkoutProgressBarTpl">
+    <div class="checkout-wrap" style="margin:0px 0px 50px 0px">
+        <ul class="checkout-bar">
+            <li class="{{setProgressBarClass(1)}}" ng-click="toggleTpl('registerTpl')"><a href="">{{'login' | translate}}</a></li>
+            <li class="{{setProgressBarClass(2)}}" ng-click="setProgressBarClass(2)!=''?toggleTpl('deliveryTpl'):''"><a href="">{{'delivery address' | translate}}</a></li>
+            <li class="{{setProgressBarClass(3)}}" ng-click="setProgressBarClass(3)!=''?toggleTpl('shippingMethodTpl'):''"><a href="">{{'shipping method' | translate}}</a></li>
+            <li class="{{setProgressBarClass(4)}}" ng-click="setProgressBarClass(4)!=''?toggleTpl('paymentMethodTpl'):''"><a href="">{{'payment type' | translate}}</a></li>
+            <li class="{{setProgressBarClass(5)}}" ng-click="setProgressBarClass(5)!=''?toggleTpl('orderReviewTpl'):''"><a href="">{{'review' | translate}}</a></li>
+        </ul>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="loginTpl">
+    <form>
+        <label>{{'email' | translate}}</label>
+        <input ng-model="email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
+        <label>{{'password' | translate}}</label>
+        <input ng-model="password" type="password" value="" placeholder="Enter Password" class="simple-field">
+        <div class="button style-10">{{'login' | translate}}<input type="submit" value="" ng-click="login(email, password, true)"></div>
+        <a ng-if="!forgotPass" class="forgot-password" href="#" ng-click="showForgotPassword()">{{'forgot password' | translate}}?</a>
+        <div ng-if="forgotPass">
+            <label>{{'email' | translate}}</label>
+            <input ng-model="u.email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
+            <a class="button style-10" href="#" ng-click="forgotPassword(u)">{{'send password' | translate}}</a>
+        </div>
+        <div ng-if="showLoginMsg" class="alert alert-{{loginMsgClass}}" style="margin-top:20px">
+            {{loginMsg}}
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="registerTpl">
+    <div class="information-blocks">
+        <div class="row">
+            <div class="col-sm-6 information-entry">
+                <div class="login-box">
+                    <div class="article-container style-1">
+                        <h3>{{'registered customers' | translate}}</h3>
+                    </div>
+                    <ng-include src="'loginTpl'"></ng-include>
+                </div>
+            </div>
+            <div class="col-sm-6 information-entry">
+                <div class="login-box">
+                    <div class="article-container style-1">
+                        <h3>{{'new customer' | translate}}</h3>
+                        <!--<p>By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.</p>-->
+                    </div>
+                    <a href="" class="button style-12 btn-block" ng-click="initUser(false);toggleTpl('signupTpl')">{{'register account' | translate}}</a>
+                    <a href="" class="button style-10 btn-block" ng-click="initUser(true);toggleTpl('signupTpl')">{{'guest user' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="signupTpl">
+    <ng-include src="'./assets/partials/signup_tpl.html'"></ng-include>
+</script>
+
+<script type="text/ng-template" id="deliveryTpl">
+    <div class="row">
+        <div class="col-md-6 information-entry">
+            <div class="article-container style-1">
+                <div style="height: 80px">
+                    <label class="lead">{{'billing address' | translate}}</label>
+                </div>
+                <form>
+                    <label>{{'first name' | translate}}</label>
+                    <input ng-model="u.firstName" type="text" value="" placeholder="{{'enter' | translate}} {{'first name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'last name' | translate}}</label>
+                    <input ng-model="u.lastName" type="text" value="" placeholder="{{'enter' | translate}} {{'last name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'company name' | translate}}</label>
+                    <input ng-model="u.companyName" type="text" value="" placeholder="{{'enter' | translate}} {{'company name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'street and number' | translate}}</label>
+                    <input ng-model="u.address" type="text" value="" placeholder="{{'enter' | translate}} {{'street and number' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'postal code' | translate}}</label>
+                    <input ng-model="u.postalCode" type="text" value="" placeholder="{{'enter' | translate}} {{'postal code' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'city' | translate}}</label>
+                    <input ng-model="u.city" type="text" value="" placeholder="{{'enter' | translate}} {{'city' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">
+                    <label>{{'country' | translate}}</label>
+                    <!--<input ng-model="u.country" type="text" value="" placeholder="{{'enter' | translate}} {{'country' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)">-->
+                    <div class="dropdown">
+                        <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.country.Name | translate}}</button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6 information-entry">
+            <div class="article-container style-1">
+                <div style="height: 80px">
+                    <label class="lead">{{'delivery address' | translate}}</label>
+                    <label class="checkbox-entry">
+                        <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                    </label>
+                </div>
+                <form>
+                    <label>{{'first name' | translate}}</label>
+                    <input ng-model="u.deliveryFirstName" type="text" value="" placeholder="{{'enter' | translate}} {{'first name' | translate}}" class="simple-field">
+                    <label>{{'last name' | translate}}</label>
+                    <input ng-model="u.deliveryLastName" type="text" value="" placeholder="{{'enter' | translate}} {{'last name' | translate}}" class="simple-field">
+                    <label>{{'company name' | translate}}</label>
+                    <input ng-model="u.deliveryCompanyName" type="text" value="" placeholder="{{'enter' | translate}} {{'company name' | translate}}" class="simple-field">
+                    <label>{{'address' | translate}}</label>
+                    <input ng-model="u.deliveryAddress" type="text" value="" placeholder="{{'enter' | translate}} {{'street and number' | translate}}" class="simple-field">
+                    <label>{{'postal code' | translate}}</label>
+                    <input ng-model="u.deliveryPostalCode" type="text" value="" placeholder="{{'enter' | translate}} {{'city' | translate}}" class="simple-field">
+                    <label>{{'city' | translate}}</label>
+                    <input ng-model="u.deliveryCity" type="text" value="" placeholder="{{'enter' | translate}} {{'city' | translate}}" class="simple-field">
+                    <label>{{'country' | translate}}</label>
+                    <!--<input ng-model="u.deliveryCountry" type="text" value="" placeholder="{{'enter' | translate}} {{'country' | translate}}" class="simple-field">-->
+                    <div class="dropdown">
+                        <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.deliveryCountry.Name | translate}}</button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row mt20">
+        <div class="col-sm-12 information-entry">
+            <div class="article-container style-1">
+                    <label class="lead">{{'note' | translate}}</label>
+                <input ng-model="order.note" type="text" value="" max="200" placeholder="{{'enter note' | translate}}" class="simple-field">
+            </div>
+        </div>
+    </div>
+    <div class="row mt20">
+        <div class="col-sm-12 information-entry">
+            <div class="article-container style-1 pull-right">
+                <a class="button style-10" ng-click="confirm(u, 'shippingMethodTpl', 3)">{{'continue' | translate}}</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="shippingMethodTpl">
+    <div class="row">
+        <div class="col-sm-offset-3 col-md-6 information-entry text-center">
+            <div class="article-container style-1">
+                <h3>{{'shipping method' | translate}}</h3>
+                <form>
+                    <label class="checkbox-entry radio" ng-repeat="x in orderOptions.deliverytype">
+                        <input ng-model="u.deliveryType" value="{{x.code}}" type="radio" name="custom-name"> <span class="check"></span> <b>{{x.title | translate}}</b>
+                    </label>
+                    <a class="button style-10" ng-click="confirm(u, 'paymentMethodTpl', 4)">{{'continue' | translate}}</a>
+                </form>
+                <pre ng-if="config.debug">orderOptions: {{orderOptions}}</pre>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="paymentMethodTpl">
+    <div class="row">
+        <div class="col-sm-offset-3 col-md-6 information-entry text-center">
+            <div class="article-container style-1">
+                <h3>{{'payment method' | translate}}</h3>
+                <form>
+                    <label class="checkbox-entry radio" ng-repeat="x in orderOptions.paymentmethod">
+                        <input ng-model="u.paymentMethod" value="{{x.code}}" type="radio" name="custom-name"> <span class="check"></span> <b>{{x.title | translate}}</b>
+                    </label>
+                    <a class="button style-10 tab4" ng-click="confirm(u, 'orderReviewTpl', 5)">{{'continue' | translate}}</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="orderReviewTpl">
+    <div class="row">
+        <div class="col-md-12 information-entry">
+            <div class="article-container style-1">
+                <h3>{{'order review' | translate}}</h3>
+                <form>
+                    <div class="row" ng-repeat="c in groupingCart track by $index">
+                        <div class="col-sm-2">
+                            <label>{{'style' | translate}}: <strong>{{c.style}}</strong></label>
+                            <img src="{{config.imgurl}}{{c.data[0].modelimageurl}}" alt="" style="width:100px" />
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h4>{{(c.data[0].shortdesc_en | translate).replace('amp;', '')}}</h4>
+                                </div>
+                                <div class="col-sm-2 pull-right">
+                                    <h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(productPriceTotal(c.data).net  * config.currency.course) | number:2}}</h4>
+                                </div>
+                            </div>
+                            <label>{{'variants' | translate}}</label>
+                            <div class="table-responsive table-condensed">
+                                <table class="table">
+                                    <tr>
+                                        <td>{{'sku' | translate}}</td>
+                                        <td>{{'size' | translate}}</td>
+                                        <td>{{'color' | translate}}</td>
+                                        <td>{{'quantity' | translate}}</td>
+                                    </tr>
+                                    <tr ng-repeat="x in c.data track by $index">
+                                        <td>{{x.sku}}</td>
+                                        <td>{{x.size}}</td>
+                                        <td>
+                                            <div ng-if="x.colorhex.split('/').length==1" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:30px; width:30px"></div>
+                                            <div ng-if="x.colorhex.split('/').length>1" style="border:1px solid gray; height:30px; width:30px">
+                                                <div style="{{multipleColorStyle(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>
+                                            </div>
+                                        </td>
+                                        <td>{{x.quantity}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="row well" style="margin-top:40px">
+                        <div class="col-sm-4">
+                            <label class="lead">{{'billing address' | translate}}</label>
+                            <label>{{u.firstName}} {{u.lastName}}</label>
+                            <label ng-if="u.companyName">{{u.companyName}}</label>
+                            <label>{{u.address}}</label>
+                            <label>{{u.postalCode}} {{u.city}}</label>
+                            <label>{{u.country.Name | translate}}</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="lead">{{'delivery address' | translate}}</label>
+                            <label>{{u.deliveryFirstName}} {{u.deliveryLastName}}</label>
+                            <label ng-if="u.deliveryCompanyName">{{u.deliveryCompanyName}}</label>
+                            <label>{{u.deliveryAddress}}</label>
+                            <label>{{u.deliveryPostalCode}} {{u.deliveryCity}}</label>
+                            <label>{{u.deliveryCountry.Name | translate}}</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td><label class="lead">{{'amounth without vat' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.net  * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'discount' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.discount * config.currency.course | number:2}} ({{u.discount.coeff * 100}}%)</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'amount without vat minus discount' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscount  * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.deliveryCountry.Code=='HR'">
+                                        <td><label class="lead">{{'vat' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.vat  * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.deliveryCountry.Code=='HR'">
+                                        <td><label class="lead">{{'amounth with vat' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscountPlusVat  * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="lead">{{'delivery price' | translate}}:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.delivery * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'total' | translate}}:</label></td>
+                                        <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.total * config.currency.course) | number:2}}</h4></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p10">
+                        <label class="checkbox-entry">
+                            <input ng-model="sendtoprint" type="checkbox" /> <span class="check"></span>Želim da me kontaktirate vezano za tisak na naručene proizvode
+                        </label>
+                    </div>
+                    <div class="p10">
+                        <label class="checkbox-entry">
+                            <input ng-model="accept" type="checkbox" /> <span class="check"></span>
+                            {{'i accept' | translate}} <a href="terms-of-service.html" target="_blank"> {{'terms of service_' | translate}}.</a>
+                        </label>
+                        <div ng-if="acceptAlert && !accept" class="alert alert-danger">
+                            {{'to confirm the order you must accept the terms of use' | translate}}.
+                        </div>
+                        <a class="button style-10" ng-click="saveOrder(u, accept, sendtoprint)" ng-disabled="accept">{{'confirm' | translate}}</a>
+                    </div>
+                    
+
+                    <div ng-if="config.debug">
+                        groupingCart:
+                        <pre>{{groupingCart}}</pre>
+                        user:
+                        <pre>{{u | json}}</pre>
+                        cart:
+                        <pre>{{cart}}</pre>
+                        order:
+                        <pre ng-if="config.debug">{{order | json}}</pre>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="orderConfirmationTpl">
+    <div class="row">
+        <div class="col-md-12 information-entry">
+            <div class="article-container style-1">
+                <h3>{{'confirmation' | translate}}</h3>
+                <div class="col-sm-9 information-entry">
+                    <div class="alert alert-success">
+                        <!--<p>{{'your order has been successfully confirmed' | translate}}.</p>
+                        <p>{{'after receiving your payment we will ship your products' | translate}}.</p>-->
+                        <p>Vaša narudžba <strong>{{order.number}}</strong> je uspješno zaprimljena.</p>
+                        <p>Molimo vas da izvršite uplatu na sljedeći račun:</p>
+                        <p>Molimo vas da navedeni iznos uplatite na naš dolje istaknuti račun putem vašeg internet bankarstva ili općom uplatnicom (pošta, banka, kiosci...) Prilikom plaćanja navedite vaše podatke, a kao poziv na broj koristite broj narudžbe.</p>                                                        
+                        <label>Podaci s uplatnice</label>
+                        <hr />
+                        <ul>
+                            <li>IBAN: HR4424020061100647760</li>
+                            <li>Erste&Steiermärkische Bank d.d.</li>
+                            <li>Lateralus j.d.o.o.</li>
+                            <li>Model plaćanja: HR99</li>
+                            <li>Iznos: <strong>{{(price.total * config.currency.course) | number:2}} <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></strong></li>
+                            <li>Opis plaćanja: {{order.number}}</li>
+                        </ul>
+                        <hr />
+                        <p>Nakon što smo primili uplatu vaša narudžba kreće u isporuku. O svemu ćete biti obaviješteni putem e-maila. Ukoliko želite ubrzati postupak možete nam poslati potvrdu vaše uplate putem e-maila info@promo-tekstil.com, putem Vibera ili Whatsapp-a na broj 091 644 0201.</p>
+                        <p>Ovdje su upute kako popuniti uplatnicu:</p>
+                        <img src="https://megamajice.com/wp-content/uploads/2017/03/megamajice_nalog_placanje_lateralus_jdoo.png">
+                        <p>
+                            Nemojte zaboraviti unijeti vaše ime i prezime, iznos i broj vaše narudžbe!
+                            Ukoliko imate bilo kakvih pitanja slobodno nas kontaktirajte putem telefona, maila ili kontakt forme.
+                        </p>
+                        <div>
+                            <h4>Plati putem internet bankarstva:</h4>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <select ng-model="bank" class="form-control">
+                                        <option value="" disabled selected>odaberite banku</option>
+                                        <option ng-repeat="x in orderOptions.bank" value="{{x.link}}">{{x.title}}</option>
+                                    </select>
+                                </div>
+                                <div ng-if="bank" class="col-sm-6">
+                                    <a href="{{bank}}" target="_blank" class="button style-10"><i class="fa fa-check"></i> Plati</a>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/javascript">
+    //accordeon
+    $('.accordeon-title').on('click', function () {
+        $(this).toggleClass('active');
+        $(this).next().slideToggle();
+    });
+
+    $('.tab1').on('click', function () {
+        $('#tab1').toggleClass('active');
+        $('#tab1').next().slideToggle();
+    })
+    $('.tab2').on('click', function () {
+        $('#tab2').toggleClass('active');
+        $('#tab2').next().slideToggle();
+    })
+    $('.tab3').on('click', function () {
+        $('#tab3').toggleClass('active');
+        $('#tab3').next().slideToggle();
+    })
+    $('.tab4').on('click', function () {
+        $('#tab4').toggleClass('active');
+        $('#tab4').next().slideToggle();
+    })
+</script>

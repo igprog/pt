@@ -1,0 +1,265 @@
+﻿<div id="checkout" class="content-push" ng-controller="userCtrl" style="min-height:400px">
+    <div class="breadcrumb-box">
+        <a href="index.html">{{'home' | translate}}</a>
+        <a href="user.html">{{'user pages' | translate}}</a>
+    </div>
+    <div ng-if="u.userId">
+        <ul class="nav nav-tabs">
+            <li class="{{userTpl=='editUserTpl'?'active':''}}" ng-click="toggleUserTpl('editUserTpl')"><a href="#"><i class="fa fa-user"></i> {{'edit profile' | translate}}</a></li>
+            <li class="{{userTpl=='ordersTpl'?'active':''}}" ng-click="toggleUserTpl('ordersTpl')"><a href="#"><i class="fa fa-shopping-cart"></i> {{'orders overview' | translate}}</a></li>
+        </ul>
+        <div class="m10">
+            <ng-include src="userTpl"></ng-include>
+        </div>
+    </div>
+   
+</div>
+
+<script type="text/ng-template" id="ordersTpl">
+    <div class="accordeon-entry" style="display: block;">
+        <div class="row">
+            <label class="lead">{{'order overview' | translate}}</label>
+            <div class="table-responsive" style="max-height:500px; overflow-y: scroll; -webkit-overflow-scrolling: touch;">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <th colspan="11"></th>
+                        <th colspan="7" class="text-center">{{'delivery address' | translate}}</th>
+                        <th colspan="4"></th>
+                    </tr>
+                    <tr>
+                        <th>{{'order number' | translate}}</th>
+                        <th>{{'status' | translate}}</th>
+                        <th>{{'items' | translate}}</th>
+                        <!--<th>{{'net' | translate}}</th>
+                        <th>{{'gross' | translate}}</th>
+                        <th>{{'discount' | translate}}</th>-->
+                        <th>{{'delivery price' | translate}}</th>
+                        <!--<th>{{'total with discount' | translate}}</th>-->
+                        <th>{{'total' | translate}}</th>
+                        <th>{{'currency'| translate}}</th>
+                        <th>{{'order date' | translate}}</th>
+                        <th>{{'first name' | translate}}</th>
+                        <th>{{'last name' | translate}}</th>
+                        <th>{{'company name' | translate}}</th>
+                        <th>{{'address' | translate}}</th>
+                        <th>{{'postal code' | translate}}</th>
+                        <th>{{'city' | translate}}</th>
+                        <th>{{'country' | translate}}</th>
+                        <th>{{'delivery type' | translate}}</th>
+                        <th>{{'payment method' | translate}}</th>
+                        <th>{{'note' | translate}}</th>
+                        <th>{{'send to print' | translate}}</th>
+                    </tr>
+                    <tr ng-repeat="x in o">
+                        <!--<td>{{x.orderId}}</td>-->
+                        <td>{{x.number}}</td>
+                        <td>{{x.status.title | translate}}</td>
+                        <td>
+                            <ul>
+                                <li ng-repeat="x in x.items">{{x.sku}} ({{x.quantity}})</li>
+                            </ul>
+                        </td>
+                        <!--<td>{{x.price.net | number:2}}</td>
+                        <td>{{x.price.gross | number:2}}</td>
+                        <th>{{x.price.discount | number:2}}</th>-->
+                        <th>{{(x.price.delivery * config.currency.course) | number:2}}</th>
+                        <th>{{(x.price.total * config.currency.course) | number:2}}</th>
+                        <!--<th>{{x.total | number:2}}</th>-->
+                        <td><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></td>
+                        <td>{{x.orderDate}}</td>
+                        <td>{{x.deliveryFirstName}}</td>
+                        <td>{{x.deliveryLastName}}</td>
+                        <td>{{x.deliveryCompanyName}}</td>
+                        <td>{{x.deliveryAddress}}</td>
+                        <td>{{x.deliveryPostalCode}}</td>
+                        <td>{{x.deliveryCity}}</td>
+                        <td>{{x.deliveryCountry}}</td>
+                        <td>{{x.deliveryType.title | translate}}</td>
+                        <td>{{x.paymentMethod.title | translate}}</td>
+                        <td>{{x.note}}</td>
+                        <td><i ng-if="x.sendToPrint" class="fa fa-check text-success"></i></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <pre ng-if="config.debug">{{o | json}}</pre>
+    </div>
+</script>
+
+<script type="text/ng-template" id="editUserTpl">
+    <div class="accordeon-entry" style="display: block;">
+        <div class="row">
+            <div class="col-sm-6">
+                <div style="height: 80px">
+                    <label class="lead">{{'billing address' | translate}}</label>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'company name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.companyName" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'pin' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.pin" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'first name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.firstName" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'last name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.lastName" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'address' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.address" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'postal code' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.postalCode" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'city' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.city" type="text" class="form-control" ng-change="setDeliveryAddress(sameDeliveryAddress)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'country' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <div class="dropdown">
+                            <button class="form-control dropdown-toggle text-left" type="button" data-toggle="dropdown">{{u.country.Name | translate}}</button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><a href="#">{{x.Name | translate}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div style="height: 80px">
+                    <label class="lead">{{'delivery address' | translate}}</label>
+                    <label class="checkbox-entry">
+                        <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                    </label>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'company name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryCompanyName" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'first name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryFirstName" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'last name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryLastName" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'address' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryAddress" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'postal code' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryPostalCode" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'city' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.deliveryCity" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'country' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <div class="dropdown">
+                            <button class="form-control dropdown-toggle text-left" type="button" data-toggle="dropdown">{{u.deliveryCountry.Name | translate}}</button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><a href="#">{{x.Name | translate}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <hr />
+            <div class="col-sm-6">
+                <label class="lead">{{'contact' | translate}}</label>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'phone' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.phone" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'email' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.email" type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label class="lead">{{'login data' | translate}}</label>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'user name' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <input ng-model="u.userName" type="text" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'password' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <div class="input-group">
+                            <input ng-model="u.password" type="{{showpass==true?'text':'password'}}" class="form-control" name="password">
+                            <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <hr />
+            <div class="col-sm-6">
+                <label class="lead">{{'discount' | translate}}</label>
+                <div class="row">
+                    <label class="col-sm-4 mt5">{{'discount type' | translate}}</label>
+                    <div class="col-sm-8 mt5">
+                        <label>{{u.discount.description}} ({{u.discount.title}})</label>
+                        <img ng-if="u.discount.img" src="../assets/img/various/{{u.discount.img}}" class="img-responsive" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m10">
+            <hr />
+            <a href="" class="btn btn-primary pull-right" ng-click="updateUser(u)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
+        </div>
+        <div ng-if="alertmsg" class="alert alert-info m10">
+            {{alertmsg | translate}}
+        </div>
+        
+        <pre ng-if="config.debug">{{u | json}}</pre>
+    </div>
+</script>

@@ -1,0 +1,832 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Promo Tekstil - Administracija</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/mystyle.css">
+    <script src="../assets/js/vendor/jquery.min.js"></script>
+    <script src="../assets/js/vendor/bootstrap.min.js"></script>
+    <script src="../assets/js/vendor/angular.min.js"></script>
+    <script src="../assets/js/vendor/angular-animate.min.js"></script>
+    <script src="../assets/js/vendor/angular-aria.min.js"></script>
+    <script src="../assets/js/vendor/angular-messages.min.js"></script>
+    <!-- FAVICON -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=xQz6GjWXbX">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=xQz6GjWXbX">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=xQz6GjWXbX">
+    <link rel="manifest" href="/site.webmanifest?v=xQz6GjWXbX">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=xQz6GjWXbX" color="#5bbad5">
+    <link rel="shortcut icon" href="/favicon.ico?v=xQz6GjWXbX">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <!-- FAVICON -->
+</head>
+<body ng-app="app" ng-controller="adminCtrl" style="color:black">
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="" class="navbar-brand">Admin</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../index.html" target="_blank"><span class="fa fa-home"></span> Home</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('orders')"><a href="#">Orders</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('users')"><a href="#">Users</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('products')"><a href="#">Products</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('featured')"><a href="#">Featured Products</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('pricecoeff')"><a href="#">Price Coefficient</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('orderoptions')"><a href="#">Order Options</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('categories')"><a href="#">Categories</a></li>
+                    <li ng-if="islogin" ng-click="toggleTpl('countries')"><a href="#">Countries</a></li>
+                </ul>
+                <ul ng-if="islogin" class="nav navbar-nav navbar-right">
+                    <li ng-click="logout()"><a href="#"><span class="fa fa-sign-in"></span> Logout</a></li>
+                </ul>
+            </div>
+            </div>
+    </nav>
+
+    <div ng-include="tpl" style="padding-top:20px"></div>
+
+    <script type="text/ng-template" id="login">
+        <div class="container">
+            <h3>Login</h3>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin:5px 0px 0px 0px">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input ng-model="user.username" type="text" class="form-control" name="email" placeholder="Email">
+                    </div>
+                    <div class="input-group" style="margin:5px 0px 0px 0px">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input ng-model="user.password" type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <div>
+                        <button ng-click="login(user)" class="btn btn-primary pull-right" style="margin:5px 0px 0px 0px"><i class="fa fa-key"></i> Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="orders">
+        <div ng-controller="ordersCtrl" class="container">
+            <h2>Orders</h2>
+            <div ng-if="!isdetails" class="table-responsive" style="max-height:700px; overflow-y: scroll; -webkit-overflow-scrolling: touch;">
+                <table class="table table-condensed">
+                    <tr>
+                        <th colspan="2"></th>
+                        <!--<th>orderId</th>-->
+                        <th>number</th>
+                        <th>status</th>
+                        <!--<th>userId</th>-->
+                        <!--<th>items</th>-->
+                        <th>netPrice</th>
+                        <th>grossPrice</th>
+                        <th>deliveryPrice</th>
+                        <th>currency</th>
+                        <th>orderDate</th>
+                        <th>firstName</th>
+                        <th>lastName</th>
+                        <th>companyName</th>
+                        <th>pin</th>
+                        <th>address</th>
+                        <th>postalCode</th>
+                        <th>city</th>
+                        <th>country</th>
+                        <th>deliveryFirstName</th>
+                        <th>deliveryLastName</th>
+                        <th>deliveryCompanyName</th>
+                        <th>deliveryAddress</th>
+                        <th>deliveryPostalCode</th>
+                        <th>deliveryCity</th>
+                        <th>deliveryCountry</th>
+                        <th>deliveryType</th>
+                        <th>paymentMethod</th>
+                        <th>note</th>
+                        <th>countryCode</th>
+                        <th>sendToPrint</th>
+                    </tr>
+                    <tr ng-repeat="x in d">
+                        <td><a href="" class="btn btn-success" ng-click="showDetails(x, true)"><i class="fa fa-eye"></i> Details</a></td>
+                        <td><a href="" class="btn btn-primary" ng-click="update(x)"><i class="fa fa-floppy-o"></i> Save</a></td>
+                        <!--<td>{{x.orderId}}</td>-->
+                        <td>{{x.number}}</td>
+                        <td style="min-width:100px">
+                            <select ng-model="x.status.code" class="form-control">
+                                <option value="{{y.code}}" ng-selected="x.status.code==y.code" ng-repeat="y in orderOptions.orderstatus">{{y.title}}</option>
+                            </select>
+                        </td>
+                        <!--<td>{{x.userId}}</td>-->
+                        <!--<td>
+                            <ul>
+                                <li ng-repeat="y in x.items">{{y.sku}} ({{y.quantity}})</li>
+                            </ul>
+                        </td>-->
+                        <td class="nowrap">{{x.netPrice | number:2}}</td>
+                        <td class="nowrap">{{x.grossPrice | number:2}}</td>
+                        <td class="nowrap">{{x.deliveryPrice | number:2}}</td>
+                        <td class="nowrap">{{x.currency}}</td>
+                        <td class="nowrap">{{x.orderDate}}</td>
+                        <td class="nowrap">{{x.firstName}}</td>
+                        <td class="nowrap">{{x.lastName}}</td>
+                        <td class="nowrap">{{x.companyName}}</td>
+                        <td class="nowrap">{{x.pin}}</td>
+                        <td class="nowrap">{{x.address}}</td>
+                        <td class="nowrap">{{x.postalCode}}</td>
+                        <td class="nowrap">{{x.city}}</td>
+                        <td class="nowrap">{{x.country}}</td>
+                        <td class="nowrap">{{x.deliveryFirstName}}</td>
+                        <td class="nowrap">{{x.deliveryLastName}}</td>
+                        <td class="nowrap">{{x.deliveryCompanyName}}</td>
+                        <td class="nowrap">{{x.deliveryAddress}}</td>
+                        <td class="nowrap">{{x.deliveryPostalCode}}</td>
+                        <td class="nowrap">{{x.deliveryCity}}</td>
+                        <td class="nowrap">{{x.deliveryCountry}}</td>
+                        <td class="nowrap">{{x.deliveryType.title}}</td>
+                        <td class="nowrap">{{x.paymentMethod.title}}</td>
+                        <td class="nowrap">{{x.note}}</td>
+                        <td class="nowrap">{{x.countryCode}}</td>
+                        <td class="nowrap">
+                            <label class="checkbox-entry">
+                                <input ng-model="x.sendToPrint" type="checkbox" /> <span class="check"></span>
+                            </label>
+                        </td>
+                        <td ng-if="config.debug"><a href="" class="btn btn-default" ng-click="remove(x)"><i class="fa fa-trash-o text-danger"></i></a></td>
+                    </tr>
+                </table>
+
+                <!--orderOptions:
+                <pre>{{orderOptions}}</pre>-->
+
+                <!--<pre>{{d | json}}</pre>-->
+            </div>
+
+            <div ng-if="isdetails" style="border: solid 1px lightgray; padding: 20px">
+                <div class="text-right">
+                    <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to orders</a>
+                </div>
+                <label class="m10 lead">Order number: <span class="badge">{{o.number}}</span> <span class="badge">{{o.status.title}}</span></label>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Billing address</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>First Name</td>
+                                    <td><input ng-model="o.firstName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Last Name</td>
+                                    <td><input ng-model="o.lastName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company Name</td>
+                                    <td><input ng-model="o.companyName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><input ng-model="o.address" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Postal code</td>
+                                    <td><input ng-model="o.postalCode" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td><input ng-model="o.country" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Pin</td>
+                                    <td><input ng-model="o.pin" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                            <!--<pre>{{o | json}}</pre>-->
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Delivery address</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>First Name</td>
+                                    <td><input ng-model="o.deliveryFirstName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Last Name</td>
+                                    <td><input ng-model="o.deliveryLastName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company Name</td>
+                                    <td><input ng-model="o.deliveryCompanyName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><input ng-model="o.deliveryAddress" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Postal code</td>
+                                    <td><input ng-model="o.deliveryPostalCode" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td><input ng-model="o.deliveryCountry" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country code</td>
+                                    <td><input ng-model="o.countryCode" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                            <!--<pre>{{o | json}}</pre>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Contact</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>Phone</td>
+                                    <td><input ng-model="o.phone" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><input ng-model="o.email" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        Note
+                        <textarea ng-model="o.note" type="text" class="form-control"  rows="4" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td></td>
+                                    <td>code</td>
+                                    <td>title</td>
+                                </tr>
+                                <tr>
+                                    <td>Delivery type</td>
+                                    <td><input ng-model="o.deliveryType.code" type="text" class="form-control" /></td>
+                                    <td><input ng-model="o.deliveryType.title" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Payment method</td>
+                                    <td><input ng-model="o.paymentMethod.code" type="text" class="form-control" /></td>
+                                    <td><input ng-model="o.paymentMethod.title" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="checkbox-entry">
+                            <input ng-model="o.sendToPrint" type="checkbox" /> <span class="check"></span>Send to print
+                        </label>
+                        <div class="lead text-center well">
+                        <div class="large">Gross price: {{o.grossPrice}} kn</div>
+                        <div class="small">Net price: {{o.netPrice}} kn</div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 well">
+                        <label>Items</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th>sku</th>
+                                    <th>qty</th>
+                                    <th>color</th>
+                                    <th>size</th>
+                                    <th><a href="" class="btn btn-warning" ng-click="checkStock()"><i class="fa fa-check"></i> Check stock</a></th>
+                                </tr>
+                                <tr ng-repeat="x in items track by $index">
+                                    <td class="nowrap">{{x.sku}}</td>
+                                    <td><input ng-model="x.qty" type="number" min="0" class="form-control" style="width:100px" /></td>
+                                    <td><input ng-model="x.color" class="form-control" /></td>
+                                    <td><input ng-model="x.size" class="form-control" /></td>
+                                    <td><label class="label label-{{x.isoderable=='Orderable'?'success':'danger'}} mt5">{{x.isoderable}}</label></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div ng-if="config.debug">
+                            <label>Stock request</label>
+                            <pre>{{stockRequest | json}}</pre>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="" class="btn btn-success m10" ng-click="sendOrder(o)"><i class="fa fa-paper-plane-o"></i> Send order</a>
+                        <label>Send order request</label>
+                        <pre>{{sendOrderRequest | json}}</pre>
+                    </div>
+                </div>
+                <div class="row well">
+                    <div class="col-sm-6">
+                        <label>Stock response</label>
+                        <pre class="alert alert-danger">{{stockResponse | json}}</pre>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Order response</label>
+                        <pre class="alert alert-danger">{{orderResponse | json}}</pre>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="users">
+        <div ng-controller="usersCtrl" class="container">
+            <h2>Users</h2>
+            <div ng-if="!isdetails" class="table-responsive">
+                <table class="table table-condensed">
+                    <tr>
+                        <td></td>
+                        <!--<th>userId</th>-->
+                        <th>firstName</th>
+                        <th>lastName</th>
+                        <th>companyName</th>
+                        <td>discount</td>
+                    </tr>
+                    <tr ng-repeat="x in d">
+                        <td><a href="" class="btn btn-success" ng-click="showDetails(x, true)"><i class="fa fa-eye"></i> Details</a></td>
+                        <td>{{x.firstName}}</td>
+                        <td>{{x.lastName}}</td>
+                        <td>{{x.companyName}}</td>
+                        <td>{{x.discount.description}} ({{x.discount.title}})</td>
+                    </tr>
+                </table>
+                <!--<pre>{{d | json}}</pre>-->
+            </div>
+
+            <div ng-if="isdetails" style="border: solid 1px lightgray; padding: 20px">
+                <div class="text-right">
+                    <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to users</a>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Billing address</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>First Name</td>
+                                    <td><input ng-model="u.firstName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Last Name</td>
+                                    <td><input ng-model="u.lastName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company Name</td>
+                                    <td><input ng-model="u.companyName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><input ng-model="u.address" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Postal code</td>
+                                    <td><input ng-model="u.postalCode" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td><input ng-model="u.country.Name" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Pin</td>
+                                    <td><input ng-model="u.pin" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Delivery address</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>First Name</td>
+                                    <td><input ng-model="u.deliveryFirstName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Last Name</td>
+                                    <td><input ng-model="u.deliveryLastName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company Name</td>
+                                    <td><input ng-model="u.deliveryCompanyName" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><input ng-model="u.deliveryAddress" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Postal code</td>
+                                    <td><input ng-model="u.deliveryPostalCode" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td><input ng-model="u.deliveryCountry.Name" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Country code</td>
+                                    <td><input ng-model="u.deliveryCountry.Code" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Contact</label>
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>Phone</td>
+                                    <td><input ng-model="u.phone" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><input ng-model="u.email" type="text" class="form-control" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Discount</label>
+                        <label>{{u.discount.description}} ({{u.discount.title}})</label>
+                        <div>
+                            <select ng-model="u.discount" ng-options="x.description for x in orderOptions.discountcoeff" class="form-control"></select>
+                        </div>
+                        <div class="text-right">
+                            <button class="btn btn-success mt5" ng-click="update(u)"><i class="fa fa-floppy-o"></i> Spremi</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--<pre>{{u | json}}</pre>-->
+            </div>
+
+            <!--<pre>{{orderOptions | json}}</pre>-->
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="products">
+        <div ng-controller="productsCtrl" class="container">
+            <h2>Products</h2>
+            <a href="utt.html" target="_blank" class="btn btn-success">Update Products (UTT)</a>
+            <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
+            <!--<pre>{{d}}</pre>-->
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="featured">
+        <div ng-controller="featuredCtrl" class="container">
+            <h2>Featured Products</h2>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="row" style="margin:2px 0px 0px 0px">
+                        <label class="col-sm-3">Style</label>
+                        <div class="col-sm-9">
+                            <input ng-model="d.product.style" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row" style="margin:2px 0px 0px 0px">
+                        <label class="col-sm-3">Type</label>
+                        <div class="col-sm-9">
+                            <select ng-model="d.product.type" class="form-control">
+                                <option value={{x}} ng-repeat="x in d.types">{{x.title}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin:5px 0px 0px 0px">
+                        <label class="col-sm-3">Order</label>
+                        <div class="col-sm-9">
+                            <input ng-model="d.product.roworder" type="number" min="0" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row" style="margin:5px 0px 0px 0px">
+                        <div class="col-sm-12">
+                            <button ng-click="save(d.product)" class="btn btn-primary pull-right"><i class="fa fa-floppy-o"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!--<pre>{{p}}</pre>-->
+
+            <div class="table-responsive" style="margin:10px 0px 0px 0px">
+                <table class="table table-condensed">
+                    <tr>
+                        <th>image</th>
+                        <th>style</th>
+                        <th>title</th>
+                        <th>brand</th>
+                        <th>type</th>
+                        <th>order</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="x in products">
+                        <td style="width:120px"><img src="{{config.imgurl}}{{x.imageurl}}" class="img-responsive" alt="" /></td>
+                        <td>{{x.style}}</td>
+                        <td>{{x.shortdesc_en}}</td>
+                        <td>{{x.brand}}</td>
+                        <td>{{x.type.title}}</td>
+                        <td>{{x.roworder}}</td>
+                        <td><button class="btn btn-default" ng-click="remove(x)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--<pre>{{d}}</pre>
+
+            <pre>{{products}}</pre>-->
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="pricecoeff">
+        <div ng-controller="coeffCtrl" class="container">
+            <h2>Price Coefficient</h2>
+            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            <div class="row" style="margin:5px 0px 0px 0px">
+                <label class="col-sm-2">VAT:</label>
+                <div class="col-sm-2">
+                    <input ng-model="d.vat" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="row" style="margin:5px 0px 0px 0px">
+                <label class="col-sm-2">EURO RATE:</label>
+                <div class="col-sm-2">
+                    <input ng-model="d.eurorate" type="text" class="form-control" />
+                </div>
+            </div>
+            <h4>Category</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <th>Code</th>
+                        <th>Coeff</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr ng-repeat="x in d.category">
+                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            <h4>Brand</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <th>Code</th>
+                        <th>Coeff</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr ng-repeat="x in d.brand">
+                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            <h4>Style</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                    <tr>
+                        <th>Code</th>
+                        <th>Coeff</th>
+                        <th>Value</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="x in d.style">
+                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                        <td><button class="btn btn-default" ng-click="remove(x)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                    </tr>
+                </table>
+                <button class="btn btn-warning" ng-click="add()">+</button>
+            </div>
+            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+
+           <!--<pre>{{d | json}}</pre>-->
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="orderoptions">
+        <div ng-controller="orderOptionsCtrl" class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Delivery type</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Title</th>
+                            </tr>
+                            <tr ng-repeat="x in d.deliverytype">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d.deliverytype, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td style="width:70px"><input ng-model="x.code" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.title" type="text" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d.deliverytype)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Payment method</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Title</th>
+                            </tr>
+                            <tr ng-repeat="x in d.paymentmethod">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d.paymentmethod, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td style="width:70px"><input ng-model="x.code" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.title" type="text" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d.paymentmethod)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Order status</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Title</th>
+                            </tr>
+                            <tr ng-repeat="x in d.orderstatus">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d.orderstatus, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td style="width:70px"><input ng-model="x.code" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.title" type="text" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d.orderstatus)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Bank</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Bank</th>
+                                <th>Link</th>
+                            </tr>
+                            <tr ng-repeat="x in d.bank">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d.bank, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td style="width:70px"><input ng-model="x.code" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.title" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.link" type="text" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d.bank)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>Discount coefficient</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Coeff</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th colspan="2">Img</th>
+                            </tr>
+                            <tr ng-repeat="x in d.discountcoeff">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d.discountcoeff, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td style="width:70px"><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.title" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.description" type="text" class="form-control" /></td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">../assets/img/various/</span>
+                                        <input ng-model="x.img" type="text" class="form-control">
+                                    </div>
+                                </td>
+                                <td><img ng-if="x.img" src="../assets/img/various/{{x.img}}" style="height:100px" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d.discountcoeff)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+          
+            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+ 
+            <!--<pre>{{d}}</pre>-->
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="categories">
+        <div ng-controller="categoriesCtrl" class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h4>Categories</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th>Code</th>
+                                <th>order</th>
+                            </tr>
+                            <tr ng-repeat="x in d">
+                                <td>
+                                    <label class="checkbox-entry">
+                                        <input ng-model="x.isselected" type="checkbox" /> <span class="check"></span>{{x.code}}
+                                    </label>
+                                </td>
+                                <td style="width:100px"><input ng-model="x.order" type="number" min="0" max="100" class="form-control" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+                </div>
+            </div>
+
+            <!--<pre>{{d}}</pre>-->
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="countries">
+        <div ng-controller="countriesCtrl" class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h4>Countries</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>Code</th>
+                                <th>Name</th>
+                            </tr>
+                            <tr ng-repeat="x in d">
+                                <td style="width:30px"><button class="btn btn-default" ng-click="remove(d, $index)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                                <td><input ng-model="x.Code" type="text" class="form-control" /></td>
+                                <td><input ng-model="x.Name" type="text" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-warning" ng-click="add(d)"><i class="fa fa-plus"></i></button></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+                </div>
+            </div>
+
+            <!--<pre>{{d}}</pre>-->
+
+        </div>
+    </script>
+
+    <script src="../assets/js/admin.js"></script>
+
+</body>
+</html>
+

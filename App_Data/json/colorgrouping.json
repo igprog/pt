@@ -1,0 +1,662 @@
+﻿[
+  {
+    "colorgroup_id": "6",
+    "colorgroupname": "Antique Sapphire",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "12",
+    "colorgroupname": "Blue Dusk",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "15",
+    "colorgroupname": "Carolina Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "96",
+    "colorgroupname": "Cobalt",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "138",
+    "colorgroupname": "Heather Indigo",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "31",
+    "colorgroupname": "Heather Navy",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "34",
+    "colorgroupname": "Heather Royal",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "35",
+    "colorgroupname": "Heather Sapphire",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "122",
+    "colorgroupname": "Heather Sport Dark Navy",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "120",
+    "colorgroupname": "Heather Sport Royal",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "39",
+    "colorgroupname": "Indigo Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "40",
+    "colorgroupname": "Iris",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "139",
+    "colorgroupname": "Lagoon Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "45",
+    "colorgroupname": "Light Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "51",
+    "colorgroupname": "Metro Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "98",
+    "colorgroupname": "Midnight",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "55",
+    "colorgroupname": "Navy",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "66",
+    "colorgroupname": "Royal",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "72",
+    "colorgroupname": "Sapphire",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "74",
+    "colorgroupname": "Sky",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "135",
+    "colorgroupname": "Sport Dark Navy",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "130",
+    "colorgroupname": "Sport Light Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "127",
+    "colorgroupname": "Sport Royal",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "77",
+    "colorgroupname": "Stone Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "117",
+    "colorgroupname": "Tropical Blue",
+    "colorfamily_en": "Blue",
+    "colorfamily_hu": "Kék"
+  },
+  {
+    "colorgroup_id": "18",
+    "colorgroupname": "Chestnut",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "20",
+    "colorgroupname": "Dark Chocolate",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "54",
+    "colorgroupname": "Natural",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "57",
+    "colorgroupname": "Old Gold",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "67",
+    "colorgroupname": "Russet",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "71",
+    "colorgroupname": "Sand",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "80",
+    "colorgroupname": "Tan",
+    "colorfamily_en": "Brown",
+    "colorfamily_hu": "Barna"
+  },
+  {
+    "colorgroup_id": "7",
+    "colorgroupname": "Ash Grey",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "16",
+    "colorgroupname": "Charcoal",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "21",
+    "colorgroupname": "Dark Heather",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "112",
+    "colorgroupname": "Graphite Heather",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "38",
+    "colorgroupname": "Ice Grey",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "76",
+    "colorgroupname": "Sport Grey",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "84",
+    "colorgroupname": "Tweed",
+    "colorfamily_en": "Grey",
+    "colorfamily_hu": "Szürke"
+  },
+  {
+    "colorgroup_id": "3",
+    "colorgroupname": "Antique Irish Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "4",
+    "colorgroupname": "Antique Jade Dome",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "13",
+    "colorgroupname": "Camouflage",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "116",
+    "colorgroupname": "Electric Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "22",
+    "colorgroupname": "Forest Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "28",
+    "colorgroupname": "Heather Irish Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "30",
+    "colorgroupname": "Heather Military Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "121",
+    "colorgroupname": "Heather Sport Dark Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "41",
+    "colorgroupname": "Irish Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "42",
+    "colorgroupname": "Jade Dome",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "43",
+    "colorgroupname": "Kelly Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "44",
+    "colorgroupname": "Kiwi",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "48",
+    "colorgroupname": "Lime",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "50",
+    "colorgroupname": "Meadow",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "52",
+    "colorgroupname": "Military Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "91",
+    "colorgroupname": "Mint Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "53",
+    "colorgroupname": "Moss",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "58",
+    "colorgroupname": "Olive",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "62",
+    "colorgroupname": "Pistachio",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "63",
+    "colorgroupname": "Prairie Dust",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "132",
+    "colorgroupname": "Sport Dark Green",
+    "colorfamily_en": "Green",
+    "colorfamily_hu": "Zöld"
+  },
+  {
+    "colorgroup_id": "5",
+    "colorgroupname": "Antique Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "32",
+    "colorgroupname": "Heather Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "125",
+    "colorgroupname": "Heather Sport Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "59",
+    "colorgroupname": "Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "69",
+    "colorgroupname": "Safety Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "126",
+    "colorgroupname": "Sport Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "79",
+    "colorgroupname": "Sunset",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "81",
+    "colorgroupname": "Tangerine",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "82",
+    "colorgroupname": "Tennessee Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "83",
+    "colorgroupname": "Texas Orange",
+    "colorfamily_en": "Orange",
+    "colorfamily_hu": "Narancssárga"
+  },
+  {
+    "colorgroup_id": "2",
+    "colorgroupname": "Antique Heliconia",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "9",
+    "colorgroupname": "Azalea",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "113",
+    "colorgroupname": "Coral Silk",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "36",
+    "colorgroupname": "Heliconia",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "46",
+    "colorgroupname": "Light Pink",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "70",
+    "colorgroupname": "Safety Pink",
+    "colorfamily_en": "Pink",
+    "colorfamily_hu": "Rózsaszín"
+  },
+  {
+    "colorgroup_id": "115",
+    "colorgroupname": "Berry",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "11",
+    "colorgroupname": "Blackberry",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "118",
+    "colorgroupname": "Heather Aubergine",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "33",
+    "colorgroupname": "Heather Purple",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "119",
+    "colorgroupname": "Heather Radiant Orchid",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "123",
+    "colorgroupname": "Heather Sport Purple",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "47",
+    "colorgroupname": "Lilac",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "60",
+    "colorgroupname": "Orchid",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "64",
+    "colorgroupname": "Purple",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "128",
+    "colorgroupname": "Sport Purple",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "86",
+    "colorgroupname": "Violet",
+    "colorfamily_en": "Purple",
+    "colorfamily_hu": "Lila"
+  },
+  {
+    "colorgroup_id": "1",
+    "colorgroupname": "Antique Cherry Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "14",
+    "colorgroupname": "Cardinal Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "17",
+    "colorgroupname": "Cherry Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "23",
+    "colorgroupname": "Garnet",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "26",
+    "colorgroupname": "Heather Cardinal",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "140",
+    "colorgroupname": "Heather Maroon",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "114",
+    "colorgroupname": "Heather Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "124",
+    "colorgroupname": "Heather Sport Dark Maroon",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "137",
+    "colorgroupname": "Heather Sport Scarlet Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "49",
+    "colorgroupname": "Maroon",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "65",
+    "colorgroupname": "Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "134",
+    "colorgroupname": "Sport Dark Maroon",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "133",
+    "colorgroupname": "Sport Scarlet Red",
+    "colorfamily_en": "Red",
+    "colorfamily_hu": "Piros"
+  },
+  {
+    "colorgroup_id": "87",
+    "colorgroupname": "White",
+    "colorfamily_en": "White",
+    "colorfamily_hu": "Fehér"
+  },
+  {
+    "colorgroup_id": "111",
+    "colorgroupname": "Cornsilk",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "19",
+    "colorgroupname": "Daisy",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "24",
+    "colorgroupname": "Gold",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "68",
+    "colorgroupname": "Safety Green",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "131",
+    "colorgroupname": "Sport Athletic Gold",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "85",
+    "colorgroupname": "Vegas Gold",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "88",
+    "colorgroupname": "Yellow Haze",
+    "colorfamily_en": "Yellow",
+    "colorfamily_hu": "Sárga"
+  },
+  {
+    "colorgroup_id": "10",
+    "colorgroupname": "Black",
+    "colorfamily_en": "Black",
+    "colorfamily_hu": "Fekete"
+  },
+  {
+    "colorgroup_id": "129",
+    "colorgroupname": "Heather Sport Black",
+    "colorfamily_en": "Black",
+    "colorfamily_hu": "Fekete"
+  }
+]

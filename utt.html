@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="../assets/js/vendor/angular.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>-->
+</head>
+<body ng-app="utt" ng-controller="uttCtrl">
+    <div>
+        {{msg}}
+    </div>
+    <script>
+        var app = angular.module('utt', []);
+        app.controller('uttCtrl', ['$scope', '$http', function ($scope, $http) {
+            var method = location.search.substring(1) == 'stock' ? 'UpdateStockUtt' : 'CreateDataBaseUtt';
+            var load = function () {
+                $scope.msg = 'update in progress...'
+                $http({
+                    url: 'Products.asmx/' + method,
+                    method: 'POST',
+                    data: { }
+                })
+               .then(function (response) {
+                   $scope.msg = response.data.d;
+               },
+               function (response) {
+                   $scope.msg = response.data.d;
+               });
+            };
+            load();
+        }]);
+    </script>
+</body>
+</html>

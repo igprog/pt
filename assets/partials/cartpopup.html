@@ -1,0 +1,31 @@
+﻿<div class="cart-box popup" ng-controller="productCtrl">
+    <div class="popup-container">
+
+        <!--<button class="button style-4" ng-click="clearAll()">{{'celar all' | translate}}</button>-->
+
+        <div class="cart-entry" ng-repeat="x in cart track by $index">
+            <a class="image"><img src="{{config.imgurl}}{{x[0].modelimageurl}}" alt="" /></a>
+            <div class="content">
+                <a class="title" href="#"><span class="badge">{{x[0].sku}}</span>{{(x[0].shortdesc_en | translate).replace('amp;', '')}}</a>
+                <!--<div class="quantity"><span class="text-uppercase">{{'quantity' | translate}}</span>: {{x.quantity}}</div>-->
+                <!--<div class="price"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{x.price.net*config.currency.course | number:2}}</div>-->
+            </div>
+            <div class="button-x" ng-click="remove(cart, $index)"><i class="fa fa-close"></i></div>
+        </div>
+        <div class="summary">
+            <div class="subtotal"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(x)  * config.currency.course) | number:2}}</div>
+            <div class="grandtotal">Grand Total (TODO) <span>$1029,79</span></div>
+        </div>
+        <div class="cart-buttons">
+            <div class="column">
+                <a href="cart.html" class="button style-3">view cart</a>
+                <div class="clear"></div>
+            </div>
+            <div class="column">
+                <a href="checkout.html" class="button style-4">checkout</a>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>

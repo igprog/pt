@@ -1,0 +1,93 @@
+﻿<div class="content-push" ng-controller="userCtrl">
+
+    <div class="breadcrumb-box">
+        <a href="index.html">{{'home' | translate}}</a>
+        <a href="login.html">{{'login form' | translate}}</a>
+    </div>
+
+    <div class="information-blocks" style="min-height:400px">
+
+        <div ng-if="u.userId && showSuccessLoginMsg">
+
+            <div class="{{loginMsgClass}}">
+                <div class="message-icon"><i class="fa fa-check"></i></div>
+                <div class="message-text">{{successLoginMsg}}</div>
+            </div>
+
+            <div class="row p10">
+                <div class="col-sm-3">
+                    <a href="shop.html" class="btn btn-primary btn-block"><i class="fa fa-shopping-cart"></i> {{'start shopping' | translate}}</a>
+                    <a href="user.html" class="btn btn-default btn-block"><i class="fa fa-user"></i> {{'user pages' | translate}}</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div ng-hide="showSuccessLoginMsg" class="row">
+            <div class="col-sm-6 information-entry">
+                <div class="login-box">
+                    <div class="article-container style-1">
+                        <h3>{{'registered customers' | translate}}</h3>
+                    </div>
+                    <ng-include src="'loginTpl'"></ng-include>
+                </div>
+            </div>
+            <div class="col-sm-6 information-entry">
+                <div class="login-box">
+                    <div class="article-container style-1">
+                        <h3>{{'new customers' | translate}}</h3>
+                        <p>{{'register text' | translate}}</p>
+                    </div>
+                    <a href="signup.html" class="button style-12 btn-block" ng-click="initUser(false)">{{'register account' | translate}}</a>
+                    <a href="shop.html" class="button style-10 btn-block">{{'guest user' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="loginTpl">
+    <form>
+        <label>{{'email' | translate}}</label>
+        <input ng-model="email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
+        <label>{{'password' | translate}}</label>
+        <input ng-model="password" type="password" value="" placeholder="Enter Password" class="simple-field">
+        <div class="button style-10">{{'login' | translate}}<input type="submit" value="" ng-click="login(email, password, false)"></div>
+        <a ng-if="!forgotPass" class="forgot-password" href="#" ng-click="showForgotPassword()">{{'forgot password' | translate}}?</a>
+        <div ng-if="forgotPass">
+            <label>{{'email' | translate}}</label>
+            <input ng-model="u.email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
+            <a class="button style-10" href="#" ng-click="forgotPassword(u)">Send Pasword</a>
+        </div>
+    </form>
+    <div ng-if="showLoginMsg" class="alert alert-{{loginMsgClass}}">
+        <div class="message-icon"><i class="fa fa-times"></i></div>
+        <div class="message-text">{{loginMsg}}</div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="signupTpl">
+    <div class="row">
+        <div class="col-md-12 information-entry">
+            <div class="article-container style-1">
+                <form>
+                    <label>First Name</label>
+                    <input ng-model="u.firstName" type="text" value="" placeholder="Enter First Name" class="simple-field">
+                    <label>Last Name</label>
+                    <input ng-model="u.lastName" type="text" value="" placeholder="Enter Last Name" class="simple-field">
+                    <label>Email Address</label>
+                    <input ng-model="u.email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
+                    <label>Password</label>
+                    <input ng-model="u.password" type="password" value="" placeholder="Enter Password" class="simple-field">
+                    <div class="button style-10">Register<input type="submit" value="" ng-click="signup(u)"></div>
+                </form>
+                <div ng-if="showSignupMsg" class="alert alert-{{signupMsgClass}}" style="margin-top:20px">
+                    {{signupMsg}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</script>

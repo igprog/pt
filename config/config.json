@@ -1,0 +1,50 @@
+﻿{
+  "backend": "",
+  "appname": "promo-tekstil.com",
+  "debug": true,
+  "iban": "",
+  "swift": "",
+  "bank": "",
+  "company": "Lateralus j.d.o.o.",
+  "address": "",
+  "oib": 1111111,
+  "email": "igprog@yahoo.com",
+  "emailcc": [ "jardula@yahoo.com", "igprog@yahoo.com" ],
+  "phone": "+385 91 644 0201",
+  "apiurl": "https://www.utteam.com/api/dataexport/b102f37bc6e73a7d59e12828a92f26f3",
+  "imgurl": "./assets/img/products",
+  "imgurlutt": "https://utteam.com/utt_img/product_images/1280",
+  "apikey": "b102f37bc6e73a7d59e12828a92f26f3",
+  "language": {
+    "code": "hr",
+    "title": "hrvatski"
+  },
+  "languages": [
+    {
+      "code": "hr",
+      "title": "hrvatski"
+    },
+    {
+      "code": "en",
+      "title": "english"
+    }
+  ],
+  "currency": {
+    "code": "hrk",
+    "symbol": "kn",
+    "course": 7.5
+  },
+  "currencies": [
+    {
+      "code": "hrk",
+      "symbol": "kn",
+      "course": 7.5
+    },
+    {
+      "code": "eur",
+      "symbol": "€",
+      "course": 1
+    }
+  ],
+  "prodctstoshow": 16
+}

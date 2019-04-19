@@ -1,0 +1,55 @@
+﻿<div class="information-blocks">
+    <div class="tabs-container">
+        <div class="visible-xs">
+            <h2 class="cursor lead" ng-click="showFeatured()">{{featuredType.title | translate}} <i class="fa fa-caret-down"></i></h2>
+            <div ng-if="isShowFeatured" class="cursor" style="border:solid 1px lightgray">
+                <label class="cursor p10 {{featuredType.code==x.code?'bg-primary text-white':''}}" ng-repeat="x in featuredTypes" ng-click="toggleFeatureType(x)">{{x.title | translate}}</label>
+                <label class="cursor p10 {{featuredType.code=='new'?'bg-primary text-white':''}}" ng-click="toggleNew('new', 'new products')">{{'new products' | translate}}</label>
+            </div>
+        </div>
+        <div class="swiper-tabs tabs-switch">
+            <!--<div class="title">*{{featuredType.title | translate}}</div>-->
+            <div class="list">
+                <a class="block-title {{featuredType.code==x.code?'active':''}}" ng-repeat="x in featuredTypes" ng-click="toggleFeatureType(x)">{{x.title | translate}}</a>
+                <a class="block-title {{featuredType.code=='new'?'active':''}}" ng-click="toggleNew('new', 'new products')">{{'new products' | translate}}</a>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div>
+            <div class="tabs-entry">
+                <div class="products-swiper">
+                    <div class="swiper-container" data-autoplay="0" data-loop="0" data-speed="500" data-center="0" data-slides-per-view="responsive" data-xs-slides="2" data-int-slides="2" data-sm-slides="3" data-md-slides="5" data-lg-slides="6" data-add-slides="6">
+                        <div class="swiper-wrapper">
+                            <div ng-if="featuredType.code==x.type.code" class="swiper-slide" ng-repeat="x in featured" ng-click="href('product.html?style:'+x.style)">
+                                <div class="paddings-container" style="cursor:pointer">
+                                    <div class="product-slide-entry">
+                                        <div class="product-image">
+                                            <img src="{{config.imgurl}}{{x.imageurl}}" alt="" />
+                                        </div>
+                                        <a class="tag" href="#">{{x.style}}</a>
+                                        <a class="tag" href="#">{{x.brand}}</a>
+                                        <a class="title" href="#">{{(x.shortdesc_en | translate).replace('amp;', '')}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="featuredType.code=='new'" ng-repeat="x in newProducts | limitTo: 4" class="swiper-slide" ng-click="href('product.html?style:'+x.style)">
+                                <div class="paddings-container" style="cursor:pointer">
+                                    <div class="product-slide-entry">
+                                        <div class="product-image">
+                                            <img src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
+                                        </div>
+                                        <a class="tag" href="#">{{x.style}}</a>
+                                        <a class="tag" href="#">{{x.brand}}</a>
+                                        <a class="title" href="#">{{(x.shortdesc_en | translate).replace('amp;', '')}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
