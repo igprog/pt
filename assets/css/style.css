@@ -1482,7 +1482,7 @@ body.style-10 .product-slide-entry .subtitle:hover{color: #ca1515;}
 .product-thumbnails-swiper .swiper-slide{cursor: pointer;}
 .product-thumbnails-swiper .swiper-slide.selected .paddings-container{opacity: 0.5;}
 /*breadcrumb*/
-.breadcrumb-box{font-size: 0; margin-bottom: 25px;}
+.breadcrumb-box{font-size: 0; margin-bottom: 10px;}
 .breadcrumb-box a{display: inline-block; font-size: 13px; color: #696969; line-height: 16px; margin-right: 7px; padding: 7px 0;}
 .breadcrumb-box a:after{content: "\f105"; font-family: FontAwesome; display: inline-block; margin-left: 7px;}
 .breadcrumb-box a:last-child:after{display: none;}
@@ -1935,7 +1935,7 @@ transform: translateX(-50%); position: relative;}
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 /* 24 - SHOP */
 /*-------------------------------------------------------------------------------------------------------------------------------*/
-.categories-border-wrapper{border: 2px #0d73a3 solid; padding: 30px 20px 25px 20px;}
+.categories-border-wrapper{border: 1px #0d73a3 solid; padding: 30px 20px 25px 20px;}
 .categories-border-wrapper .accordeon-title{text-transform: none;}
 /*jQuery UI Styles */
 .ui-slider{position: relative; height: 2px; background: #d9d9d9; margin-right: 8px; margin-bottom: 18px;}

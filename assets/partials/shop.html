@@ -7,7 +7,6 @@
 
     <div class="information-blocks" style="margin:0">
         <div class="row">
-            <!--<div class="col-md-3 col-md-pull-9 col-sm-4 col-sm-pull-8 blog-sidebar">-->
                 <div class="col-md-3 col-sm-4 blog-sidebar">
                     <div class="information-blocks categories-border-wrapper" style="margin:0">
                         <form>
@@ -18,9 +17,8 @@
                                 </span>
                             </div>
                         </form>
-
                         <div class="visible-xs">
-                                <a href="" ng-click="showFilters()">{{'filters' | translate}} <i class="fa fa-angle-{{displayFilters?'up':'down'}}" aria-hidden="true"></i></a>
+                            <a href="" ng-click="showFilters()">{{'filters' | translate}} <i class="fa fa-angle-{{displayFilters?'up':'down'}}" aria-hidden="true"></i></a>
                         </div>
                         <div class="{{displayFilters?'':'hidden-xs'}}">
                             <div ng-show="filters" class="information-blocks well" style="margin:0">
@@ -98,7 +96,6 @@
                     </div>
                 </div>
 
-            <!--<div class="col-md-9 col-md-push-3 col-sm-8 col-sm-push-4">-->
                 <div class="col-md-9 col-sm-8">
                     <div class="page-selector">
                         <div ng-if="d.products.length>0" class="pages-box">
@@ -152,12 +149,14 @@
 
                                 <div class="product-slide-entry shift-image">
                                     <a href="product.html?style:{{x.style}}">
-                                        <div class="product-image">
-                                            <img ng-if="x.packshotimageurl==null || x.packshotimageurl.length<1" src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
-                                            <img ng-if="x.packshotimageurl==null || x.packshotimageurl.length<1" src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
-                                            <img ng-if="x.packshotimageurl.length>0" src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
-                                            <img ng-if="x.packshotimageurl.length==1" src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
-                                            <img ng-if="x.packshotimageurl.length>1" src="{{config.imgurl}}{{x.packshotimageurl[1]}}" alt="" />
+                                        <div class="product-image" >
+                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
+                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
+                                            <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1" >
+                                                <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
+                                                <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
+                                                <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{config.imgurl}}{{x.packshotimageurl[1]}}" alt="" />
+                                            </div>
                                         </div>
                                     </a>
                                     <a href="product.html?style:{{x.style}}">

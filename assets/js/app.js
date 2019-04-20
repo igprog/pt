@@ -1,6 +1,6 @@
 ﻿/*!
 app.js
-(c) 2017 IG PROG, www.igprog.hr
+(c) 2017-2019 IG PROG, www.igprog.hr
 */
 angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
@@ -481,10 +481,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         })
        .then(function (response) {
            $scope.p = JSON.parse(response.data.d);
-         //  $scope.packshotimageurl = $scope.p.packshotimageurl;
            if ($scope.p.shortdesc_en != null) {
                $window.document.title = 'Promo-Tekstil - ' + $translate.instant($scope.p.shortdesc_en);
-               location.hash = '#/' + unescape($translate.instant($scope.p.shortdesc_en)).replace(/\s/g, "-");;
+               //location.hash = '#/' + unescape($translate.instant($scope.p.shortdesc_en)).replace(/\s/g, "-");
            }
 
            getStockGroupedByColor(style);
@@ -1399,7 +1398,18 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     getTotalPrice($rootScope.groupingCart);
 }])
 
-
-
+.directive('checkImage', function ($http) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            attrs.$observe('ngSrc', function (ngSrc) {
+                $http.get(ngSrc).success(function () {
+                }).error(function () {
+                    element.attr('src', './assets/img/default.png'); // set default image
+                });
+            });
+        }
+    };
+});
 
 ;

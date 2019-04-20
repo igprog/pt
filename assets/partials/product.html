@@ -6,9 +6,7 @@
     </div>
 
     <div class="information-blocks">
-
         <div class="row">
-
             <div class="col-sm-4 information-entry">
                 <div>
                     <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
@@ -16,30 +14,12 @@
                 </div>
                 <div style="display:flex">
                     <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                        <img src="{{config.imgurl}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        <img check-image ng-src="{{config.imgurl}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
                     </div>
                 </div>
             </div>
             <div class="col-sm-8">
                 <p style="font-size: 30px;">{{(p.shortdesc_en | translate).replace('amp;', '')}}</p>
-                <!--BACKUP ZA SVAKI SLUCAJ
-                    <div class="row">
-                    <div class="product-detail-box col-sm-6">
-                       <h2 class="product-title">{{(p.shortdesc_en | translate).replace('amp;', '')}}
-                        <h3 class="product-subtitle">{{p.gender_code | translate}}</h3>
-                        <h3 ng-if="p.outlet==1" class="product-subtitle">{{'product_is_on_sale' | translate}}
-                        <span ng-if="p.outlet==1" class="inline-label red ng-binding ng-scope">{{'product_is_on_sale' | translate}}</span>
-                        <span class="inline-label green">{{'warehouse_status' | translate}}</span>
-                        <span class="inline-label green">{{'delivery_status' | translate}}</span>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="information-blocks production-logo">
-                            <div class="">
-                                <div class=""><img src="./assets/img/brand_logo/{{p.brand_code}}.png" alt="" /></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <div class="row mt20">
                     <div class="col-sm-6">
                         <div class="product-detail-box">
@@ -59,10 +39,7 @@
                                     <div style="{{multipleColorStyle2(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>
                                 </div>
                             </div>
-
-
                         </div>
-                       
                     </div>
                     <div class="col-sm-6">
                         <div class="product-detail-box">
