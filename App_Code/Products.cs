@@ -49,6 +49,7 @@ public class Products : System.Web.Services.WebService {
         public string colorswatch { get; set; }
         public int outlet { get; set; }
         public string caseqty { get; set; }
+        public string supplier { get; set; }
 
     }
 
@@ -229,6 +230,42 @@ public class Products : System.Web.Services.WebService {
     #endregion Class
 
     #region WebMethods
+    [WebMethod]
+    public string TestExcel() {
+        ReadExcel re = new ReadExcel();
+        List<ReadExcel.ExcelData> data = re.getExcelFile();
+
+        var results = from p in data
+                     group p.val by p.row into g
+                     select new { Row = g.Key, Val = g.ToList() };
+
+        List<Product> xx = new List<Product>();
+
+        int i = 1;
+        Product x = new Product();
+        foreach (var d in data) {
+            if (d.row > 1) {
+
+                
+                // for (int i = 1; i<=23; i++) {
+                if (i == 1) { x.sku = d.val; }
+                    if (i == 2) { x.colorname = d.val; }
+                    if (i == 3) { x.size = d.val; }
+                    if (i == 4) { x.style = d.val; }
+                    if (i == 5) { x.brand = d.val; }
+                // }
+                i++;
+                if (i == 20) {
+                    xx.Add(x);
+                    x = new Product();
+                    i = 1;
+                }
+                
+            }
+        }
+        return JsonConvert.SerializeObject(xx, Formatting.Indented);
+    }
+
     [WebMethod]
     public string CreateDataBaseUtt() {
         Stopwatch stopwatch = new Stopwatch();
