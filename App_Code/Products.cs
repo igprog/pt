@@ -232,38 +232,98 @@ public class Products : System.Web.Services.WebService {
     #region WebMethods
     [WebMethod]
     public string TestExcel() {
-        ReadExcel re = new ReadExcel();
-        List<ReadExcel.ExcelData> data = re.getExcelFile();
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        double time = 0;
+        try {
+            ReadExcel re = new ReadExcel();
+            List<ReadExcel.ExcelData> data = re.getExcelFile();
 
-        var results = from p in data
-                     group p.val by p.row into g
-                     select new { Row = g.Key, Val = g.ToList() };
+            //var results = from p in data
+            //             group p.val by p.row into g
+            //             select new { Row = g.Key, Val = g.ToList() };
 
-        List<Product> xx = new List<Product>();
+            List<Product> xx = new List<Product>();
+            int i = 1;
+            string val = null;
+            Product x = new Product();
+            foreach (var d in data) {
+                if (d.row > 1) {
+                    val = d.val;
+                    if (string.IsNullOrEmpty(val)) {
+                        val = null;
+                    }
+                    if (i == 1 && val == null) {
+                        break;
+                    } else                 {
+                        if (i == 1) { x.sku = val; }
+                        if (i == 2) { x.colorname = val; }
+                        if (i == 3) { x.size = val; }
+                        if (i == 4) { x.style = val; }
+                        if (i == 5) { x.brand = val; }
+                        if (i == 6) { x.modelimageurl = val; }
+                        if (i == 7) { x.shortdesc_en = val; }
+                        if (i == 8) { x.longdesc_en = val; }
+                        if (i == 9) { x.gender_en = val; }
+                        if (i == 10) { x.category_en = val; }
+                        if (i == 11) { x.colorhex = val; }
+                        if (i == 12) { x.colorgroup_id = Convert.ToInt32(val); }
+                        if (i == 13) { x.isnew = Convert.ToInt32(val); }
+                        if (i == 14) { x.colorimageurl = val; }
+                        if (i == 15) { x.packshotimageurl = val; }
+                        if (i == 16) { x.weight = val; }
+                        if (i == 17) { x.colorswatch = val; }
+                        if (i == 18) { x.outlet = Convert.ToInt32(val); }
+                        if (i == 19) { x.caseqty = val; }
+                        if (i == 20) { x.supplier = val; }
 
-        int i = 1;
-        Product x = new Product();
-        foreach (var d in data) {
-            if (d.row > 1) {
-
-                
-                // for (int i = 1; i<=23; i++) {
-                if (i == 1) { x.sku = d.val; }
-                    if (i == 2) { x.colorname = d.val; }
-                    if (i == 3) { x.size = d.val; }
-                    if (i == 4) { x.style = d.val; }
-                    if (i == 5) { x.brand = d.val; }
-                // }
-                i++;
-                if (i == 20) {
-                    xx.Add(x);
-                    x = new Product();
-                    i = 1;
+                        if (i == 20) {
+                            xx.Add(x);
+                            x = new Product();
+                            i = 1;
+                        } else {
+                            i++;
+                        }
+                    }
                 }
-                
             }
+
+            // TODO update products.ddb
+            string sql = "";
+            //db.CreateDataBase(productDataBase, db.product);
+            using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                using (var command = new SQLiteCommand(connection)) {
+                    using (var transaction = connection.BeginTransaction()) {
+                        foreach (Product p in xx) {
+                            sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
+                                                , p.sku, p.colorname, p.size, p.style, p.brand.Replace("'", ""), p.modelimageurl, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", ""), p.gender_en.Replace("'", "")
+                                                , p.category_en.Replace("&", "and"), p.colorhex, p.colorgroup_id, p.isnew, p.colorimageurl, p.packshotimageurl
+                                                , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
+                                                , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier);
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+                        }
+
+                        foreach (Product p in xx) {
+                            sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                                                , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
+                                                , p.category_en.Replace("&", "and"), p.supplier);
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+                    }
+                }
+                connection.Close();
+            }
+            time = stopwatch.Elapsed.TotalSeconds;
+            return String.Format(@"{0} items updated successfully in: {1} seconds.", xx.Count(), time);
+        } catch(Exception e) {
+            return JsonConvert.SerializeObject(e.StackTrace, Formatting.Indented);
         }
-        return JsonConvert.SerializeObject(xx, Formatting.Indented);
     }
 
     [WebMethod]
@@ -283,6 +343,8 @@ public class Products : System.Web.Services.WebService {
             List<SizeSpecification> size = new List<SizeSpecification>();
             size = JsonConvert.DeserializeObject<List<SizeSpecification>>(GetDataUtt("https://utteam.com/api/dataexport/b102f37bc6e73a7d59e12828a92f26f3?action=sizespecs&format=json&variables=&fields=style,size,name_en,value"));
             uttTime = stopwatch.Elapsed.TotalSeconds;
+
+            //TOOD: delete data only if supplier is utt
 
             db.CreateDataBase(productDataBase, db.product);
             db.CreateDataBase(productDataBase, db.style);
@@ -334,8 +396,6 @@ public class Products : System.Web.Services.WebService {
 
                         //TODO category prices..
 
-
-
                         /*  foreach (ColorGroup cg in colorGroup) {
                               command.CommandText = @"INSERT INTO colorgroup VALUES 
                                           (@colorgroup_id, @colorgroupname, @colorfamily_en)";
@@ -359,7 +419,8 @@ public class Products : System.Web.Services.WebService {
                     }
                 }
                 connection.Close();
-            } return ("Update completed successfully. Get from UTT: " + uttTime + " seconds. Insert Into SQL: " + (stopwatch.Elapsed.TotalSeconds - uttTime) + " seconds.");
+            } return (String.Format(@"{0} items get from UTT in: {1} seconds. Insert Into products.ddb in {2} seconds.", products.Count(), uttTime, (stopwatch.Elapsed.TotalSeconds - uttTime)));
+            //return ("Update completed successfully. Get from UTT: " + uttTime + " seconds. Insert Into SQL: " + (stopwatch.Elapsed.TotalSeconds - uttTime) + " seconds.");
         } catch (Exception e) {
             uttTime = stopwatch.Elapsed.TotalSeconds;
             return String.Format("ERROR: {0} ({1} seconds)", e.Message, uttTime);
