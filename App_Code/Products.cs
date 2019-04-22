@@ -230,6 +230,95 @@ public class Products : System.Web.Services.WebService {
     #endregion Class
 
     #region WebMethods
+
+    [WebMethod]
+    public string ExportCsv(string file) {
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            double time = 0;
+            List<Product> xx = new List<Product>();
+            Product x = new Product();
+            // string path_ = @"C:\Users\Dragan\Documents\Igor\my\pt\files\products.csv";  //Path.GetFullPath(path)
+
+            //string filePath = System.IO.Path.GetFullPath("TestFile.txt");
+            //StreamReader sr = new StreamReader(filePath);
+
+            string path = Server.MapPath(string.Format("~/upload/{0}.csv", file)); // Path.GetFullPath(path);
+
+            using (var reader = new StreamReader(path)) {
+                while (!reader.EndOfStream) {
+                    var line = reader.ReadLine();
+                    var values = line.Split(';');
+                    if(!string.IsNullOrEmpty(values[0]) && values[0] != "sku") {
+                        x = new Product();
+                        x.sku = values[0];
+                        x.colorname = values[1];
+                        x.size = values[2];
+                        x.style = values[3];
+                        x.brand = values[4];
+                        x.modelimageurl = values[5];
+                        x.shortdesc_en = values[6];
+                        x.longdesc_en = values[7];
+                        x.gender_en = values[8];
+                        x.category_en = values[9];
+                        x.colorhex = values[10];
+                        x.colorgroup_id = Convert.ToInt32(values[11]);
+                        x.isnew = Convert.ToInt32(values[12]);
+                        x.colorimageurl = values[13];
+                        x.packshotimageurl = values[14];
+                        x.weight = values[15];
+                        x.colorswatch = values[16];
+                        x.outlet = Convert.ToInt32(values[17]);
+                        x.caseqty = values[18];
+                        x.supplier = values[19];
+                        xx.Add(x);
+                    }
+                }
+            }
+
+            string sql_delete = "";
+            string sql = "";
+            db.CreateDataBase(productDataBase, db.product);
+            db.CreateDataBase(productDataBase, db.translation);
+            using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                using (var command = new SQLiteCommand(connection)) {
+                    using (var transaction = connection.BeginTransaction()) {
+                        sql_delete = string.Format("DELETE FROM product WHERE supplier = '{0}';", xx[0].supplier);
+                        command.CommandText = sql_delete;
+                        foreach (Product p in xx) {
+                            sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
+                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
+                                                , p.sku, p.colorname, p.size, p.style, p.brand.Replace("'", ""), p.modelimageurl, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", ""), p.gender_en.Replace("'", "")
+                                                , p.category_en.Replace("&", "and"), p.colorhex, p.colorgroup_id, p.isnew, p.colorimageurl, p.packshotimageurl
+                                                , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
+                                                , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier);
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+                        }
+
+                        foreach (Product p in xx) {
+                            sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
+                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                                                , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
+                                                , p.category_en.Replace("&", "and"), p.supplier);
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+                    }
+                }
+                connection.Close();
+            }
+            time = stopwatch.Elapsed.TotalSeconds;
+            return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
+        } catch (Exception e) {
+            return e.Message;
+        }
+    }
+
+    /*
     [WebMethod]
     public string ExportExcel(string path) {
         Stopwatch stopwatch = new Stopwatch();
@@ -286,6 +375,7 @@ public class Products : System.Web.Services.WebService {
             string sql_delete = "";
             string sql = "";
             db.CreateDataBase(productDataBase, db.product);
+            db.CreateDataBase(productDataBase, db.translation);
             using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
                 using (var command = new SQLiteCommand(connection)) {
@@ -322,6 +412,7 @@ public class Products : System.Web.Services.WebService {
             return JsonConvert.SerializeObject(e.Message, Formatting.None);
         }
     }
+    */
 
     [WebMethod]
     public string CreateDataBaseUtt() {

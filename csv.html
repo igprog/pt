@@ -3,20 +3,20 @@
 <head>
     <script src="../assets/js/vendor/angular.min.js"></script>
 </head>
-<body ng-app="excel" ng-controller="excelCtrl">
+<body ng-app="csv" ng-controller="csvCtrl">
     <div>
         {{msg}}
     </div>
     <script>
-        var app = angular.module('excel', []);
-        app.controller('excelCtrl', ['$scope', '$http', function ($scope, $http) {
-            var path = location.search.substring(1);
+        var app = angular.module('csv', []);
+        app.controller('csvCtrl', ['$scope', '$http', function ($scope, $http) {
+            var file = location.search.substring(1);
             var load = function () {
                 $scope.msg = 'Update in progress...'
                 $http({
-                    url: 'Products.asmx/ExportExcel',
+                    url: 'Products.asmx/ExportCsv',
                     method: 'POST',
-                    data: { path: path }
+                    data: { file: file }
                 })
                .then(function (response) {
                    $scope.msg = response.data.d;

@@ -333,8 +333,26 @@ angular.module('app', [])
 
 .controller('productsCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
-    $scope.excelPath = null; // 'C:\\Users\\Dragan\\Documents\\Igor\\my\\pt\\files\\products.xlsx';
+    $scope.csvFileName = "products";
     $scope.tranResp = null;
+
+    $scope.upload = function () {
+        debugger;
+        var content = new FormData(document.getElementById("formUpload"));
+        $http({
+            url: 'UploadHandler.ashx',
+            method: 'POST',
+            headers: { 'Content-Type': undefined },
+            data: content,
+        }).then(function (response) {
+            if (response.data != 'OK') {
+                alert(response.data);
+            }
+        },
+       function (response) {
+           alert(response.data);
+       });
+    }
 
     $scope.translateProducts = function () {
             $http({

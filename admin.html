@@ -502,16 +502,29 @@
                 <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
             </fieldset>
             <fieldset class="fieldset-border">
-                <legend class="fieldset-border">Read Excel</legend>
-                <form id="excelForm">
-                    Path <em class="text-muted">(e.g. C:\files\products.xlsx)</em>:
+                <legend class="fieldset-border">Read CSV file</legend>
+
+
+                <form id="formUpload" ng-submit="upload()" enctype="multipart/form-data" method="post">
                     <div class="input-group">
-                        <input ng-model="excelPath" class="form-control" type="text" placeholder="Enter file path..." />
-                        <div class="input-group-btn">
-                            <a href="excel.html?{{excelPath}}" target="_blank" class="btn btn-success" form="excelForm" type="submit">Update Products (Excel)</a>
+                        <input ng-model="csvFileName" name="UploadedFile" id="UploadedFile" type="file" accept=".csv" class="form-control">
+                        <em class="text-danger">* use only csv format</em>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default text-capitalize"><i class="fa fa-upload"></i> upload</button>
                         </div>
                     </div>
                 </form>
+
+                <form id="csvForm">
+                    CSV File Name
+                    <div class="input-group">
+                        <input ng-model="csvFileName" class="form-control" type="text" placeholder="Enter file name..." />
+                        <div class="input-group-btn">
+                            <a href="csv.html?{{csvFileName}}" target="_blank" class="btn btn-success" form="csvForm" type="submit">Update Products (CSV)</a>
+                        </div>
+                    </div>
+                </form>
+
             </fieldset>
             <fieldset class="fieldset-border">
                 <legend class="fieldset-border">Translations</legend>
