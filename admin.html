@@ -59,21 +59,25 @@
     <div ng-include="tpl" style="padding-top:20px"></div>
 
     <script type="text/ng-template" id="login">
-        <div class="container">
-            <h3>Login</h3>
+        <div class="container" style="padding-bottom:20px">
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="input-group" style="margin:5px 0px 0px 0px">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input ng-model="user.username" type="text" class="form-control" name="email" placeholder="Email">
-                    </div>
-                    <div class="input-group" style="margin:5px 0px 0px 0px">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input ng-model="user.password" type="password" class="form-control" name="password" placeholder="Password">
-                    </div>
-                    <div>
-                        <button ng-click="login(user)" class="btn btn-primary pull-right" style="margin:5px 0px 0px 0px"><i class="fa fa-key"></i> Login</button>
-                    </div>
+                    <fieldset class="fieldset-border">
+                        <legend class="fieldset-border">Login</legend>
+                        <form id="loginform">
+                            <div class="input-group" style="margin:5px 0px 0px 0px">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input ng-model="user.username" type="text" class="form-control" name="email" placeholder="Email">
+                            </div>
+                            <div class="input-group" style="margin:5px 0px 0px 0px">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input ng-model="user.password" type="password" class="form-control" name="password" placeholder="Password">
+                            </div>
+                        </form>
+                        <div>
+                            <button type="submit" form="loginform" ng-click="login(user)" class="btn btn-default pull-right" style="margin:5px 0px 0px 0px"><i class="fa fa-key"></i> Login</button>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -492,11 +496,28 @@
     <script type="text/ng-template" id="products">
         <div ng-controller="productsCtrl" class="container">
             <h2>Products</h2>
-            <a href="utt.html" target="_blank" class="btn btn-success">Update Products (UTT)</a>
-            <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
-            <a href="" target="_blank" class="btn btn-primary" ng-click="translateProducts()">Translate Products (main.json => product.ddb)</a>
-            <span class="badge">{{tranResp}}</span>
-            <!--<pre>{{d}}</pre>-->
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">UTT</legend>
+                <a href="utt.html" target="_blank" class="btn btn-success">Update Products (UTT)</a>
+                <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
+            </fieldset>
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Read Excel</legend>
+                <form id="excelForm">
+                    Path <em class="text-muted">(e.g. C:\files\products.xlsx)</em>:
+                    <div class="input-group">
+                        <input ng-model="excelPath" class="form-control" type="text" placeholder="Enter file path..." />
+                        <div class="input-group-btn">
+                            <a href="excel.html?{{excelPath}}" target="_blank" class="btn btn-success" form="excelForm" type="submit">Update Products (Excel)</a>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Translations</legend>
+                <a href="" target="_blank" class="btn btn-primary" ng-click="translateProducts()">Translate Products (main.json => product.ddb)</a>
+                <span class="badge">{{tranResp}}</span>
+            </fieldset>
         </div>
 
     </script>

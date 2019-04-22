@@ -31,7 +31,6 @@ namespace Igprog {
         //TODO: supplier: "utt" | shortdesc_hr | longdesc_hr | category_hr | supplier
         public void Product(string path){
             string sql = @"
-                DROP TABLE IF EXISTS product;
                 CREATE TABLE IF NOT EXISTS product
                 (sku NVARCHAR(50) PRIMARY KEY,
                 colorname NVARCHAR(50),
@@ -56,6 +55,32 @@ namespace Igprog {
                 outlet NVARCHAR(50),
                 caseqty NVARCHAR(50),
                 supplier NVARCHAR(50))";
+            //string sql = @"
+            //    DROP TABLE IF EXISTS product;
+            //    CREATE TABLE IF NOT EXISTS product
+            //    (sku NVARCHAR(50) PRIMARY KEY,
+            //    colorname NVARCHAR(50),
+            //    size NVARCHAR(50),
+            //    style NVARCHAR(50),
+            //    brand NVARCHAR(50),
+            //    modelimageurl NVARCHAR(50),
+            //    shortdesc_en NVARCHAR(50),
+            //    longdesc_en NVARCHAR(200),
+            //    gender_en NVARCHAR(50),
+            //    category_en NVARCHAR(50),
+            //    colorhex NVARCHAR(50),
+            //    colorgroup_id NVARCHAR(50),
+            //    isnew NVARCHAR(50),
+            //    colorimageurl NVARCHAR(50),
+            //    packshotimageurl NVARCHAR(50),
+            //    category_code NVARCHAR(50),
+            //    brand_code NVARCHAR(50),
+            //    gender_code NVARCHAR(50),
+            //    weight NVARCHAR(50),
+            //    colorswatch NVARCHAR(50),
+            //    outlet NVARCHAR(50),
+            //    caseqty NVARCHAR(50),
+            //    supplier NVARCHAR(50))";
             CreateTable(path, sql);
         }
 

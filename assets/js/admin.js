@@ -333,22 +333,9 @@ angular.module('app', [])
 
 .controller('productsCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
-    //var load = function () {
-    //    $http({
-    //        url: 'Products.asmx/Load',
-    //        method: 'POST',
-    //        data: ''
-    //    })
-    // .then(function (response) {
-    //     $scope.d = JSON.parse(response.data.d);
-    // },
-    // function (response) {
-    //     alert(response.data.d);
-    // });
-    //}
-    //load();
-
+    $scope.excelPath = null; // 'C:\\Users\\Dragan\\Documents\\Igor\\my\\pt\\files\\products.xlsx';
     $scope.tranResp = null;
+
     $scope.translateProducts = function () {
             $http({
                 url: 'Products.asmx/TranslateProducts',
@@ -362,7 +349,6 @@ angular.module('app', [])
              alert(response.data.d);
          });
     }
-
 
 }])
 
