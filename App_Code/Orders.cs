@@ -156,7 +156,7 @@ public class Orders : System.Web.Services.WebService {
         //x.discount = 0;
         //x.totalWithDiscount = 0;
         x.price = new PriceTotal(); // 0;
-        return JsonConvert.SerializeObject(x, Formatting.Indented);
+        return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
     [WebMethod]
@@ -217,7 +217,7 @@ public class Orders : System.Web.Services.WebService {
                 x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
                 xx.Add(x);
             } connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -281,7 +281,7 @@ public class Orders : System.Web.Services.WebService {
                // x.total = x.totalWithDiscount + x.deliveryPrice;
                 xx.Add(x);
             } connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -389,7 +389,7 @@ public class Orders : System.Web.Services.WebService {
             m.SendOrder(x);
             */
             //return ("OK");
-            return JsonConvert.SerializeObject(order, Formatting.Indented);
+            return JsonConvert.SerializeObject(order, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -433,7 +433,7 @@ public class Orders : System.Web.Services.WebService {
             command.Parameters.Add(new SQLiteParameter("totalWithDiscount", order.price.total));
             command.ExecuteNonQuery();
             connection.Close();
-            return JsonConvert.SerializeObject(order, Formatting.Indented);
+            return JsonConvert.SerializeObject(order, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -453,12 +453,12 @@ public class Orders : System.Web.Services.WebService {
 
     [WebMethod]
     public string GetOrderOptionsJson() {
-        return JsonConvert.SerializeObject(GetOrderOptions(), Formatting.Indented);
+        return JsonConvert.SerializeObject(GetOrderOptions(), Formatting.None);
     }
 
     [WebMethod]
     public string SaveOrderOptions(OrderOption x) {
-        return WriteJsonFile(orderOptionsFile, JsonConvert.SerializeObject(x, Formatting.Indented));
+        return WriteJsonFile(orderOptionsFile, JsonConvert.SerializeObject(x, Formatting.None));
     }
 
     [WebMethod]
@@ -514,7 +514,7 @@ public class Orders : System.Web.Services.WebService {
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
             x.delivery = (x.gross * course) < 1000 ? Math.Round((35 / course), 2) : 0;
             x.total = x.netWithDiscountPlusVat + x.delivery;
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {
             return e.Message;
         }

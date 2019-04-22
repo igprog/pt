@@ -319,7 +319,7 @@ public class Products : System.Web.Services.WebService {
             time = stopwatch.Elapsed.TotalSeconds;
             return String.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
         } catch(Exception e) {
-            return JsonConvert.SerializeObject(e.Message, Formatting.Indented);
+            return JsonConvert.SerializeObject(e.Message, Formatting.None);
         }
     }
 
@@ -443,7 +443,7 @@ public class Products : System.Web.Services.WebService {
     public string GetCategories() {
         try {
             List<Category> x = GetDistinctCategories();
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {
             return null;
         }
@@ -453,7 +453,7 @@ public class Products : System.Web.Services.WebService {
     public string GetDistinctFilters(string category) {
         try {
             Distinct x = GetDistinct(category, null, null);
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {
             return null;
         }
@@ -525,7 +525,7 @@ public class Products : System.Web.Services.WebService {
                 }
                 connection.Close();
             }
-            return JsonConvert.SerializeObject(xxx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -616,7 +616,7 @@ public class Products : System.Web.Services.WebService {
                                                         {0}", groupQuery), connection);
             xxx.response.maxPrice = xx.Max(a => a.price_min.net);
             connection.Close();
-            return JsonConvert.SerializeObject(xxx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -832,7 +832,7 @@ public class Products : System.Web.Services.WebService {
                             , groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
             xxx.response.maxPrice = xx.Count > 0 ? xx.Max(a => a.price_min.net) : 0;
             connection.Close();
-            return JsonConvert.SerializeObject(xxx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -893,7 +893,7 @@ public class Products : System.Web.Services.WebService {
                 x.outlet = reader.GetValue(24) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(24));
             }
             connection.Close();
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -904,7 +904,7 @@ public class Products : System.Web.Services.WebService {
             connection.Open();
             List<Stock> x = GetStock(connection, style, limit, offset);
             connection.Close();
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -940,7 +940,7 @@ public class Products : System.Web.Services.WebService {
                     }
                 }
             }
-            return JsonConvert.SerializeObject("Update completed successfully", Formatting.Indented); ;
+            return JsonConvert.SerializeObject("Update completed successfully", Formatting.None); ;
         } catch (Exception e) { return e.Message; }
     }
 
@@ -1101,7 +1101,7 @@ public class Products : System.Web.Services.WebService {
             connection.Open();
             Object x = GetStockGroupedByColor(connection, style);
             connection.Close();
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 

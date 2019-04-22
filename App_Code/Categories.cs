@@ -31,7 +31,7 @@ public class Categories : System.Web.Services.WebService {
 
     [WebMethod]
     public string Save(List<SelectedCategories> x) {
-        return WriteJsonFile(categoriesFile, JsonConvert.SerializeObject(x, Formatting.Indented));
+        return WriteJsonFile(categoriesFile, JsonConvert.SerializeObject(x, Formatting.None));
     }
 
     public List<SelectedCategories> GetCategories() {

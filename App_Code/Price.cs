@@ -52,14 +52,14 @@ public class Price : System.Web.Services.WebService{
             x = JsonConvert.DeserializeObject<PriceCoeff>(GetJsonFile(filename));
         } else {
             x = InitPriceJson();
-            WriteJsonFile(priceCoeffFile, JsonConvert.SerializeObject(x, Formatting.Indented));
+            WriteJsonFile(priceCoeffFile, JsonConvert.SerializeObject(x, Formatting.None));
         }
-        return JsonConvert.SerializeObject(x, Formatting.Indented);
+        return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
     [WebMethod]
     public string Save(PriceCoeff x) {
-        return WriteJsonFile(priceCoeffFile, JsonConvert.SerializeObject(x, Formatting.Indented));
+        return WriteJsonFile(priceCoeffFile, JsonConvert.SerializeObject(x, Formatting.None));
     }
     #endregion WebMethods
 

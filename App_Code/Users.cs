@@ -92,7 +92,7 @@ public class Users : System.Web.Services.WebService {
         x.paymentMethod = null;
         x.discount = new Orders.DiscountCoeff();
 
-        return JsonConvert.SerializeObject(x, Formatting.Indented);
+        return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
     [WebMethod]
@@ -110,7 +110,7 @@ public class Users : System.Web.Services.WebService {
                 xx.Add(x);
             }
             connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -130,7 +130,7 @@ public class Users : System.Web.Services.WebService {
                 x = ReadData(reader, x);
             }
             connection.Close();
-            string json = JsonConvert.SerializeObject(x, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(x, Formatting.None);
             return json;
         } catch (Exception e) { return e.Message; }
     }
@@ -203,18 +203,18 @@ public class Users : System.Web.Services.WebService {
             if (x.userName == null) {
                 throw new Exception("there is no user registered with that email address");
             }
-            return JsonConvert.SerializeObject(x, Formatting.Indented);
+            return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
     [WebMethod]
     public string GetCountries() {
-        return JsonConvert.SerializeObject(GetCountriesJson(), Formatting.Indented);
+        return JsonConvert.SerializeObject(GetCountriesJson(), Formatting.None);
     }
 
     [WebMethod]
     public string SaveCountries(List<Country> x) {
-        return WriteJsonFile("countries", JsonConvert.SerializeObject(x, Formatting.Indented));
+        return WriteJsonFile("countries", JsonConvert.SerializeObject(x, Formatting.None));
     }
 
 

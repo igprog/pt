@@ -65,7 +65,7 @@ public class Featured : System.Web.Services.WebService {
         x.brand = "";
         xx.product = x;
         xx.types = initTypes();
-        return JsonConvert.SerializeObject(xx, Formatting.Indented);
+        return JsonConvert.SerializeObject(xx, Formatting.None);
     }
 
     [WebMethod]
@@ -95,7 +95,7 @@ public class Featured : System.Web.Services.WebService {
                 xx.Add(x);
             }
             connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -154,7 +154,7 @@ public class Featured : System.Web.Services.WebService {
                 xx.Add(x);
             }
             connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
@@ -176,7 +176,7 @@ public class Featured : System.Web.Services.WebService {
                 xx.Add(x);
             }
             connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 

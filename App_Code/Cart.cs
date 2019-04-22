@@ -35,7 +35,7 @@ public class Cart : System.Web.Services.WebService {
         NewCart x = new NewCart();
         x.style = null;
         x.data = new List<Products.Stock>();
-        return JsonConvert.SerializeObject(x, Formatting.Indented);
+        return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
     [WebMethod]
@@ -66,7 +66,7 @@ public class Cart : System.Web.Services.WebService {
                     xx.Add(x);
                 }
             }
-            return JsonConvert.SerializeObject(xx, Formatting.Indented);
+            return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) {
             return e.Message;
         }
