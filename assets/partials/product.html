@@ -149,7 +149,7 @@
             </table>
         </div>
 
-        <pre>{{priceSum(stockGroupedByColor) | json}}</pre>
+        <pre ng-if="config.debug">{{priceSum(stockGroupedByColor) | json}}</pre>
 
         <div class="cart-summary-box mt20">
             <!--<div class="sub-total">{{'total' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceSum(stockGroupedByColor).net * config.currency.course}}</div>

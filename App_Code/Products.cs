@@ -263,13 +263,13 @@ public class Products : System.Web.Services.WebService {
                         x.gender_en = values[8];
                         x.category_en = values[9];
                         x.colorhex = values[10];
-                        x.colorgroup_id = Convert.ToInt32(values[11]);
-                        x.isnew = Convert.ToInt32(values[12]);
+                        x.colorgroup_id = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[11]) : 0;
+                        x.isnew = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[12]): 0;
                         x.colorimageurl = values[13];
                         x.packshotimageurl = values[14];
                         x.weight = values[15];
                         x.colorswatch = values[16];
-                        x.outlet = Convert.ToInt32(values[17]);
+                        x.outlet = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[17]): 0;
                         x.caseqty = values[18];
                         x.supplier = values[19];
                         xx.Add(x);

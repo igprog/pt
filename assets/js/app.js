@@ -409,6 +409,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.setPage = function (x) {
+        window.scrollTo(0, 0);
         $scope.page = x;
         searchProducts($scope.show, $scope.category);
     }
