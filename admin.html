@@ -502,9 +502,7 @@
                 <a href="utt.html?stock" target="_blank" class="btn btn-danger">Update Stock (UTT)</a>
             </fieldset>
             <fieldset class="fieldset-border">
-                <legend class="fieldset-border">Read CSV file</legend>
-
-
+                <legend class="fieldset-border">Upload CSV file</legend>
                 <form id="formUpload" ng-submit="upload()" enctype="multipart/form-data" method="post">
                     <div class="input-group">
                         <input ng-model="csvFileName" name="UploadedFile" id="UploadedFile" type="file" accept=".csv" class="form-control">
@@ -514,17 +512,6 @@
                         </div>
                     </div>
                 </form>
-
-                <form id="csvForm">
-                    CSV File Name
-                    <div class="input-group">
-                        <input ng-model="csvFileName" class="form-control" type="text" placeholder="Enter file name..." />
-                        <div class="input-group-btn">
-                            <a href="csv.html?{{csvFileName}}" target="_blank" class="btn btn-success" form="csvForm" type="submit">Update Products (CSV)</a>
-                        </div>
-                    </div>
-                </form>
-
             </fieldset>
             <fieldset class="fieldset-border">
                 <legend class="fieldset-border">Translations</legend>
@@ -532,7 +519,6 @@
                 <span class="badge">{{tranResp}}</span>
             </fieldset>
         </div>
-
     </script>
 
     <script type="text/ng-template" id="featured">

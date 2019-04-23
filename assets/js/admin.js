@@ -331,13 +331,12 @@ angular.module('app', [])
 
 }])
 
-.controller('productsCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+.controller('productsCtrl', ['$scope', '$http', '$rootScope', '$window', function ($scope, $http, $rootScope, $window) {
 
     $scope.csvFileName = "products";
     $scope.tranResp = null;
 
     $scope.upload = function () {
-        debugger;
         var content = new FormData(document.getElementById("formUpload"));
         $http({
             url: 'UploadHandler.ashx',
@@ -347,6 +346,8 @@ angular.module('app', [])
         }).then(function (response) {
             if (response.data != 'OK') {
                 alert(response.data);
+            } else {
+                $window.location.href = 'csv.html?' + $scope.csvFileName;
             }
         },
        function (response) {
