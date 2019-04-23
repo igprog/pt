@@ -46,5 +46,6 @@
       "course": 1
     }
   ],
-  "prodctstoshow": 16
+  "prodctstoshow": 16,
+  "vatcoeff": 1.25  
 }

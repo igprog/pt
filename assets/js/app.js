@@ -13,7 +13,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $translatePartialLoaderProvider.addPart('main');
         $translateProvider.useSanitizeValueStrategy('escape');
 
-
         //--------------disable catche---------------------
         if (!$httpProvider.defaults.headers.get) {
             $httpProvider.defaults.headers.get = {};
@@ -22,7 +21,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
         $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
         //-------------------------------------------------
-
     }])
 
 .controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window) {
@@ -145,7 +143,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 }])
 
-.controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader) {
+.controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage) {
 
     var getConfig = function () {
         $http.get('./config/config.json')
@@ -175,7 +173,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     
     $scope.setCurrency = function (x) {
         $rootScope.config.currency = x;
-        $localStorage.config.currency = x;
+       // $localStorage.config.currency = x;  // TODO
     };
 
     /******* Test mail ***********
@@ -454,7 +452,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     };
     if (!angular.isDefined($sessionStorage.config)) { getConfig(); }
 
-
     $scope.stockGroupedByColor = [];
     $scope.loading = false;
     var getStockGroupedByColor = function (style) {
@@ -646,6 +643,25 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     //    return x.uttstock * 1 + x.suppstock * 1;
     //}
 
+
+    $scope.priceSum = function (x) {
+        var total = { net: 0, gross: 0 };
+        angular.forEach(x, function (value, key) {
+            angular.forEach(value.stock, function (val, key) {
+                if (val.quantity > 0 && val.quantity <= val.uttstock * 1 + val.suppstock * 1) {
+                    debugger;
+                    total.net = total.net + (val.myprice.net * val.quantity);
+                    //total.gross = total.gross + (val.myprice.gross * val.quantity);
+                }
+            })
+        })
+        total.net = total.net.toFixed(2) * $rootScope.config.currency.course;
+        total.gross = (total.net * $rootScope.config.vatcoeff).toFixed(2);
+        return total;
+    }
+
+
+    /* OLD
     $scope.priceSum = function (x) {
         var total = { net: 0, gross: 0 };
         angular.forEach(x, function (value, key) {
@@ -658,6 +674,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         })
         return total;
     }
+    */
 
     $scope.productPriceTotal = function (x) {
         var total = { net: 0, gross: 0 };

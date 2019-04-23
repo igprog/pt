@@ -115,9 +115,14 @@ public class Price : System.Web.Services.WebService{
             } else {
                 x.net = x.net * style.coeff;
             }
-         
+
+            x.net = Math.Round(x.net, 2);
+            x.gross = Math.Round((x.net) * p.vat, 2);
+
+            /* OLD
             x.gross = Math.Round((x.net) * p.vat, 2);
             x.net = Math.Round(x.net, 2);
+            */
             return x;
         } catch (Exception e) {
             return new NewPrice();
@@ -164,7 +169,7 @@ public class Price : System.Web.Services.WebService{
     private PriceCoeff InitPriceJson() {
         try {
             PriceCoeff x = new PriceCoeff();
-            x.vat = 1.25;
+            x.vat = Convert.ToDouble(ConfigurationManager.AppSettings["vatCoeff"]); // 1.25;
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             connection.Open();
             x.category = GetDistinct("category_code", connection);
