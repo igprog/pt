@@ -382,7 +382,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $scope.filter.price = $scope.d.response.maxPrice;
           if ($scope.searchQuery != '') { $scope.d.distinct = res.distinct; }
           setPages($scope.d.response.count);
-          $window.scrollTo(0, 0);
+          $window.scrollTo(0, 300);
       },
       function (response) {
           $scope.isloading = false;
