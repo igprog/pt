@@ -86,7 +86,6 @@ namespace Igprog {
 
         public void Style(string path){
             string sql = @"
-                DROP TABLE IF EXISTS style;
                 CREATE TABLE IF NOT EXISTS style
                 (style NVARCHAR(50) PRIMARY KEY,
                 gsmweight NVARCHAR(50),
@@ -106,12 +105,32 @@ namespace Igprog {
                 specimageurl NVARCHAR(50),
                 isnew NVARCHAR(50),
                 supplier NVARCHAR(50))";
+            //string sql = @"
+            //    DROP TABLE IF EXISTS style;
+            //    CREATE TABLE IF NOT EXISTS style
+            //    (style NVARCHAR(50) PRIMARY KEY,
+            //    gsmweight NVARCHAR(50),
+            //    sizes NVARCHAR(50),
+            //    colors NVARCHAR(50),
+            //    outlet NVARCHAR(50),
+            //    coo NVARCHAR(50),
+            //    imageurl NVARCHAR(50),
+            //    altimageurl NVARCHAR(50),
+            //    fabric_en NVARCHAR(50),
+            //    cut_en NVARCHAR(50),
+            //    details_en NVARCHAR(50),
+            //    carelabels_en NVARCHAR(50),
+            //    carelabellogos NVARCHAR(50),
+            //    category_en NVARCHAR(50),
+            //    category_code NVARCHAR(50),
+            //    specimageurl NVARCHAR(50),
+            //    isnew NVARCHAR(50),
+            //    supplier NVARCHAR(50))";
             CreateTable(path, sql);
         }
 
         public void Stock(string path){
             string sql = @"
-                DROP TABLE IF EXISTS stock;
                 CREATE TABLE IF NOT EXISTS stock
                 (style NVARCHAR(50),
                 color NVARCHAR(50),
@@ -126,6 +145,22 @@ namespace Igprog {
                 currency NVARCHAR(50),
                 uom NVARCHAR(50),
                 supplier NVARCHAR(50))";
+            //string sql = @"
+            //    DROP TABLE IF EXISTS stock;
+            //    CREATE TABLE IF NOT EXISTS stock
+            //    (style NVARCHAR(50),
+            //    color NVARCHAR(50),
+            //    size NVARCHAR(50),
+            //    sku NVARCHAR(50),
+            //    uttstock NVARCHAR(50),
+            //    suppstock NVARCHAR(50),
+            //    price NVARCHAR(50),
+            //    specialprice NVARCHAR(50),
+            //    specialstart NVARCHAR(50),
+            //    specialend NVARCHAR(50),
+            //    currency NVARCHAR(50),
+            //    uom NVARCHAR(50),
+            //    supplier NVARCHAR(50))";
             CreateTable(path, sql);
         }
 
