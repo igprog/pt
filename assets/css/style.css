@@ -1983,6 +1983,11 @@ transform: translateX(-50%); position: relative;}
 .list-view .product-slide-entry .price .current{font-size: 22px;}
 .list-view .product-slide-entry .title{font-size: 17px;}
 
+
+
+
+   
+
 /* Tablets (>=768px)*/
 @media (max-width: 991px) {
     .shop-grid-item:nth-child(4n+1){clear: none;}

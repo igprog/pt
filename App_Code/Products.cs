@@ -742,7 +742,7 @@ public class Products : System.Web.Services.WebService {
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
                 x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
-                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(';');
+                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|") ? '|' : ';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
                 x.category_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
                 x.colorhex = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
@@ -954,7 +954,7 @@ public class Products : System.Web.Services.WebService {
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
                 x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
-                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(';');
+                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|") ? '|' : ';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
                 x.category_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
                 x.colorhex = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
@@ -1023,7 +1023,7 @@ public class Products : System.Web.Services.WebService {
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
                 x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
-                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(';');
+                x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|")?'|':';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
                 x.category_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
                 x.colorhex = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);

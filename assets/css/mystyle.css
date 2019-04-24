@@ -30,7 +30,6 @@
     white-space: nowrap;
 }
 
-/*My css*/
 fieldset.fieldset-border {
     padding: 1em 1.4em 1.4em 1.4em !important;
     margin: 0 0 1.5em 0 !important;
@@ -46,6 +45,14 @@ legend.fieldset-border {
     padding:10px 10px;
     border-bottom:none;
 }
+
+.img-resize {
+    height: 288px !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+}
+
+
 
 
 

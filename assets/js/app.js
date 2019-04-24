@@ -80,7 +80,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          alert(response.data.d);
      });
     }
-    loadFeatured();
+   // loadFeatured();
 
     var loadNewProducts = function () {
         $http({
@@ -252,6 +252,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.group = "";
     $scope.displayFilters = false;
     var type = "";
+
     if (location.search.substring(1, 6) == 'brand') {
         $scope.group = location.search.substring(7);
         type = "brand";
@@ -302,6 +303,13 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         }
     }
 
+    $scope.setPage = function (x) {
+        window.scrollTo(0, 150);
+        $scope.page = x;
+        $sessionStorage.page = x;
+        searchProducts($scope.show, $scope.category);
+    }
+
     var load = function (limit, category) {
         $scope.isloading = true;
         $http({
@@ -314,6 +322,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $sessionStorage.d = response.data.d;
           $scope.d = JSON.parse(response.data.d);
           setPages($scope.d.response.count);
+          if ($sessionStorage.page !== undefined) {
+              debugger;
+              $scope.setPage($sessionStorage.page);
+          }
           $scope.filter = {
               price: $scope.d.response.maxPrice,
               size: '',
@@ -350,6 +362,23 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
     }
 
+    if ($sessionStorage.d !== undefined) {
+        $scope.d = JSON.parse($sessionStorage.d);
+        setPages($scope.d.response.count);
+        if ($sessionStorage.page !== undefined) {
+            $scope.page = $sessionStorage.page;
+            //$scope.setPage($sessionStorage.page);
+        }
+        if ($sessionStorage.search !== undefined) {
+            $scope.searchQuery = $sessionStorage.search;
+        }
+        $scope.filter = {
+            price: $scope.d.response.maxPrice,
+            size: '',
+            brand: ''
+        }
+    }
+
     if (!angular.isDefined($scope.d) && $scope.group == '') {
     //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
         //  var category = location.search.substring(10);
@@ -361,13 +390,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         loadGroup();
     }
 
-
     $scope.href = function (x) {
         $window.location.href = x;
-      //  $localStorage.load = 'true';
     }
 
     var searchProducts = function (limit, category) {
+        $sessionStorage.search = $scope.searchQuery;
+        //$sessionStorage.limit = limit;
+        //$sessionStorage.category = category;
         $scope.isloading = true;
         $http({
             url: 'Products.asmx/SearchProducts',
@@ -379,10 +409,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           var res = JSON.parse(response.data.d);
           $scope.d.products = res.products;
           $scope.d.response = res.response;
+          $sessionStorage.d = response.data.d;
           $scope.filter.price = $scope.d.response.maxPrice;
           if ($scope.searchQuery != '') { $scope.d.distinct = res.distinct; }
           setPages($scope.d.response.count);
-          $window.scrollTo(0, 300);
       },
       function (response) {
           $scope.isloading = false;
@@ -408,12 +438,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.setFilter();
     }
 
-    $scope.setPage = function (x) {
-        window.scrollTo(0, 0);
-        $scope.page = x;
-        searchProducts($scope.show, $scope.category);
-    }
-
     $scope.setColorFilter = function(x) {
         $scope.colorFilter = x;
         searchProducts($scope.show, $scope.category);
@@ -426,12 +450,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.clearFilters = function () {
         $scope.filters = false;
-        $scope.href('shop.html?category:' + $scope.category);
+        $scope.href('shop.html?category=' + $scope.category);
     }
 
     $scope.showFilters = function () {
         $scope.displayFilters = $scope.displayFilters == false ? true : false;
     }
+
+
 
 }])
 
@@ -1218,10 +1244,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.toggleTpl(tpl);
         $scope.currentStep = step;
         gotoAnchor('checkout');
-
-
-
-
 
         //if (step == 3) {
         //    $http({

@@ -44,7 +44,6 @@
                                     <div ng-repeat="x in categories | orderBy: 'order'">
                                         <div class="{{x.code==category?'bg-primary':''}}" ng-click="href('shop.html?category:' + x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>
                                     </div>
-                                    <!--<pre ng-if="config.debug">{{categories | json}}</pre>-->
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
@@ -59,14 +58,12 @@
                                 <div class="inline-text accordeon-title">{{'filter by price' | translate}}</div>
                                 <div class="range-wrapper accordeon-entry">
                                     <input ng-model="filter.price" type="range" min="0" max="{{d.response.maxPrice}}" value="{{filter.price}}" style="background-color:lightgray">
-                                    <!--<div id="prices-range"></div>-->
                                     <div class="range-price">
                                         {{'price' | translate}}:
                                         <div class="min-price"><b><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> <span>0</span></b></div>
                                         <b>-</b>
                                         <div class="max-price"><b><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> <span>{{filter.price*config.currency.course | number:2}}</span></b></div>
                                     </div>
-                                    <!--<a class="button style-14">filter</a>-->
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
@@ -143,14 +140,12 @@
                                 {{'there are no products available with the selected filetrs' | translate}}
                             </div>
                             <div ng-if="x.price_min.net <= filter.price && d.products.length>0" class="col-md-3 col-sm-4 shop-grid-item" ng-repeat="x in d.products track by $index">
-
                                 <div ng-if="x.outlet==1" class="product-image-label type-2"><span>{{'outlet' | translate}}</span></div>
                                 <div ng-if="x.isnew==1" class="product-image-label type-1"><span>{{'new' | translate}}</span></div>
-
                                 <div class="product-slide-entry shift-image">
-                                    <a href="product.html?style:{{x.style}}">
+                                    <a href="product.html?style={{x.style}}">
                                         <div class="product-image" >
-                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" />
+                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" class="img-resize" />
                                             <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1" >
                                                 <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
                                                 <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
@@ -158,17 +153,15 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a href="product.html?style:{{x.style}}">
+                                    <a href="product.html?style={{x.style}}">
                                         <label class="title">{{(x.shortdesc_en | translate).replace('amp;', '')}}</label>
                                         <label>{{x.brand}} {{x.style}}</label>
                                     </a>
-                                    <a class="tag" href="shop.html?gender:{{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
-                                    <a href="product.html?style:{{x.style}}">
+                                    <a class="tag" href="shop.html?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
+                                    <a href="product.html?style={{x.style}}">
                                         <div class="article-container style-1">
                                             <label ng-if="config.language.code=='hr'&&x.longdesc_hr!=null" ng-repeat="y in x.longdesc_hr track by $index">{{y}}</label>
                                             <label ng-if="config.language.code=='en'" ng-repeat="y in x.longdesc_en track by $index">{{y}}</label>
-
-                                            <!--<label ng-repeat="y in x.longdesc_en track by $index">{{y}}</label>-->
                                         </div>
                                         <div class="price">
                                             <div style="padding:2px">MPC {{'from' | translate}}: <span>{{x.price_min.gross * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></div>
