@@ -335,6 +335,9 @@ angular.module('app', [])
 
     $scope.csvFileName = "products";
     $scope.tranResp = null;
+    $scope.translations = null;
+    $scope.loading = false;
+    $scope.loading_p = false;
 
     $scope.upload = function () {
         var content = new FormData(document.getElementById("formUpload"));
@@ -355,19 +358,55 @@ angular.module('app', [])
        });
     }
 
-    $scope.translateProducts = function () {
+    $scope.translateProductsFromJson = function () {
+        $scope.loading = true;
             $http({
-                url: 'Products.asmx/TranslateProducts',
+                url: 'Products.asmx/TranslateProductsFromJson',
                 method: 'POST',
                 data: ''
             })
          .then(function (response) {
              $scope.tranResp = JSON.parse(response.data.d);
+             $scope.loading = false;
          },
          function (response) {
+             $scope.loading = false;
              alert(response.data.d);
          });
     }
+
+    $scope.loadProductsTranslation = function () {
+        $scope.loading_p = true;
+        $http({
+            url: 'Products.asmx/LoadProductsTranslation',
+            method: 'POST',
+            data: ''
+        })
+     .then(function (response) {
+         $scope.translations = JSON.parse(response.data.d);
+         $scope.loading_p = false;
+     },
+     function (response) {
+         $scope.loading_p = false;
+         alert(response.data.d);
+     });
+    }
+
+    $scope.updateTranslation = function (x) {
+        $http({
+            url: 'Products.asmx/UpdateTranslation',
+            method: 'POST',
+            data: {translation: x}
+        })
+     .then(function (response) {
+         alert(response.data.d);
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+
+
 
 }])
 

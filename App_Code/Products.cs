@@ -225,6 +225,13 @@ public class Products : System.Web.Services.WebService {
         public string size { get; set; }
         public int qty { get; set; }
     }
+
+    public class Translation {
+        public string shortdesc_en { get; set; }
+        public string shortdesc_hr { get; set; }
+        public string longdesc_en { get; set; }
+        public string longdesc_hr { get; set; }
+    }
     #endregion Class
 
     #region WebMethods
@@ -384,102 +391,6 @@ public class Products : System.Web.Services.WebService {
         }
     }
 
-    /*
-    [WebMethod]
-    public string ExportExcel(string path) {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.Start();
-        double time = 0;
-        try {
-            ReadExcel re = new ReadExcel();
-            List<ReadExcel.ExcelData> data = re.getExcelFile(path);
-            List<Product> xx = new List<Product>();
-            int i = 1;
-            string val = null;
-            Product x = new Product();
-            foreach (var d in data) {
-                if (d.row > 1) {
-                    val = d.val;
-                    if (string.IsNullOrEmpty(val)) {
-                        val = null;
-                    }
-                    if (i == 1 && val == null) {
-                        break;
-                    } else                 {
-                        if (i == 1) { x.sku = val; }
-                        if (i == 2) { x.colorname = val; }
-                        if (i == 3) { x.size = val; }
-                        if (i == 4) { x.style = val; }
-                        if (i == 5) { x.brand = val; }
-                        if (i == 6) { x.modelimageurl = val; }
-                        if (i == 7) { x.shortdesc_en = val; }
-                        if (i == 8) { x.longdesc_en = val; }
-                        if (i == 9) { x.gender_en = val; }
-                        if (i == 10) { x.category_en = val; }
-                        if (i == 11) { x.colorhex = val; }
-                        if (i == 12) { x.colorgroup_id = Convert.ToInt32(val); }
-                        if (i == 13) { x.isnew = Convert.ToInt32(val); }
-                        if (i == 14) { x.colorimageurl = val; }
-                        if (i == 15) { x.packshotimageurl = val; }
-                        if (i == 16) { x.weight = val; }
-                        if (i == 17) { x.colorswatch = val; }
-                        if (i == 18) { x.outlet = Convert.ToInt32(val); }
-                        if (i == 19) { x.caseqty = val; }
-                        if (i == 20) { x.supplier = val; }
-
-                        if (i == 20) {
-                            xx.Add(x);
-                            x = new Product();
-                            i = 1;
-                        } else {
-                            i++;
-                        }
-                    }
-                }
-            }
-
-            string sql_delete = "";
-            string sql = "";
-            db.CreateDataBase(productDataBase, db.product);
-            db.CreateDataBase(productDataBase, db.translation);
-            using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
-                connection.Open();
-                using (var command = new SQLiteCommand(connection)) {
-                    using (var transaction = connection.BeginTransaction()) {
-                        sql_delete = string.Format("DELETE FROM product WHERE supplier = '{0}';", xx[0].supplier);
-                        command.CommandText = sql_delete;
-                        foreach (Product p in xx) {
-                            sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
-                                                , p.sku, p.colorname, p.size, p.style, p.brand.Replace("'", ""), p.modelimageurl, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", ""), p.gender_en.Replace("'", "")
-                                                , p.category_en.Replace("&", "and"), p.colorhex, p.colorgroup_id, p.isnew, p.colorimageurl, p.packshotimageurl
-                                                , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
-                                                , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
-
-                        foreach (Product p in xx) {
-                            sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                                                , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
-                                                , p.category_en.Replace("&", "and"), p.supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
-                        transaction.Commit();
-                    }
-                }
-                connection.Close();
-            }
-            time = stopwatch.Elapsed.TotalSeconds;
-            return String.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
-        } catch(Exception e) {
-            return JsonConvert.SerializeObject(e.Message, Formatting.None);
-        }
-    }
-    */
-
     [WebMethod]
     public string CreateDataBaseUtt() {
         Stopwatch stopwatch = new Stopwatch();
@@ -498,8 +409,6 @@ public class Products : System.Web.Services.WebService {
             List<SizeSpecification> size = new List<SizeSpecification>();
             size = JsonConvert.DeserializeObject<List<SizeSpecification>>(GetDataUtt("https://utteam.com/api/dataexport/b102f37bc6e73a7d59e12828a92f26f3?action=sizespecs&format=json&variables=&fields=style,size,name_en,value"));
             uttTime = stopwatch.Elapsed.TotalSeconds;
-
-            //TOOD: delete data only if supplier is utt
 
             db.CreateDataBase(productDataBase, db.product);
             db.CreateDataBase(productDataBase, db.style);
@@ -569,7 +478,6 @@ public class Products : System.Web.Services.WebService {
                               command.ExecuteNonQuery();
                           } */
 
-
                         foreach (Product p in products) {
                             sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
@@ -584,7 +492,6 @@ public class Products : System.Web.Services.WebService {
                 }
                 connection.Close();
             } return (String.Format(@"{0} items downloaded from UTT in {1} seconds. Insert into products.ddb in {2} seconds.", products.Count(), uttTime, (stopwatch.Elapsed.TotalSeconds - uttTime)));
-            //return ("Update completed successfully. Get from UTT: " + uttTime + " seconds. Insert Into SQL: " + (stopwatch.Elapsed.TotalSeconds - uttTime) + " seconds.");
         } catch (Exception e) {
             uttTime = stopwatch.Elapsed.TotalSeconds;
             return String.Format("ERROR: {0} ({1} seconds)", e.Message, uttTime);
@@ -1073,7 +980,7 @@ public class Products : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string TranslateProducts() {
+    public string TranslateProductsFromJson() {
         try {
             Translate t = new Translate();
             string lang = "hr";
@@ -1104,14 +1011,59 @@ public class Products : System.Web.Services.WebService {
                     }
                 }
             }
-            return JsonConvert.SerializeObject("Update completed successfully", Formatting.None); ;
+            return JsonConvert.SerializeObject("Update completed successfully", Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
 
+    [WebMethod]
+    public string LoadProductsTranslation() {
+        try {
+            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
+            connection.Open();
+            string sql = "select distinct shortdesc_en, shortdesc_hr, longdesc_en, longdesc_hr from translation";
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            List<Translation> xx = new List<Translation>();
+            while (reader.Read()) {
+                Translation x = new Translation();
+                x.shortdesc_en = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                x.shortdesc_hr = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                x.longdesc_en = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
+                x.longdesc_hr = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
+                xx.Add(x);
+            }
+            connection.Close();
+            return JsonConvert.SerializeObject(xx, Formatting.None);
+        } catch (Exception e) {
+            return JsonConvert.SerializeObject(e.Message, Formatting.None);
+        }
+    }
 
-
-
-
+    [WebMethod]
+    public string UpdateTranslation(Translation translation) {
+        try {
+            using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                using (var command = new SQLiteCommand(connection)) {
+                    using (var transaction = connection.BeginTransaction()) {
+                        string sql = string.Format(@"UPDATE translation SET shortdesc_hr = '{0}' WHERE shortdesc_en = '{1}'"
+                                                    , translation.shortdesc_hr, translation.shortdesc_en);
+                        command.CommandText = sql;
+                        command.ExecuteNonQuery();
+                        sql = string.Format(@"UPDATE translation SET longdesc_hr = '{0}' WHERE longdesc_en = '{1}'"
+                                                    , translation.longdesc_hr, translation.longdesc_en);
+                        command.CommandText = sql;
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                }
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject("Update completed successfully", Formatting.None);
+        } catch (Exception e) {
+            return JsonConvert.SerializeObject(e.Message, Formatting.None);
+        }
+    }
     #endregion WebMethods
 
     #region Methods
