@@ -2,7 +2,14 @@
     <div class="breadcrumb-box">
         <a href="index.html">{{'home' | translate}}</a>
         <a href="shop.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
-        <a href="#"><span style="font-weight:bold">{{p.style}}</span> {{(p.shortdesc_en | translate).replace('amp;', '')}}</a>
+        <a href="#"><span style="font-weight:bold">{{p.style}}</span> 
+            <span ng-if="config.language.code=='hr'&&p.shortdesc_hr!==null">
+                {{(p.shortdesc_hr).replace('amp;', '')}}
+            </span>
+            <span ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.shortdesc_hr===null)">
+                {{(p.shortdesc_en).replace('amp;', '')}}
+            </span>
+        </a>
     </div>
 
     <div class="information-blocks">
@@ -19,13 +26,18 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <p style="font-size: 30px;">{{(p.shortdesc_en | translate).replace('amp;', '')}}</p>
+                <!--<p style="font-size: 30px;">{{(p.shortdesc_en | translate).replace('amp;', '')}}</p>-->
+                <p ng-if="config.language.code=='hr'&&p.shortdesc_hr!==null" style="font-size: 30px;">{{(p.shortdesc_hr).replace('amp;', '')}}</p>
+                <p ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.shortdesc_hr==null)" style="font-size: 30px;">{{(p.shortdesc_en).replace('amp;', '')}}</p>
                 <div class="row mt20">
                     <div class="col-sm-6">
                         <div class="product-detail-box">
                             <h3 class="block-title inline-product-column-title text-capitalize">{{'main features' | translate}}</h3>
-                            <div class="footer-description">
-                                <p ng-repeat="x in p.longdesc_en">{{x}}</p>
+                            <div ng-if="config.language.code=='hr'&&!p.longdesc_hr!==null" class="footer-description">
+                                <p ng-repeat="x in p.longdesc_hr track by $index">{{x}}</p>
+                            </div>
+                            <div ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.longdesc_hr===null)" class="footer-description">
+                                <p ng-repeat="x in p.longdesc_en track by $index">{{x}}</p>
                             </div>
 
                             <div class="price detail-info-entry">

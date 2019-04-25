@@ -913,12 +913,20 @@ public class Products : System.Web.Services.WebService {
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             connection.Open();
             string sqlQuery = string.IsNullOrWhiteSpace(color) ? "GROUP BY p.style" : string.Format("AND p.colorname = '{0}'", color.Replace("%20", " "));
-            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew FROM product p
+            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr FROM product p
                                         LEFT OUTER JOIN style st
                                         ON p.style = st.style                                    
                                         LEFT OUTER JOIN stock s
                                         ON p.sku = s.sku
+                                        LEFT OUTER JOIN translation t
+                                        ON p.sku = t.sku
                                         WHERE p.style = '{0}' {1}", style, sqlQuery);
+            //string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew FROM product p
+            //                            LEFT OUTER JOIN style st
+            //                            ON p.style = st.style                                    
+            //                            LEFT OUTER JOIN stock s
+            //                            ON p.sku = s.sku
+            //                            WHERE p.style = '{0}' {1}", style, sqlQuery);
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             SQLiteDataReader reader = command.ExecuteReader();
             ProductData x = new ProductData();
@@ -962,6 +970,9 @@ public class Products : System.Web.Services.WebService {
                 x.gender_code = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                 x.piecesPerBox = GetPiecesPerBox(connection, x.style);
                 x.outlet = reader.GetValue(24) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(24));
+                x.isnew = reader.GetValue(25) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(25));
+                x.shortdesc_hr = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
+                x.longdesc_hr = reader.GetValue(27) == DBNull.Value ? null : reader.GetString(27).Split(';');
             }
             connection.Close();
             return JsonConvert.SerializeObject(x, Formatting.None);
