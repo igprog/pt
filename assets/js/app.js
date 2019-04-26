@@ -141,6 +141,22 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        // $scope.href('login.html');  //TODO
     }
 
+    $rootScope.shortdesc = function (x, lang) {
+        if (lang == 'hr' && x.shortdesc_hr !== null) {
+            return (x.shortdesc_hr).replace('amp;', '');
+        } else {
+            return (x.shortdesc_en).replace('amp;', '');
+        }
+    }
+
+    $rootScope.longdesc = function (x, lang) {
+        if (lang == 'hr' && x.longdesc_hr !== null) {
+            return (x.longdesc_hr);
+        } else {
+            return (x.longdesc_en);
+        }
+    }
+
 }])
 
 .controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage) {

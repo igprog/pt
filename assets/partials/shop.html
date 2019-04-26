@@ -154,16 +154,13 @@
                                         </div>
                                     </a>
                                     <a href="product.html?style={{x.style}}">
-                                        <label ng-if="config.language.code=='hr'&&x.shortdesc_hr!==null" class="title">{{(x.shortdesc_hr).replace('amp;', '')}}</label>
-                                        <label ng-if="config.language.code=='en'||(config.language.code=='hr'&&x.shortdesc_hr===null)" class="title">{{(x.shortdesc_en).replace('amp;', '')}}</label>
-                                        <!--<label class="title">{{(x.shortdesc_en | translate).replace('amp;', '')}}</label>-->
+                                        <label class="title">{{shortdesc(x, config.language.code)}}</label>
                                         <label>{{x.brand}} {{x.style}}</label>
                                     </a>
                                     <a class="tag" href="shop.html?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
                                     <a href="product.html?style={{x.style}}">
                                         <div class="article-container style-1">
-                                            <label ng-if="config.language.code=='hr'&&x.longdesc_hr!==null" ng-repeat="y in x.longdesc_hr track by $index">{{y}}</label>
-                                            <label ng-if="config.language.code=='en'||(config.language.code=='hr'&&x.longdesc_hr===null)" ng-repeat="y in x.longdesc_en track by $index">{{y}}</label>
+                                            <label ng-repeat="y in longdesc(x, config.language.code) track by $index">{{y}}</label>
                                         </div>
                                         <div class="price">
                                             <div style="padding:2px">MPC {{'from' | translate}}: <span>{{x.price_min.gross * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></div>
@@ -190,9 +187,9 @@
 
             </div>
     </div>
-    <pre ng-if="config.debug">{{d.products}}</pre>
-    <pre ng-if="config.debug">{{d.distinct}}</pre>
-    <pre ng-if="config.debug">{{categories}}</pre>
+    <pre ng-if="config.debug">products: {{d.products}}</pre>
+    <pre ng-if="config.debug">distinct: {{d.distinct}}</pre>
+    <pre ng-if="config.debug">categories: {{categories}}</pre>
 </div>
 
     <script type="text/javascript">

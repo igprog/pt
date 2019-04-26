@@ -2,13 +2,8 @@
     <div class="breadcrumb-box">
         <a href="index.html">{{'home' | translate}}</a>
         <a href="shop.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
-        <a href="#"><span style="font-weight:bold">{{p.style}}</span> 
-            <span ng-if="config.language.code=='hr'&&p.shortdesc_hr!==null">
-                {{(p.shortdesc_hr).replace('amp;', '')}}
-            </span>
-            <span ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.shortdesc_hr===null)">
-                {{(p.shortdesc_en).replace('amp;', '')}}
-            </span>
+        <a href="#"><span style="font-weight:bold">{{p.style}}</span>
+            {{shortdesc(p, config.language.code)}}
         </a>
     </div>
 
@@ -26,20 +21,14 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <!--<p style="font-size: 30px;">{{(p.shortdesc_en | translate).replace('amp;', '')}}</p>-->
-                <p ng-if="config.language.code=='hr'&&p.shortdesc_hr!==null" style="font-size: 30px;">{{(p.shortdesc_hr).replace('amp;', '')}}</p>
-                <p ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.shortdesc_hr==null)" style="font-size: 30px;">{{(p.shortdesc_en).replace('amp;', '')}}</p>
+                <p style="font-size: 30px;">{{shortdesc(p, config.language.code)}}</p>
                 <div class="row mt20">
                     <div class="col-sm-6">
                         <div class="product-detail-box">
                             <h3 class="block-title inline-product-column-title text-capitalize">{{'main features' | translate}}</h3>
-                            <div ng-if="config.language.code=='hr'&&!p.longdesc_hr!==null" class="footer-description">
-                                <p ng-repeat="x in p.longdesc_hr track by $index">{{x}}</p>
+                            <div class="footer-description">
+                                <p ng-repeat="x in longdesc(p, config.language.code) track by $index">{{x}}</p>
                             </div>
-                            <div ng-if="config.language.code=='en'||(config.language.code=='hr'&&p.longdesc_hr===null)" class="footer-description">
-                                <p ng-repeat="x in p.longdesc_en track by $index">{{x}}</p>
-                            </div>
-
                             <div class="price detail-info-entry">
                                 <div class="price current">VPC {{'from' | translate}}: <span>{{p.price_min.net * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span>
                                 </div>
