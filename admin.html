@@ -355,7 +355,6 @@
         </div>
     </script>
 
-
     <script type="text/ng-template" id="users">
         <div ng-controller="usersCtrl" class="container">
             <h2>Users</h2>
@@ -504,14 +503,36 @@
             <fieldset class="fieldset-border">
                 <legend class="fieldset-border">Upload CSV file</legend>
                 <form id="formUpload" ng-submit="upload()" enctype="multipart/form-data" method="post">
-                    <div class="input-group">
-                        <input ng-model="csvFileName" name="UploadedFile" id="UploadedFile" type="file" accept=".csv" class="form-control">
-                        <em class="text-danger">* use only csv format</em>
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-default text-capitalize"><i class="fa fa-upload"></i> upload</button>
+
+                    <div class="row">
+                        <div class="col-sm-6 pt5">
+                            <input ng-model="csvFileName" name="UploadedFile" id="UploadedFile" type="file" accept=".csv" class="form-control">
+                        </div>
+                        <div class="col-sm-6 pt5">
+                            <button type="submit" class="btn btn-default"><i class="fa fa-upload"></i> Upload</button>
                         </div>
                     </div>
                 </form>
+            </fieldset>
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">LACUNA</legend>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <form>
+                            <div class="input-group">
+                                <input ng-model="lacunaUrl" type="text" class="form-control" disabled="disabled">
+                                <div class="input-group-btn">
+                                    <button ng-disabled="loading_l" class="btn btn-default" type="submit" ng-click="updateLacuna()">
+                                        <i class="fa fa-floppy-o"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                            <div ng-if="loading_l" class="text-center mt10">
+                                <i class="fa fa-spinner fa-spin fa-3x"></i>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </fieldset>
             <fieldset class="fieldset-border">
                 <legend class="fieldset-border">Translations</legend>

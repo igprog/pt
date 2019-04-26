@@ -338,6 +338,8 @@ angular.module('app', [])
     $scope.translations = null;
     $scope.loading = false;
     $scope.loading_p = false;
+    $scope.lacunaUrl = 'https://vp.lacuna.hr/exportxml.aspx?partner=40204';
+    $scope.loading_l = false;
 
     $scope.upload = function () {
         var content = new FormData(document.getElementById("formUpload"));
@@ -356,6 +358,23 @@ angular.module('app', [])
        function (response) {
            alert(response.data);
        });
+    }
+
+    $scope.updateLacuna = function () {
+        $scope.loading_l = true;
+        $http({
+            url: 'Products.asmx/ImportLacunaXML',
+            method: 'POST',
+            data: ''
+        })
+         .then(function (response) {
+             $scope.loading_l = false;
+             alert(response.data.d);
+         },
+         function (response) {
+             $scope.loading_l = false;
+             alert(response.data.d);
+         });
     }
 
     $scope.translateProductsFromJson = function () {
