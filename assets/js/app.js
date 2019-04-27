@@ -142,18 +142,22 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $rootScope.shortdesc = function (x, lang) {
-        if (lang == 'hr' && x.shortdesc_hr !== null) {
-            return (x.shortdesc_hr).replace('amp;', '');
-        } else {
-            return (x.shortdesc_en).replace('amp;', '');
+        if (x !== undefined) {
+            if (lang == 'hr' && !functions.isNullOrEmpty(x.shortdesc_hr)) {
+                return (x.shortdesc_hr).replace('amp;', '');
+            } else {
+                return (x.shortdesc_en).replace('amp;', '');
+            }
         }
     }
 
     $rootScope.longdesc = function (x, lang) {
-        if (lang == 'hr' && x.longdesc_hr !== null) {
-            return (x.longdesc_hr);
-        } else {
-            return (x.longdesc_en);
+        if (x !== undefined) {
+            if (lang == 'hr' && !functions.isNullOrEmpty(x.longdesc_hr)) {
+                return (x.longdesc_hr);
+            } else {
+                return (x.longdesc_en);
+            }
         }
     }
 
@@ -300,7 +304,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 16;
     $scope.page = 1;
-    $scope.searchQuery = '';
+    $scope.searchQuery = null;
     $scope.filters = false;
 
     $scope.sort = 'price';
@@ -338,10 +342,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $sessionStorage.d = response.data.d;
           $scope.d = JSON.parse(response.data.d);
           setPages($scope.d.response.count);
-          if ($sessionStorage.page !== undefined) {
-              debugger;
-              $scope.setPage($sessionStorage.page);
-          }
+          //if ($sessionStorage.page !== undefined) {
+          //    $scope.setPage($sessionStorage.page);
+          //}
           $scope.filter = {
               price: $scope.d.response.maxPrice,
               size: '',
@@ -352,6 +355,13 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $scope.isloading = false;
           alert(JSON.parse(response.data.d));
       });
+    }
+
+    $scope.getProductsByCategory = function (category) {
+        $scope.searchQuery = '';
+        $scope.category = category;
+        $scope.page = 1;
+        load($scope.show, category);
     }
     
     var loadGroup = function () {
@@ -395,7 +405,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         }
     }
 
-    if (!angular.isDefined($scope.d) && $scope.group == '') {
+    debugger;
+    if (!angular.isDefined($scope.d) || $scope.group == '') {
+    //if (!angular.isDefined($scope.d) && $scope.group == '') {
     //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
         //  var category = location.search.substring(10);
         $scope.category = location.search.substring(10) == '' ? 'T-Shirt' : location.search.substring(10);
@@ -461,6 +473,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.search = function () {
         $scope.page = 1;
+        $scope.category = '';
         searchProducts($scope.show, $scope.category);
     }
 
@@ -472,8 +485,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.showFilters = function () {
         $scope.displayFilters = $scope.displayFilters == false ? true : false;
     }
-
-
 
 }])
 

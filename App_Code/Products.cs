@@ -769,12 +769,11 @@ public class Products : System.Web.Services.WebService {
 
             //TODO
             string sqlCategoryQuery = "";
-            /*
             if (!string.IsNullOrEmpty(category)) {
                 sqlCategoryQuery = string.Format("WHERE p.category_code = '{0}'", category);
                 isWhere = true;
             }
-            */
+            
             string sqlSearchQuery = "";
             string sqlFilterQuery = "";
             
