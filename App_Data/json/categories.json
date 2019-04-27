@@ -78,5 +78,10 @@
     "code": "Windbreaker",
     "isselected": true,
     "order": 15
+  },
+  {
+    "code": "Workwear",
+    "isselected": true,
+    "order": 16
   }
 ]

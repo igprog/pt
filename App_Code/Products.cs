@@ -241,7 +241,7 @@ public class Products : System.Web.Services.WebService {
             stopwatch.Start();
             double time = 0;
             string supplier = "lacuna";
-            string category = "workwear";
+            string category = "Workwear";
             double eurHrkCourse = Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]);
             string xml = RequestData("https://vp.lacuna.hr/exportxml.aspx?partner=40204");
             System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
@@ -257,24 +257,24 @@ public class Products : System.Web.Services.WebService {
             foreach (System.Xml.XmlNode node in products) {
                 x = new Product();
                 x.sku = node.SelectSingleNode("sifraProizvoda").InnerText;
-                //x.colorname = null;
-                x.size = GetSize(x.sku); // // x.sku.Split('/').Length>1 ? x.sku.Split('/')[1] : null;
+                x.colorname = "";
+                x.size = GetSize(x.sku);
                 x.style = x.sku.Split('/')[0];
-                //x.brand = null;
+                x.brand = "";
                 x.modelimageurl = node.SelectSingleNode("slikaProizvoda").InnerText; ;
                 x.shortdesc_en = node.SelectSingleNode("naziv").InnerText;
                 x.longdesc_en = node.SelectSingleNode("opis").InnerText;
                 x.gender_en = GetGender(x.sku);
-                x.category_en = category; // node.SelectSingleNode("grupa").InnerText;
-                //x.colorhex = values[10];
-                //x.colorgroup_id = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[11]) : 0;
-                //x.isnew = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[12]) : 0;
-                //x.colorimageurl = values[13];
-                //x.packshotimageurl = values[14];
-                //x.weight = values[15];
-                //x.colorswatch = values[16];
-                //x.outlet = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[17]) : 0;
-                //x.caseqty = values[18];
+                x.category_en = category;
+                x.colorhex = "";
+                x.colorgroup_id = 0;
+                x.isnew = 0;
+                x.colorimageurl = "";
+                x.packshotimageurl = "";
+                x.weight = "";
+                x.colorswatch = "";
+                x.outlet = 0;
+                x.caseqty = "";
                 x.supplier = supplier;
                 xx.Add(x);
 
@@ -284,34 +284,32 @@ public class Products : System.Web.Services.WebService {
                 y.size = x.size;
                 y.sku = x.sku;
                 y.uttstock = node.SelectSingleNode("zalihaProizvoda").InnerText;
-                //y.suppstock = values[21];
-                 y.price = !string.IsNullOrEmpty(node.SelectSingleNode("cijena").InnerText) ? Convert.ToDouble(node.SelectSingleNode("cijena").InnerText.Replace(",", "."))/eurHrkCourse : 0;
-               // y.price = Convert.ToDouble(node.SelectSingleNode("cijena").Value);
-
-                //y.specialprice = !string.IsNullOrEmpty(values[23]) ? Convert.ToDouble(values[23]) : 0;
-                //y.specialstart = values[24];
-                //y.specialend = values[25];
-                //y.currency = values[26];
-                //y.uom = values[27];
+                y.suppstock = "";
+                y.price = !string.IsNullOrEmpty(node.SelectSingleNode("cijena").InnerText) ? Convert.ToDouble(node.SelectSingleNode("cijena").InnerText.Replace(",", "."))/eurHrkCourse : 0;
+                y.specialprice = 0;
+                y.specialstart = "";
+                y.specialend = "";
+                y.currency = "";
+                y.uom = "";
                 y.supplier = x.supplier;
                 yy.Add(y);
 
                 z = new Style();
                 z.style = x.style;
-                //z.gsmweight = values[28];
-                //z.sizes =  "TODO";
-                //z.colors = "TODO";
-                //z.outlet = x.outlet.ToString();
-                //z.coo = values[29];
+                z.gsmweight = "";
+                z.sizes =  "";
+                z.colors = "";
+                z.outlet = x.outlet.ToString();
+                z.coo = "";
                 z.imageurl = x.modelimageurl;
-                //z.altimageurl = values[31];
-                //z.fabric_en = values[32];
-                //z.cut_en = values[33];
-                //z.details_en = values[34];
-                //z.carelabels_en = values[35];
-                //z.carelabellogos = values[36];
+                z.altimageurl = "";
+                z.fabric_en = "";
+                z.cut_en = "";
+                z.details_en = "";
+                z.carelabels_en = "";
+                z.carelabellogos = "";
                 z.category_en = x.category_en;
-                //z.specimageurl = values[37];
+                z.specimageurl = "";
                 z.isnew = x.isnew.ToString();
                 z.supplier = x.supplier;
                 zz.Add(z);
@@ -327,9 +325,7 @@ public class Products : System.Web.Services.WebService {
                 ds.sizes = GetSizes(xx.Where(a => a.style == ds.style).ToList());
             }
 
-          //  GetSizes(xx.Where(a => a.style == z.style).ToList());
-
-            //SaveDdb(xx, yy, distinctStyle);
+            SaveDdb(xx, yy, distinctStyle);
 
             time = stopwatch.Elapsed.TotalSeconds;
             return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
@@ -1370,16 +1366,15 @@ public class Products : System.Web.Services.WebService {
                 x.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.count = reader.GetValue(2) == DBNull.Value ? 0 : reader.GetInt32(2);
-                x.isselected = sc.Find(a => a.code == x.code).isselected;
-                x.order = sc.Find(a => a.code == x.code).order;
+                x.isselected = sc.Find(a => a.code.ToLower() == x.code.ToLower()).isselected;
+                x.order = sc.Find(a => a.code.ToLower() == x.code.ToLower()).order;
                 if (x.isselected) {
                     xx.Add(x);
                 }
             }
             connection.Close();
             return xx;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new List<Category>();
         }
     }
@@ -1659,7 +1654,7 @@ public class Products : System.Web.Services.WebService {
 
     private string GetSize(string sku) {
         string[] x = sku.Split('/');
-        string size = null;
+        string size = "";
         if (x.Length > 1) {
             size = x[x.Length-1];
         }
@@ -1668,7 +1663,7 @@ public class Products : System.Web.Services.WebService {
 
     private string GetGender(string sku) {
         string[] x = sku.Split('/');
-        string gender = null;
+        string gender = "";
         if (x.Length == 4) {
             if (x[1] == "ŽM") { gender = "Womens Clothing"; }
             if (x[1] == "MM") { gender = "Mens Clothing"; }
