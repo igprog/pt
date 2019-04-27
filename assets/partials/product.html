@@ -1,4 +1,4 @@
-﻿<div ng-controller="productCtrl" class="content-push">
+﻿<div ng-controller="productCtrl" class="content-push" >
     <div class="breadcrumb-box">
         <a href="index.html">{{'home' | translate}}</a>
         <a href="shop.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col-sm-8">
-                <p style="font-size: 30px;">{{shortdesc(p, config.language.code)}}</p>
+                <p style="font-size: 30px;" ng-cloak>{{shortdesc(p, config.language.code)}}</p>
                 <div class="row mt20">
                     <div class="col-sm-6">
                         <div class="product-detail-box">

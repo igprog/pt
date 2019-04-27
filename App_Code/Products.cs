@@ -968,12 +968,6 @@ public class Products : System.Web.Services.WebService {
                                         LEFT OUTER JOIN translation t
                                         ON p.sku = t.sku
                                         WHERE p.style = '{0}' {1}", style, sqlQuery);
-            //string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew FROM product p
-            //                            LEFT OUTER JOIN style st
-            //                            ON p.style = st.style                                    
-            //                            LEFT OUTER JOIN stock s
-            //                            ON p.sku = s.sku
-            //                            WHERE p.style = '{0}' {1}", style, sqlQuery);
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             SQLiteDataReader reader = command.ExecuteReader();
             ProductData x = new ProductData();
@@ -995,7 +989,7 @@ public class Products : System.Web.Services.WebService {
                 x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
                 x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
                 x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : reader.GetString(17).Replace(" /", "/").Split('|');
+                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageUrl(connection, reader.GetString(17), x.style);  
                 x.carelabel = GetCareLabel(reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18), reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19));
                 x.category_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
                 x.brand_code = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
@@ -1715,6 +1709,21 @@ public class Products : System.Web.Services.WebService {
             }
         }
         return colors;
+    }
+
+    private string[] GetPackshotImageUrl(SQLiteConnection connection, string value, string style) {
+        if (string.IsNullOrEmpty(value)) {
+            string sql = string.Format(@"SELECT packshotimageurl from product WHERE style = '{0}' AND packshotimageurl <> '' LIMIT 1", style);
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            string[] packshotimageurl = null;
+            while (reader.Read()) {
+                packshotimageurl = reader.GetValue(0) == DBNull.Value ? null : reader.GetString(0).Replace(" /", "/").Split('|');
+            }
+            return packshotimageurl;
+        } else {
+            return value.Replace(" /", "/").Split('|');
+        }
     }
     #endregion Methods
 
