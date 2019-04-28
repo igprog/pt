@@ -146,12 +146,28 @@
                                 <div class="product-slide-entry shift-image">
                                     <a href="product.html?style={{x.style}}">
                                         <div class="product-image" >
-                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" class="img-resize" />
+                                            <div ng-if="x.supplier!=='lacuna'">
+                                                <img check-image ng-if="x.modelimageurl!=null" ng-src="{{x.modelimageurl}}" alt="" class="img-resize" />
+                                                <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1">
+                                                    <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{x.packshotimageurl[0]}}" alt="" />
+                                                    <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{x.packshotimageurl[0]}}" alt="" />
+                                                    <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{x.packshotimageurl[1]}}" alt="" />
+                                                </div>
+                                            </div>
+                                            <div ng-if="x.supplier=='lacuna'">
+                                                <img check-image ng-if="x.modelimageurl!=null" src="{{x.modelimageurl}}" alt="" class="img-resize" />
+                                                <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1">
+                                                    <img check-image ng-if="x.packshotimageurl.length>0" src="{{x.packshotimageurl[0]}}" alt="" />
+                                                    <img check-image ng-if="x.packshotimageurl.length==1" src="{{x.packshotimageurl[0]}}" alt="" />
+                                                    <img check-image ng-if="x.packshotimageurl.length>1" src="{{x.packshotimageurl[1]}}" alt="" />
+                                                </div>
+                                            </div>
+                                            <!--<img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" class="img-resize" />
                                             <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1" >
                                                 <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
                                                 <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
                                                 <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{config.imgurl}}{{x.packshotimageurl[1]}}" alt="" />
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </a>
                                     <a href="product.html?style={{x.style}}">

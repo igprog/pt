@@ -11,14 +11,48 @@
         <div class="row">
             <div class="col-sm-4 information-entry">
                 <div>
-                    <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
-                    <img ng-if="p.packshotimageurl==null" src="{{config.imgurl}}{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    <img ng-if="p.packshotimageurl!=null" src="{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                    <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
                 </div>
                 <div style="display:flex">
                     <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                        <img check-image ng-src="{{config.imgurl}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        <img ng-if="p.supplier!=='lacuna'" check-image ng-src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        <img ng-if="p.supplier=='lacuna'" check-image src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
                     </div>
                 </div>
+                <!--<div ng-if="p.supplier=='utt'">
+                    <div>
+                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.utt}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    </div>
+                    <div style="display:flex">
+                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
+                            <img check-image ng-src="{{config.imgurl.utt}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="p.supplier=='lacuna'">
+                    <div>
+                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.lacuna}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    </div>
+                    <div style="display:flex">
+                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
+                            <img check-image ng-src="{{config.imgurl.lacuna}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="p.supplier=='euroton'">
+                    <div>
+                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.euroton}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    </div>
+                    <div style="display:flex">
+                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
+                            <img check-image ng-src="{{config.imgurl.euroton}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        </div>
+                    </div>
+                </div>-->
             </div>
             <div class="col-sm-8">
                 <p ng-if="shortdesc(p, config.language.code)" style="font-size: 30px;">{{shortdesc(p, config.language.code)}}</p>
@@ -83,7 +117,7 @@
                                     <th>{{'size' | translate}}</th>
                                     <th ng-repeat="x in p.size_specification[0].name_en.split('|')">{{x}}</th>
                                     <th rowspan="{{p.size_specification.length + 1}}" style="border: solid 1px lightgray; vertical-align:middle; text-align:center; margin-top:20px">
-                                        <img src="./assets/img/{{p.specimageurl}}" />
+                                        <img src="./assets/img/utt/{{p.specimageurl}}" />
                                     </th>
                                 </tr>
                                 <tr ng-repeat="x in p.size_specification">

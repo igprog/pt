@@ -151,6 +151,7 @@ public class Products : System.Web.Services.WebService {
 
         public List<CaseQty> piecesPerBox = new List<CaseQty>();
         public int outlet { get; set; }
+        public string supplier { get; set; }
 
         //   public int max_stock { get; set; }
     }
@@ -373,7 +374,7 @@ public class Products : System.Web.Services.WebService {
                         x.colorswatch = values[16];
                         x.outlet = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[17]): 0;
                         x.caseqty = values[18];
-                        x.supplier = values[19];
+                        x.supplier = values[19].ToLower();
                         xx.Add(x);
 
                         y = new Stock();
@@ -395,8 +396,8 @@ public class Products : System.Web.Services.WebService {
                         z = new Style();
                         z.style = x.style;
                         z.gsmweight = values[28];
-                        z.sizes = "TODO";
-                        z.colors = "TODO";
+                        z.sizes = null;
+                        z.colors = null;
                         z.outlet = x.outlet.ToString();
                         z.coo = values[29];
                         z.imageurl = values[30];
@@ -466,6 +467,7 @@ public class Products : System.Web.Services.WebService {
                         sql_delete = string.Format("DELETE FROM product WHERE supplier = '{0}';", supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
+
                         foreach (Product p in products) {
                             sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
@@ -477,7 +479,7 @@ public class Products : System.Web.Services.WebService {
                             command.ExecuteNonQuery();
                         }
 
-                        sql_delete = string.Format("DELETE FROM product WHERE style = '{0}';", supplier);
+                        sql_delete = string.Format("DELETE FROM style WHERE supplier = '{0}';", supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Style s in style) {
@@ -490,7 +492,7 @@ public class Products : System.Web.Services.WebService {
                             command.ExecuteNonQuery();
                         }
 
-                        sql_delete = string.Format("DELETE FROM product WHERE stock = '{0}';", supplier);
+                        sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Stock s in stock) {
@@ -582,7 +584,7 @@ public class Products : System.Web.Services.WebService {
             using (SQLiteConnection connection = new SQLiteConnection(
                 string.Format("Data Source={0}", Server.MapPath(string.Format("~/App_Data/{0}", productDataBase))))) {
                 connection.Open();
-                string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr FROM product p
+                string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier FROM product p
                                         LEFT OUTER JOIN style st
                                         ON p.style = st.style
                                         LEFT OUTER JOIN stock s
@@ -598,12 +600,13 @@ public class Products : System.Web.Services.WebService {
                     List<ProductData> xx = new List<ProductData>();
                     while (reader.Read()) {
                         ProductData x = new ProductData();
-                       // x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-                       // x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-                       // x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
+                        x.supplier = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
+                        // x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                        // x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                        // x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
                         x.style = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
                         x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
-                        x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                        x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : GetImgUrl(reader.GetString(5), x.supplier);
                         x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
                         // x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(';');
                         x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
@@ -614,8 +617,9 @@ public class Products : System.Web.Services.WebService {
                         x.sizes = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
                        // x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
                         x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
-                       // x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                        x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : reader.GetString(17).Replace(" /", "/").Split('|');
+                        // x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
+
+                        x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(17), x.supplier);
                         x.category_code = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
                         x.brand_code = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
                         x.gender_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
@@ -669,7 +673,7 @@ public class Products : System.Web.Services.WebService {
             stopwatch.Start();
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             connection.Open();
-            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr FROM product p
+            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier FROM product p
                                         LEFT OUTER JOIN style st
                                         ON p.style = st.style
                                         LEFT OUTER JOIN stock s
@@ -685,12 +689,13 @@ public class Products : System.Web.Services.WebService {
             List<ProductData> xx = new List<ProductData>();
             while (reader.Read()) {
                 ProductData x = new ProductData();
+                x.supplier = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
                 x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
                 x.style = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
-                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : GetImgUrl(reader.GetString(5), x.supplier);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
                 x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|") ? '|' : ';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
@@ -701,8 +706,8 @@ public class Products : System.Web.Services.WebService {
                 x.sizes = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
                 x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
                 x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
-                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : reader.GetString(17).Replace(" /", "/").Split('|');
+                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : GetImgUrl(reader.GetString(16), x.supplier);
+                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(17), x.supplier);
                 x.category_code = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
                 x.brand_code = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
                 x.gender_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
@@ -715,6 +720,7 @@ public class Products : System.Web.Services.WebService {
                 x.isnew = reader.GetValue(22) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(22));
                 x.shortdesc_hr = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                 x.longdesc_hr = reader.GetValue(24) == DBNull.Value ? null : reader.GetString(24).Split(';');
+                
                 if (sc.Find(a => a.code == x.category_code).isselected == true) {
                     xx.Add(x);
                 }
@@ -867,7 +873,7 @@ public class Products : System.Web.Services.WebService {
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             connection.Open();
 
-            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr FROM product p
+            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier FROM product p
                                         LEFT OUTER JOIN style st
                                         ON p.style = st.style
                                         LEFT OUTER JOIN stock s
@@ -879,29 +885,19 @@ public class Products : System.Web.Services.WebService {
                                         GROUP BY p.style
                                         {6}
                                         LIMIT {0} OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
-
-            //string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew FROM product p
-            //                            LEFT OUTER JOIN style st
-            //                            ON p.style = st.style
-            //                            LEFT OUTER JOIN stock s
-            //                            ON p.sku = s.sku
-            //                            {5}
-            //                            {2} {3} {4}
-            //                            GROUP BY p.style
-            //                            {6}
-            //                            LIMIT {0} OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             SQLiteDataReader reader = command.ExecuteReader();
             ProductsData xxx = new ProductsData();
             List<ProductData> xx = new List<ProductData>();
             while (reader.Read()) {
                 ProductData x = new ProductData();
+                x.supplier = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
                 x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
                 x.style = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
-                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : GetImgUrl(reader.GetString(5), x.supplier);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
                 x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|") ? '|' : ';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
@@ -912,8 +908,8 @@ public class Products : System.Web.Services.WebService {
                 x.sizes = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
                 x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
                 x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
-                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : reader.GetString(17).Replace(" /", "/").Split('|');
+                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : GetImgUrl(reader.GetString(16), x.supplier);
+                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(17), x.supplier);
                 x.category_code = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
                 x.brand_code = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
                 x.gender_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
@@ -955,7 +951,7 @@ public class Products : System.Web.Services.WebService {
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             connection.Open();
             string sqlQuery = string.IsNullOrWhiteSpace(color) ? "GROUP BY p.style" : string.Format("AND p.colorname = '{0}'", color.Replace("%20", " "));
-            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr FROM product p
+            string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier FROM product p
                                         LEFT OUTER JOIN style st
                                         ON p.style = st.style                                    
                                         LEFT OUTER JOIN stock s
@@ -967,12 +963,14 @@ public class Products : System.Web.Services.WebService {
             SQLiteDataReader reader = command.ExecuteReader();
             ProductData x = new ProductData();
             while (reader.Read()) {
+                x.supplier = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
                 x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
                 x.style = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
                 x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
-                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                //x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : GetImgUrl(reader.GetString(5), x.supplier);
                 x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
                 x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|")?'|':';');
                 x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
@@ -983,8 +981,8 @@ public class Products : System.Web.Services.WebService {
                 x.sizes = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
                 x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
                 x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
-                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageUrl(connection, reader.GetString(17), x.style);  
+                x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : GetImgUrl(reader.GetString(16), x.supplier);
+                x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(17), x.supplier);  
                 x.carelabel = GetCareLabel(reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18), reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19));
                 x.category_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
                 x.brand_code = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
@@ -1164,21 +1162,6 @@ public class Products : System.Web.Services.WebService {
                                                  , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price, s.specialprice
                                                  , s.specialstart, s.specialend, s.currency, s.uom, supplier);
                             command.CommandText = sql;
-
-                            //command.CommandText = @"INSERT INTO stock VALUES 
-                            //            (@style, @color, @size, @sku, @uttstock, @suppstock, @price, @specialprice, @specialstart, @specialend, @currency, @uom)";
-                            //command.Parameters.Add(new SQLiteParameter("style", s.style));
-                            //command.Parameters.Add(new SQLiteParameter("color", s.color));
-                            //command.Parameters.Add(new SQLiteParameter("size", s.size));
-                            //command.Parameters.Add(new SQLiteParameter("sku", s.sku));
-                            //command.Parameters.Add(new SQLiteParameter("uttstock", s.uttstock));
-                            //command.Parameters.Add(new SQLiteParameter("suppstock", s.suppstock));
-                            //command.Parameters.Add(new SQLiteParameter("price", s.price));
-                            //command.Parameters.Add(new SQLiteParameter("specialprice", s.specialprice));
-                            //command.Parameters.Add(new SQLiteParameter("specialstart", s.specialstart));
-                            //command.Parameters.Add(new SQLiteParameter("specialend", s.specialend));
-                            //command.Parameters.Add(new SQLiteParameter("currency", s.currency));
-                            //command.Parameters.Add(new SQLiteParameter("uom", s.uom));
                             command.ExecuteNonQuery();
                         }
                         transaction.Commit();
@@ -1268,7 +1251,7 @@ public class Products : System.Web.Services.WebService {
 
     private Object GetStockGroupedByColor(SQLiteConnection connection, string style) {
         try {  
-            string sql = string.Format(@"SELECT s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price, s.specialprice, s.specialstart, s.specialend, s.currency, s.uom, p.colorhex, p.modelimageurl, p.shortdesc_en, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.weight, p.colorswatch, p.outlet, p.caseqty FROM stock s
+            string sql = string.Format(@"SELECT s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price, s.specialprice, s.specialstart, s.specialend, s.currency, s.uom, p.colorhex, p.modelimageurl, p.shortdesc_en, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier FROM stock s
                                         LEFT OUTER JOIN product p
                                         ON s.sku = p.sku                      
                                         WHERE s.style = '{0}'", style);
@@ -1277,6 +1260,7 @@ public class Products : System.Web.Services.WebService {
             List<Stock> xx = new List<Stock>();
             while (reader.Read()) {
                 Stock x = new Stock();
+                x.supplier = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                 x.style = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.color = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
@@ -1290,10 +1274,10 @@ public class Products : System.Web.Services.WebService {
                 x.currency = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
                 x.uom = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
                 x.colorhex = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
-                x.modelimageurl = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
+                x.modelimageurl = reader.GetValue(13) == DBNull.Value ? "" : GetImgUrl(reader.GetString(13), x.supplier);
                 x.shortdesc_en = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
-                x.colorimageurl = reader.GetValue(15) == DBNull.Value ? "" : reader.GetString(15);
-                x.packshotimageurl = reader.GetValue(16) == DBNull.Value ? null : reader.GetString(16).Replace(" /", "/").Split('|');
+                x.colorimageurl = reader.GetValue(15) == DBNull.Value ? "" : GetImgUrl(reader.GetString(15), x.supplier);
+                x.packshotimageurl = reader.GetValue(16) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(16), x.supplier);
                 x.category_code = reader.GetValue(17) == DBNull.Value ? "" : reader.GetString(17);
                 x.brand_code = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
                 x.weight = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
@@ -1717,6 +1701,30 @@ public class Products : System.Web.Services.WebService {
             return packshotimageurl;
         } else {
             return value.Replace(" /", "/").Split('|');
+        }
+    }
+
+    private string GetImgUrl(string img, string supplier) {
+        string path = img;  // lacuna
+        if(!string.IsNullOrEmpty(img) && supplier.ToLower() != "lacuna") {  // utt, euroton
+            path = string.Format("./assets/img/{0}/products{1}", supplier, img);
+        }
+        return path;
+    }
+
+    private string[] GetPackshotImageList(string img, string supplier) {
+        if (!string.IsNullOrEmpty(img)) {
+            string[] list = null;
+            list = img.Replace(" /", "/").Split('|');
+            string[] list_ = new string[list.Count()];
+            int i = 0;
+            foreach (string s in list) {
+                list_[i] = GetImgUrl(s, supplier);
+                i++;
+            }
+            return list_;
+        } else {
+            return null;
         }
     }
     #endregion Methods

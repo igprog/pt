@@ -16,7 +16,7 @@
         <div class="row" ng-repeat="x in groupingCart track by $index">
             <div class="col-sm-4">
                 <div class="traditional-cart-entry">
-                    <a href="product.html?style:{{x.style}}" class="image"><img src="{{config.imgurl}}{{x.data[0].modelimageurl}}" alt="" data-zoom="{{config.imgurl}}{{x.modelimageurl}}" /></a>
+                    <a href="product.html?style:{{x.style}}" class="image"><img src="{{x.data[0].modelimageurl}}" alt="" data-zoom="{{x.modelimageurl}}" /></a>
                     <div class="content">
                         <div class="cell-view">
                             <a href="product.html?style:{{x.style}}" class="tag">{{x.style}}</a>
