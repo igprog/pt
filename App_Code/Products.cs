@@ -336,12 +336,12 @@ public class Products : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string ImportEurotonCsv(string file) {
+    public string ImportCottonClassicsCsv(string file) {
         try {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             double time = 0;
-            string supplier = "euroton";
+            string supplier = "cc";
             List<Product> xx = new List<Product>();
             Product x = new Product();
             List<Stock> yy = new List<Stock>();
@@ -385,8 +385,8 @@ public class Products : System.Web.Services.WebService {
                         y.sku = x.sku;
                         y.uttstock = values[20];
                         y.suppstock = values[21];
-                        y.price = !string.IsNullOrEmpty(values[22]) ? Convert.ToDouble(values[22]) : 0;
-                        y.specialprice = !string.IsNullOrEmpty(values[23]) ? Convert.ToDouble(values[23]): 0;
+                        y.price = !string.IsNullOrEmpty(values[22]) ? (values[22] == "#N/A" ? 0 : Convert.ToDouble(values[22])) : 0;
+                        y.specialprice = !string.IsNullOrEmpty(values[23]) ? Convert.ToDouble(values[23]) : 0;
                         y.specialstart = values[24];
                         y.specialend = values[25];
                         y.currency = values[26];
@@ -394,48 +394,44 @@ public class Products : System.Web.Services.WebService {
                         y.supplier = supplier;
                         yy.Add(y);
 
-                        if(!string.IsNullOrEmpty(values[28]))  {
-                            z = new Style();
-                            z.style = values[28];
-                            z.gsmweight = "";
-                            z.sizes = null;
-                            z.colors = null;
-                            z.outlet = "0";
-                            z.coo = "";
-                            z.imageurl = values[31];
-                            z.altimageurl = "";
-                            z.fabric_en = "";
-                            z.cut_en = "";
-                            z.details_en = "";
-                            z.carelabels_en = "";
-                            z.carelabellogos = "";
-                            z.category_en = values[32];
-                            z.specimageurl = "";
-                            z.isnew = "0";
-                            z.supplier = supplier;
-                            zz.Add(z);
-                        }
-                        
+                        if (!string.IsNullOrEmpty(values[28]) || Convert.ToInt32(values[28]) !=0 )  {
+                           z = new Style();
+                           z.style = values[28];
+                           z.gsmweight = "";
+                           z.sizes = null;
+                           z.colors = null;
+                           z.outlet = "0";
+                           z.coo = "";
+                           z.imageurl = values[31];
+                           z.altimageurl = "";
+                           z.fabric_en = "";
+                           z.cut_en = "";
+                           z.details_en = "";
+                           z.carelabels_en = "";
+                           z.carelabellogos = "";
+                           z.category_en = values[32];
+                           z.specimageurl = "";
+                           z.isnew = "0";
+                           z.supplier = supplier;
+                           zz.Add(z);
+                       }
                     }
                 }
             }
 
-            /*
-            List<Style> distinctStyle = zz
-                          .GroupBy(p => p.style)
-                          .Select(g => g.First())
-                          .ToList();
-
-            foreach (Style ds in distinctStyle) {
-                ds.sizes = GetSizes(xx.Where(a => a.style == ds.style).ToList());
-                ds.colors = GetColors(xx.Where(a => a.style == ds.style).ToList());
+            foreach(Product p in xx) {
+                var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
+                p.category_en = aa.category_en;
+                p.modelimageurl = aa.imageurl;
             }
-           
 
-            SaveDdb(xx, yy, distinctStyle);
-             */
+            foreach (Style s in zz) {
+                var bb = xx.Where(a => a.style == s.style).ToList();
+                s.sizes = GetSizes(bb);
+                s.colors = GetColors(bb);
+            }
 
-         //   SaveDdb(xx, yy, zz);  TODO
+            SaveDdb(xx, yy, zz);
 
             time = stopwatch.Elapsed.TotalSeconds;
             return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
@@ -831,9 +827,10 @@ public class Products : System.Web.Services.WebService {
                 x.isnew = reader.GetValue(22) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(22));
                 x.shortdesc_hr = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                 x.longdesc_hr = reader.GetValue(24) == DBNull.Value ? null : reader.GetString(24).Split(';');
-                
-                if (sc.Find(a => a.code == x.category_code).isselected == true) {
-                    xx.Add(x);
+                if (sc.Exists(a => a.code.ToLower() == x.category_code.ToLower())) {
+                    if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true) {
+                        xx.Add(x);
+                    }
                 }
             }
             xxx.products = xx;
@@ -1033,8 +1030,10 @@ public class Products : System.Web.Services.WebService {
                 x.isnew = reader.GetValue(22) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(22));
                 x.shortdesc_hr = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                 x.longdesc_hr = reader.GetValue(24) == DBNull.Value ? null : reader.GetString(24).Split(';');
-                if (sc.Find(a => a.code == x.category_code).isselected == true) {
-                    xx.Add(x);
+                if(sc.Exists(a => a.code.ToLower() == x.category_code.ToLower())) {
+                    if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true) {
+                        xx.Add(x);
+                    }
                 }
             }
 
@@ -1461,8 +1460,8 @@ public class Products : System.Web.Services.WebService {
                 x.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 x.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
                 x.count = reader.GetValue(2) == DBNull.Value ? 0 : reader.GetInt32(2);
-                x.isselected = sc.Find(a => a.code.ToLower() == x.code.ToLower()).isselected;
-                x.order = sc.Find(a => a.code.ToLower() == x.code.ToLower()).order;
+                x.isselected = sc.Exists(a => a.code.ToLower() == x.code.ToLower()) ? sc.Find(a => a.code.ToLower() == x.code.ToLower()).isselected : false;
+                x.order = sc.Exists(a => a.code.ToLower() == x.code.ToLower()) ? sc.Find(a => a.code.ToLower() == x.code.ToLower()).order : 0;
                 if (x.isselected) {
                     xx.Add(x);
                 }
@@ -1818,10 +1817,13 @@ public class Products : System.Web.Services.WebService {
     private string GetImgUrl(string img, string supplier) {
         string path = img;
         if (!string.IsNullOrEmpty(img)) {
-            if (supplier.ToLower() != "lacuna") {  // utt, euroton
-                path = string.Format("./assets/img/{0}/products{1}", supplier, img);
-            } else {
-                path = img.Replace("http://", "https://");  // lacuna
+            switch (supplier.ToLower()) {
+                case "utt": path = string.Format("./assets/img/{0}/products{1}", supplier, img);
+                    break;
+                case "cc": path = string.Format("./assets/img/{0}/products/{1}", supplier, img);
+                    break;
+                case "lacuna": path = img.Replace("http://", "https://");
+                    break;
             }
         }
         return path;

@@ -14,7 +14,7 @@
             var load = function () {
                 $scope.msg = 'Update in progress...'
                 $http({
-                    url: 'Products.asmx/ImportEurotonCsv',
+                    url: 'Products.asmx/ImportCottonClassicsCsv',
                     method: 'POST',
                     data: { file: file }
                 })
