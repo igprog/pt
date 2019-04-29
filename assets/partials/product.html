@@ -2,7 +2,7 @@
     <div class="breadcrumb-box">
         <a href="index.html">{{'home' | translate}}</a>
         <a href="shop.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
-        <a ng-if="shortdesc(p, config.language.code)" href="#"><span style="font-weight:bold">{{p.style}}</span>
+        <a ng-show="shortdesc(p, config.language.code)" href="#"><span style="font-weight:bold">{{p.style}}</span>
             {{shortdesc(p, config.language.code)}}
         </a>
     </div>
@@ -20,39 +20,6 @@
                         <img ng-if="p.supplier=='lacuna'" check-image src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
                     </div>
                 </div>
-                <!--<div ng-if="p.supplier=='utt'">
-                    <div>
-                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.utt}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
-                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
-                    </div>
-                    <div style="display:flex">
-                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                            <img check-image ng-src="{{config.imgurl.utt}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
-                        </div>
-                    </div>
-                </div>
-                <div ng-if="p.supplier=='lacuna'">
-                    <div>
-                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.lacuna}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
-                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
-                    </div>
-                    <div style="display:flex">
-                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                            <img check-image ng-src="{{config.imgurl.lacuna}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
-                        </div>
-                    </div>
-                </div>
-                <div ng-if="p.supplier=='euroton'">
-                    <div>
-                        <img ng-if="p.packshotimageurl!=null" src="{{config.imgurl.euroton}}{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
-                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
-                    </div>
-                    <div style="display:flex">
-                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                            <img check-image ng-src="{{config.imgurl.euroton}}{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
-                        </div>
-                    </div>
-                </div>-->
             </div>
             <div class="col-sm-8">
                 <p ng-if="shortdesc(p, config.language.code)" style="font-size: 30px;">{{shortdesc(p, config.language.code)}}</p>

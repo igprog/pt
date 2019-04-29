@@ -141,24 +141,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        // $scope.href('login.html');  //TODO
     }
 
-    $rootScope.shortdesc = function (x, lang) {
-        if (x !== undefined) {
-            if (lang == 'hr' && !functions.isNullOrEmpty(x.shortdesc_hr)) {
-                return (x.shortdesc_hr).replace('amp;', '');
-            } else {
-                return (x.shortdesc_en).replace('amp;', '');
-            }
-        }
+    $scope.shortdesc = function (x, lang) {
+        return (functions.shortdesc(x, lang));
     }
 
-    $rootScope.longdesc = function (x, lang) {
-        if (x !== undefined) {
-            if (lang == 'hr' && !functions.isNullOrEmpty(x.longdesc_hr)) {
-                return (x.longdesc_hr);
-            } else {
-                return (x.longdesc_en);
-            }
-        }
+    $scope.longdesc = function (x, lang) {
+        return (functions.longdesc(x, lang));
     }
 
 }])
@@ -405,7 +393,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         }
     }
 
-    debugger;
     if (!angular.isDefined($scope.d) || $scope.group == '') {
     //if (!angular.isDefined($scope.d) && $scope.group == '') {
     //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
@@ -566,13 +553,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        });
     };
     load(style, color);
-    //if ($localStorage.load == 'true') {
-    //    alert($localStorage.load);
-    //    load(querystring);
-    //} else {
-    //    $scope.packshotimageurl = JSON.parse($localStorage.packshotimageurl);
-    //}
-    
 
     $scope.setSize = function (x) {
         $scope.choosen.size = x;
@@ -684,26 +664,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             } else {
                 return { title: 'not available', css: 'label label-danger', css_bg: 'bg-danger text-center' };
             }
-            //if (x.quantity > x.uttstock && x.quantity <= x.uttstock * 1 + x.suppstock * 1) {
-            //    return { title: '', css: 'label label-primary', css_bg: 'bg-success' };
-            //}
-            //if (x.quantity > x.uttstock * 1 + x.suppstock * 1) {
-            //    return { title: 'not available', css: 'label label-danger', css_bg: 'bg-danger text-center' };
-            //}
         }
     }
-
-    //$scope.totalStock = function (x) {
-    //    return x.uttstock * 1 + x.suppstock * 1;
-    //}
-
 
     $scope.priceSum = function (x) {
         var total = { net: 0, gross: 0 };
         angular.forEach(x, function (value, key) {
             angular.forEach(value.stock, function (val, key) {
                 if (val.quantity > 0 && val.quantity <= val.uttstock * 1 + val.suppstock * 1) {
-                    debugger;
                     total.net = total.net + (val.myprice.net * val.quantity);
                     //total.gross = total.gross + (val.myprice.gross * val.quantity);
                 }
@@ -713,22 +681,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         total.gross = (total.net * $rootScope.config.vatcoeff).toFixed(2);
         return total;
     }
-
-
-    /* OLD
-    $scope.priceSum = function (x) {
-        var total = { net: 0, gross: 0 };
-        angular.forEach(x, function (value, key) {
-            angular.forEach(value.stock, function (val, key) {
-                if (val.quantity > 0 && val.quantity <= val.uttstock * 1 + val.suppstock * 1) {
-                    total.net = total.net + (val.myprice.net * val.quantity);
-                    total.gross = total.gross + (val.myprice.gross * val.quantity);
-                }
-            })
-        })
-        return total;
-    }
-    */
 
     $scope.productPriceTotal = function (x) {
         var total = { net: 0, gross: 0 };
@@ -798,6 +750,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.mainImgIdx = 0;
     $scope.selectImg = function (idx) {
         $scope.mainImgIdx = idx;
+    }
+
+    $scope.shortdesc = function (x, lang) {
+        return (functions.shortdesc(x, lang));
     }
 
     //$scope.priceTotal = [];

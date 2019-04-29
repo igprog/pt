@@ -162,16 +162,10 @@
                                                     <img check-image ng-if="x.packshotimageurl.length>1" src="{{x.packshotimageurl[1]}}" alt="" />
                                                 </div>
                                             </div>
-                                            <!--<img check-image ng-if="x.modelimageurl!=null" ng-src="{{config.imgurl}}{{x.modelimageurl}}" alt="" class="img-resize" />
-                                            <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1" >
-                                                <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
-                                                <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{config.imgurl}}{{x.packshotimageurl[0]}}" alt="" />
-                                                <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{config.imgurl}}{{x.packshotimageurl[1]}}" alt="" />
-                                            </div>-->
                                         </div>
                                     </a>
                                     <a href="product.html?style={{x.style}}">
-                                        <label class="title">{{shortdesc(x, config.language.code)}}</label>
+                                        <label ng-show="shortdesc(x, config.language.code)" class="title">{{shortdesc(x, config.language.code)}}</label>
                                         <label>{{x.brand}} {{x.style}}</label>
                                     </a>
                                     <a class="tag" href="shop.html?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>

@@ -242,7 +242,7 @@ public class Products : System.Web.Services.WebService {
             stopwatch.Start();
             double time = 0;
             string supplier = "lacuna";
-            string category = "Workwear";
+            string category = "Lacuna"; // "Workwear";
             double eurHrkCourse = Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]);
             string xml = RequestData("https://vp.lacuna.hr/exportxml.aspx?partner=40204");
             System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
@@ -1705,9 +1705,13 @@ public class Products : System.Web.Services.WebService {
     }
 
     private string GetImgUrl(string img, string supplier) {
-        string path = img;  // lacuna
-        if(!string.IsNullOrEmpty(img) && supplier.ToLower() != "lacuna") {  // utt, euroton
-            path = string.Format("./assets/img/{0}/products{1}", supplier, img);
+        string path = img;
+        if (!string.IsNullOrEmpty(img)) {
+            if (supplier.ToLower() != "lacuna") {  // utt, euroton
+                path = string.Format("./assets/img/{0}/products{1}", supplier, img);
+            } else {
+                path = img.Replace("http://", "https://");  // lacuna
+            }
         }
         return path;
     }

@@ -13,6 +13,24 @@ angular.module('functions', [])
             }
             return res;
         },
+        shortdesc: function (x, lang) {
+            if (x !== undefined) {
+                if (lang == 'hr' && !this.isNullOrEmpty(x.shortdesc_hr)) {
+                    return (x.shortdesc_hr).replace('amp;', '');
+                } else {
+                    return (x.shortdesc_en).replace('amp;', '');
+                }
+            }
+        },
+        longdesc: function (x, lang) {
+            if (x !== undefined) {
+                if (lang == 'hr' && !this.isNullOrEmpty(x.longdesc_hr)) {
+                    return (x.longdesc_hr);
+                } else {
+                    return (x.longdesc_en);
+                }
+            }
+        }
     }
 }]);
 
