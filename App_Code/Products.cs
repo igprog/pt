@@ -336,6 +336,116 @@ public class Products : System.Web.Services.WebService {
     }
 
     [WebMethod]
+    public string ImportEurotonCsv(string file) {
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            double time = 0;
+            string supplier = "euroton";
+            List<Product> xx = new List<Product>();
+            Product x = new Product();
+            List<Stock> yy = new List<Stock>();
+            Stock y = new Stock();
+            List<Style> zz = new List<Style>();
+            Style z = new Style();
+            string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
+
+            using (var reader = new StreamReader(path)) {
+                while (!reader.EndOfStream) {
+                    var line = reader.ReadLine();
+                    var values = line.Split(';');
+                    if(!string.IsNullOrEmpty(values[0]) && values[0] != "sku") {
+                        x = new Product();
+                        x.sku = values[0];
+                        x.colorname = values[1];
+                        x.size = values[2];
+                        x.style = values[3];
+                        x.brand = values[4];
+                        x.modelimageurl = values[5];
+                        x.shortdesc_en = values[6];
+                        x.longdesc_en = values[7];
+                        x.gender_en = values[8];
+                        x.category_en = values[9];
+                        x.colorhex = values[10];
+                        x.colorgroup_id = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[11]) : 0;
+                        x.isnew = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[12]): 0;
+                        x.colorimageurl = values[13];
+                        x.packshotimageurl = values[14];
+                        x.weight = values[15];
+                        x.colorswatch = values[16];
+                        x.outlet = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[17]): 0;
+                        x.caseqty = values[18];
+                        x.supplier = supplier;
+                        xx.Add(x);
+
+                        y = new Stock();
+                        y.style = x.style;
+                        y.color = x.colorname;
+                        y.size = x.size;
+                        y.sku = x.sku;
+                        y.uttstock = values[20];
+                        y.suppstock = values[21];
+                        y.price = !string.IsNullOrEmpty(values[22]) ? Convert.ToDouble(values[22]) : 0;
+                        y.specialprice = !string.IsNullOrEmpty(values[23]) ? Convert.ToDouble(values[23]): 0;
+                        y.specialstart = values[24];
+                        y.specialend = values[25];
+                        y.currency = values[26];
+                        y.uom = values[27];
+                        y.supplier = supplier;
+                        yy.Add(y);
+
+                        if(!string.IsNullOrEmpty(values[28]))  {
+                            z = new Style();
+                            z.style = values[28];
+                            z.gsmweight = "";
+                            z.sizes = null;
+                            z.colors = null;
+                            z.outlet = "0";
+                            z.coo = "";
+                            z.imageurl = values[31];
+                            z.altimageurl = "";
+                            z.fabric_en = "";
+                            z.cut_en = "";
+                            z.details_en = "";
+                            z.carelabels_en = "";
+                            z.carelabellogos = "";
+                            z.category_en = values[32];
+                            z.specimageurl = "";
+                            z.isnew = "0";
+                            z.supplier = supplier;
+                            zz.Add(z);
+                        }
+                        
+                    }
+                }
+            }
+
+            /*
+            List<Style> distinctStyle = zz
+                          .GroupBy(p => p.style)
+                          .Select(g => g.First())
+                          .ToList();
+
+            foreach (Style ds in distinctStyle) {
+                ds.sizes = GetSizes(xx.Where(a => a.style == ds.style).ToList());
+                ds.colors = GetColors(xx.Where(a => a.style == ds.style).ToList());
+            }
+           
+
+            SaveDdb(xx, yy, distinctStyle);
+             */
+
+         //   SaveDdb(xx, yy, zz);  TODO
+
+            time = stopwatch.Elapsed.TotalSeconds;
+            return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
+        } catch (Exception e) {
+            return e.Message;
+        }
+    }
+
+    /*
+    [WebMethod]
     public string ImportCsv(string file) {
         try {
             Stopwatch stopwatch = new Stopwatch();
@@ -434,6 +544,7 @@ public class Products : System.Web.Services.WebService {
             return e.Message;
         }
     }
+    */
 
     [WebMethod]
     public string CreateDataBaseUtt() {
