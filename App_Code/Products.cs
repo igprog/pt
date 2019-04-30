@@ -232,9 +232,33 @@ public class Products : System.Web.Services.WebService {
         public string longdesc_en { get; set; }
         public string longdesc_hr { get; set; }
     }
+
+    public class ColorCC {
+        public string manufName;
+        public string manufCode;
+        public string colorName;
+        public string cmyk;
+        public string rgb;
+    }
     #endregion Class
 
     #region WebMethods
+    [WebMethod]
+    public string TestColors() {
+        try {
+            string json = GetJsonFile("json", "colors_cc");
+            List<ColorCC> xx = new List<ColorCC>();
+            xx = JsonConvert.DeserializeObject<List<ColorCC>>(json);
+            return JsonConvert.SerializeObject(json, Formatting.None);
+
+        }
+        catch (Exception e){
+            return e.Message;
+        }
+    }
+
+
+
     [WebMethod]
     public string ImportLacunaXML() {
         try {
@@ -349,6 +373,9 @@ public class Products : System.Web.Services.WebService {
             List<Style> zz = new List<Style>();
             Style z = new Style();
             string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
+            List<ColorCC> colors = JsonConvert.DeserializeObject<List<ColorCC>>(GetJsonFile("json", "colors_cc"));
+
+            // TODO: Exclude items & rename categories
 
             using (var reader = new StreamReader(path)) {
                 while (!reader.EndOfStream) {
@@ -366,7 +393,7 @@ public class Products : System.Web.Services.WebService {
                         x.longdesc_en = values[7];
                         x.gender_en = values[8];
                         x.category_en = values[9];
-                        x.colorhex = values[10];
+                        x.colorhex = colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname).rgb) : ""; //   values[10];
                         x.colorgroup_id = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[11]) : 0;
                         x.isnew = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[12]): 0;
                         x.colorimageurl = values[13];
@@ -383,8 +410,8 @@ public class Products : System.Web.Services.WebService {
                         y.color = x.colorname;
                         y.size = x.size;
                         y.sku = x.sku;
-                        y.uttstock = values[20];
-                        y.suppstock = values[21];
+                        y.uttstock = "5000"; // values[20];
+                        y.suppstock = "5000"; //  values[21];
                         y.price = !string.IsNullOrEmpty(values[22]) ? (values[22] == "#N/A" ? 0 : Convert.ToDouble(values[22])) : 0;
                         y.specialprice = !string.IsNullOrEmpty(values[23]) ? Convert.ToDouble(values[23]) : 0;
                         y.specialstart = values[24];
@@ -418,7 +445,7 @@ public class Products : System.Web.Services.WebService {
                     }
                 }
             }
-
+            
             foreach(Product p in xx) {
                 var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
                 p.category_en = aa.category_en;
@@ -432,7 +459,7 @@ public class Products : System.Web.Services.WebService {
             }
 
             SaveDdb(xx, yy, zz);
-
+           
             time = stopwatch.Elapsed.TotalSeconds;
             return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
         } catch (Exception e) {

@@ -346,12 +346,21 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.getProductsByCategory = function (category) {
+        //debugger;
+        //var uri = window.location.toString();
+        //if (uri.indexOf("?") > 0) {
+        //    var clean_uri = uri.substring(0, uri.indexOf("?"));
+        //    window.history.replaceState({}, document.title, clean_uri);
+        //}
+
+
         $scope.searchQuery = '';
         $scope.category = category;
         $scope.page = 1;
         load($scope.show, category);
     }
     
+
     var loadGroup = function () {
         $scope.isloading = true;
         $http({
@@ -374,7 +383,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $scope.isloading = false;
           alert(JSON.parse(response.data.d));
       });
-    }
+   } 
+
+
 
     if ($sessionStorage.d !== undefined) {
         $scope.d = JSON.parse($sessionStorage.d);
@@ -401,9 +412,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         load($scope.show, $scope.category);
     }
 
+
     if ($scope.group != '') {
         loadGroup();
     }
+
+
 
     $scope.href = function (x) {
         $window.location.href = x;

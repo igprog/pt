@@ -42,7 +42,8 @@
                                 <div class="inline-text accordeon-title">{{'categories' | translate}}</div>
                                 <div class="accordeon accordeon-entry" style="display:block">
                                     <div ng-repeat="x in categories | orderBy: 'order'">
-                                        <div class="{{x.code==category?'bg-primary':''}}" ng-click="getProductsByCategory(x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>
+                                        <!--<div class="{{x.code==category?'bg-primary':''}}" ng-click="getProductsByCategory(x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>-->
+                                        <div class="{{x.code==category?'bg-primary':''}}" ng-click="href('index.html?category=' + x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>
                                         <!--<div class="{{x.code==category?'bg-primary':''}}" ng-click="href('shop.html?category=' + x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>-->
                                     </div>
                                 </div>
