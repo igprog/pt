@@ -1626,9 +1626,9 @@ public class Products : System.Web.Services.WebService {
         string sql = "";
         if (!string.IsNullOrEmpty(sort)) {
             if (sort == "price") {
-                sql = string.Format(@"ORDER BY CAST(s.{0} AS INTEGER) {1}", sort, order);
+                sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS INTEGER) {1}", sort, order);
             } else {
-                sql = string.Format(@"ORDER BY p.{0} {1}", sort, order);
+                sql = string.Format(@"ORDER BY p.supplier DESC, p.{0} {1}", sort, order);
             }
         }
         return sql;
