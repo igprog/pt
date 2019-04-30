@@ -244,22 +244,6 @@ public class Products : System.Web.Services.WebService {
 
     #region WebMethods
     [WebMethod]
-    public string TestColors() {
-        try {
-            string json = GetJsonFile("json", "colors_cc");
-            List<ColorCC> xx = new List<ColorCC>();
-            xx = JsonConvert.DeserializeObject<List<ColorCC>>(json);
-            return JsonConvert.SerializeObject(json, Formatting.None);
-
-        }
-        catch (Exception e){
-            return e.Message;
-        }
-    }
-
-
-
-    [WebMethod]
     public string ImportLacunaXML() {
         try {
             Stopwatch stopwatch = new Stopwatch();
@@ -375,7 +359,6 @@ public class Products : System.Web.Services.WebService {
             string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
             List<ColorCC> colors = JsonConvert.DeserializeObject<List<ColorCC>>(GetJsonFile("json", "colors_cc"));
 
-            // TODO: Exclude items & rename categories
 
             using (var reader = new StreamReader(path)) {
                 while (!reader.EndOfStream) {
@@ -436,7 +419,7 @@ public class Products : System.Web.Services.WebService {
                            z.details_en = "";
                            z.carelabels_en = "";
                            z.carelabellogos = "";
-                           z.category_en = values[32];
+                           z.category_en = GetCategory(values[32]);
                            z.specimageurl = "";
                            z.isnew = "0";
                            z.supplier = supplier;
@@ -445,11 +428,22 @@ public class Products : System.Web.Services.WebService {
                     }
                 }
             }
-            
+
+            List<Product> pp = new List<Product>();
             foreach(Product p in xx) {
-                var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
-                p.category_en = aa.category_en;
-                p.modelimageurl = aa.imageurl;
+
+                // TODO: Exclude items & rename categories BrendsToExclude
+                if (!BrandToExclude(p.brand)) {
+                    var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
+                    Product p_ = new Product();
+                    p_ = p;
+                    p_.category_en = aa.category_en;
+                    p_.modelimageurl = aa.imageurl;
+                    pp.Add(p_);
+                    
+                }
+
+                
             }
 
             foreach (Style s in zz) {
@@ -458,7 +452,7 @@ public class Products : System.Web.Services.WebService {
                 s.colors = GetColors(bb);
             }
 
-            SaveDdb(xx, yy, zz);
+            SaveDdb(pp, yy, zz);
            
             time = stopwatch.Elapsed.TotalSeconds;
             return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
@@ -1870,6 +1864,54 @@ public class Products : System.Web.Services.WebService {
         } else {
             return null;
         }
+    }
+
+    private string GetCategory(string category) {
+        string x = null;
+        switch (category) {
+            case "T-Shirts":
+            case "Shirts, T-Shirts":
+                x = "T-Shirt";
+                break;
+            case "Workwear":
+            case "Shoes, Workwear":
+            case "Sweats, Workwear":
+            case "Polos, Workwear":
+            case "Fleece, Workwear":
+            case "Jackets, Workwear":
+            case "T-Shirts, Workwear":
+            case "Polos, Sweats, Workwear":
+            case "Underwear, Workwear":
+            case "Shirts, Workwear":
+            case "Accessories, business, Shirts, Workwear":
+            case "Bags, Workwear":
+            case "Accessories, Shirts, Workwear":
+            case "Accessories, Workwear":
+                x = "Workwear";
+                break;
+            default:
+                x = category;
+                break;
+        }
+        return x;
+    }
+
+    private bool BrandToExclude(string brand) {
+        bool x = false;
+        switch (brand) {
+            case "Gildan Activewear":
+            case "Kariban":
+            case "KiMood":
+            case "Premier":
+            case "SOL's Bags":
+            case "SOL's Collection":
+                x = true;
+                break;
+            default:
+                x = false;
+                break;
+        }
+        return x;
     }
     #endregion Methods
 
