@@ -431,8 +431,6 @@ public class Products : System.Web.Services.WebService {
 
             List<Product> pp = new List<Product>();
             foreach(Product p in xx) {
-
-                // TODO: Exclude items & rename categories BrendsToExclude
                 if (!BrandToExclude(p.brand)) {
                     var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
                     Product p_ = new Product();
@@ -442,8 +440,6 @@ public class Products : System.Web.Services.WebService {
                     pp.Add(p_);
                     
                 }
-
-                
             }
 
             foreach (Style s in zz) {
@@ -455,7 +451,7 @@ public class Products : System.Web.Services.WebService {
             SaveDdb(pp, yy, zz);
            
             time = stopwatch.Elapsed.TotalSeconds;
-            return string.Format(@"{0} items updated successfully in {1} seconds.", xx.Count(), time);
+            return string.Format(@"{0} items updated successfully in {1} seconds.", pp.Count(), time);
         } catch (Exception e) {
             return e.Message;
         }
