@@ -64,10 +64,10 @@ public class Price : System.Web.Services.WebService{
     #endregion WebMethods
 
     #region Methods
-    public NewPrice GetPrice(string category_code, string brand_code, string style_code, double price) {
+    public NewPrice GetPrice(PriceCoeff p, string category_code, string brand_code, string style_code, double price) {
         try {
-            PriceCoeff p = new PriceCoeff();
-            p = GetCoeff();
+            //PriceCoeff p = new PriceCoeff();
+            //p = GetCoeff();
             Coeff category = new Coeff();
             if (p.category.Count > 0) {
                 category = p.category.Where(a => a.code.ToLower() == category_code.ToLower()).FirstOrDefault();

@@ -10,14 +10,19 @@
     <div class="information-blocks">
         <div class="row">
             <div class="col-sm-4 information-entry">
-                <div>
-                    <img ng-if="p.packshotimageurl!=null" src="{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
-                    <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                <div ng-if="loading_p" class="text-center" style="height:200px; line-height:200px;">
+                    <i class="fa fa-spinner fa-4x fa-spin text-info"></i>
                 </div>
-                <div style="display:flex">
-                    <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
-                        <img ng-if="p.supplier!=='lacuna'" check-image ng-src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
-                        <img ng-if="p.supplier=='lacuna'" check-image src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                <div ng-if="!loading_p">
+                    <div>
+                        <img ng-if="p.packshotimageurl!=null" src="{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    </div>
+                    <div style="display:flex">
+                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
+                            <img ng-if="p.supplier!=='lacuna'" check-image ng-src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                            <img ng-if="p.supplier=='lacuna'" check-image src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        </div>
                     </div>
                 </div>
             </div>

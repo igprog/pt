@@ -290,6 +290,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.category = "";
     }
 
+    debugger;
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 8;
     $scope.page = 1;
     $scope.searchQuery = null;
@@ -301,7 +302,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.setSortOrder = function () {
         $scope.sortOrder = $scope.sortOrder == 'ASC' ? 'DESC' : 'ASC';
-        $scope.setFilter();
+        $scope.setFilter($scope.show);
     }
 
     var setPages = function (x) {
@@ -417,8 +418,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         loadGroup();
     }
 
-
-
     $scope.href = function (x) {
         $window.location.href = x;
     }
@@ -449,7 +448,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
     }
 
-    $scope.setFilter = function () {
+    $scope.setFilter = function (show) {
+        $sessionStorage.config.prodctstoshow = show;
         $scope.page = 1;
         $scope.searchQuery = '';
         searchProducts($scope.show, $scope.category);
@@ -464,7 +464,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                 value.isselected = false;
             }
         })
-        $scope.setFilter();
+        $scope.setFilter($scope.show);
     }
 
     $scope.setColorFilter = function(x) {
@@ -480,7 +480,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.clearFilters = function () {
         $scope.filters = false;
-        $scope.href('shop.html?category=' + $scope.category);
+        $scope.href('index.html?category=' + $scope.category);
     }
 
     $scope.showFilters = function () {
@@ -549,13 +549,16 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
     }
 
+    $scope.loading_p = false;
     var load = function (style, color) {
+        $scope.loading_p = true;
         $http({
             url: 'Products.asmx/GetProduct',
             method: 'POST',
             data: { style: style, color: color }
         })
        .then(function (response) {
+           $scope.loading_p = false;
            $scope.p = JSON.parse(response.data.d);
            if ($scope.p.shortdesc_en != null) {
                $window.document.title = 'Promo-Tekstil - ' + $translate.instant($scope.p.shortdesc_en);
@@ -587,6 +590,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
            }
        },
        function (response) {
+           $scope.loading_p = false;
            alert(JSON.parse(response.data.d));
        });
     };
@@ -762,6 +766,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.filterColors = [];
     $scope.filterColor = function (x) {
+        window.scrollTo(0, 0);
         $scope.filterColors.push(x.colorhex);
         load(style, x.color);
     }

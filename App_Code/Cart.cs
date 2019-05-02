@@ -43,6 +43,7 @@ public class Cart : System.Web.Services.WebService {
         try {
             List<NewCart> xx = new List<NewCart>();
             Price pr = new Price();
+            Price.PriceCoeff priceCoeff = pr.GetCoeff();
             foreach (Products.Stock c in cart) {
                 if (xx.Any(a => a.style == c.style)) {
                     foreach (NewCart x in xx) {
@@ -51,7 +52,7 @@ public class Cart : System.Web.Services.WebService {
                                 foreach (Products.Stock d in x.data) {
                                     if (d.sku == c.sku) {
                                         d.quantity = d.quantity + c.quantity;
-                                        d.myprice = pr.GetPrice(product.category_code, product.brand_code, c.style, d.price );
+                                        d.myprice = pr.GetPrice(priceCoeff, product.category_code, product.brand_code, c.style, d.price );
                                     }
                                 }
                             } else {
