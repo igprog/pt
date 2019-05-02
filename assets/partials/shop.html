@@ -42,14 +42,15 @@
                                 <div class="inline-text accordeon-title">{{'categories' | translate}}</div>
                                 <div class="accordeon accordeon-entry" style="display:block">
                                     <div ng-repeat="x in categories | orderBy: 'order'">
-                                        <!--<div class="{{x.code==category?'bg-primary':''}}" ng-click="getProductsByCategory(x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>-->
                                         <div class="{{x.code==category?'bg-primary':''}}" ng-click="href('index.html?category=' + x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>
-                                        <!--<div class="{{x.code==category?'bg-primary':''}}" ng-click="href('shop.html?category=' + x.code)" style="padding:10px"><a href="" style="{{x.code==category?'color:white !important':''}}">{{x.title | translate}} <span class="pull-right">({{x.count}})</span></a></div>-->
                                     </div>
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
-                                <div class="inline-text accordeon-title">{{'filter by gender' | translate}}</div>
+                                <div class="inline-text accordeon-title" ng-click="getDistinctFilters(category)">{{'filter by gender' | translate}}</div>
+                                <div ng-if="loading_f" class="text-center">
+                                    <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
+                                </div>
                                 <div class="range-wrapper accordeon-entry">
                                     <label class="checkbox-entry" ng-repeat="x in d.distinct.gender">
                                         <input ng-model="x.isselected" type="checkbox" ng-click="setFilter()" /> <span class="check"></span> {{x.code | translate}}
@@ -57,7 +58,10 @@
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
-                                <div class="inline-text accordeon-title">{{'filter by price' | translate}}</div>
+                                <div class="inline-text accordeon-title" ng-click="getDistinctFilters(category)">{{'filter by price' | translate}}</div>
+                                <div ng-if="loading_f" class="text-center">
+                                    <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
+                                </div>
                                 <div class="range-wrapper accordeon-entry">
                                     <input ng-model="filter.price" type="range" min="0" max="{{d.response.maxPrice}}" value="{{filter.price}}" style="background-color:lightgray">
                                     <div class="range-price">
@@ -69,7 +73,10 @@
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
-                                <div class="inline-text accordeon-title">{{'filter by sizes' | translate}}</div>
+                                <div class="inline-text accordeon-title" ng-click="getDistinctFilters(category)">{{'filter by sizes' | translate}}</div>
+                                <div ng-if="loading_f" class="text-center">
+                                    <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
+                                </div>
                                 <div class="row accordeon-entry">
                                     <label class="checkbox-entry col-xs-6" ng-repeat="x in d.distinct.size">
                                         <input ng-model="x.isselected" type="checkbox" ng-click="setFilter()" /> <span class="check"></span> {{x.title}}
@@ -77,7 +84,10 @@
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
-                                <div class="inline-text accordeon-title">{{'filter by brands' | translate}}</div>
+                                <div class="inline-text accordeon-title" ng-click="getDistinctFilters(category)">{{'filter by brands' | translate}}</div>
+                                <div ng-if="loading_f" class="text-center">
+                                    <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
+                                </div>
                                 <div class="row accordeon-entry">
                                     <label class="checkbox-entry col-xs-6" ng-repeat="x in d.distinct.brand">
                                         <input ng-model="x.isselected" type="checkbox" ng-click="setFilter()" /> <span class="check"></span> {{x.title}}
@@ -85,7 +95,10 @@
                                 </div>
                             </div>
                             <div class="information-blocks" style="margin:0">
-                                <div class="inline-text accordeon-title">{{'filter by colours' | translate}}</div>
+                                <div class="inline-text accordeon-title" ng-click="getDistinctFilters(category)">{{'filter by colours' | translate}}</div>
+                                <div ng-if="loading_f" class="text-center">
+                                    <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
+                                </div>
                                 <div class="color-selector detail-info-entry accordeon-entry">
                                     <div style="background-color: {{x.colorfamily_en}};" class="entry {{x.isselected?'active':''}}" ng-repeat="x in d.distinct.colorGroup" ng-click="colorFilter(x)"></div>
                                     <div class="spacer"></div>

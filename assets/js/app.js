@@ -290,7 +290,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.category = "";
     }
 
-    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 16;
+    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 8;
     $scope.page = 1;
     $scope.searchQuery = null;
     $scope.filters = false;
@@ -323,7 +323,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $http({
             url: 'Products.asmx/GetProductsByCategory',
             method: 'POST',
-            data: { limit: $scope.show, category: category, sort: $scope.sort, order: $scope.sortOrder }
+            data: { limit:limit, category: category, sort: $scope.sort, order: $scope.sortOrder }
+            //data: { limit: $scope.show, category: category, sort: $scope.sort, order: $scope.sortOrder }
         })
       .then(function (response) {
           $scope.isloading = false;
@@ -352,7 +353,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         //    var clean_uri = uri.substring(0, uri.indexOf("?"));
         //    window.history.replaceState({}, document.title, clean_uri);
         //}
-
 
         $scope.searchQuery = '';
         $scope.category = category;
@@ -485,6 +485,30 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.showFilters = function () {
         $scope.displayFilters = $scope.displayFilters == false ? true : false;
+    }
+
+    $scope.loading_f = false;
+    var getDistinctFilters = function (category) {
+        $scope.loading_f = true;
+        $http({
+            url: 'Products.asmx/GetDistinctFilters',
+            method: 'POST',
+            data: { category: category }
+        })
+      .then(function (response) {
+          $scope.loading_f = false;
+          $scope.d.distinct = JSON.parse(response.data.d);
+      },
+      function (response) {
+          $scope.loading_f = false;
+          alert(JSON.parse(response.data.d));
+      });
+    }
+
+    $scope.getDistinctFilters = function (category) {
+        if (functions.isNullOrEmpty($scope.d.distinct)) {
+            return getDistinctFilters(category);
+        } return false;
     }
 
 }])

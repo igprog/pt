@@ -767,7 +767,7 @@ public class Products : System.Web.Services.WebService {
                         xx.Add(x);
                     }
                     xxx.products = xx;
-                    xxx.distinct = GetDistinct(connection, category, null, null);
+                    //xxx.distinct = GetDistinct(connection, category, null, null);
                     xxx.response.time = DateTime.Now.ToString();
                     xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
                     xxx.response.count = GetCount(string.Format(@"
@@ -860,7 +860,7 @@ public class Products : System.Web.Services.WebService {
                 }
             }
             xxx.products = xx;
-            xxx.distinct = GetDistinct(connection, null, group, type);
+            //xxx.distinct = GetDistinct(connection, null, group, type);
             xxx.response.time = DateTime.Now.ToString();
             xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             xxx.response.count = GetCount(string.Format(@"
@@ -1064,7 +1064,7 @@ public class Products : System.Web.Services.WebService {
             }
 
             xxx.products = xx;
-            xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
+            //xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
             xxx.response.time = DateTime.Now.ToString();
             xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             xxx.response.count = GetCount(string.Format(@"
