@@ -52,7 +52,7 @@
                                     <p><span class="text-capitalize">{{'product category' | translate}}</span>: {{p.category_en}}</p>
                                     <p><span class="text-capitalize">{{'gender' | translate}}</span>: {{p.gender_en}}</p>
                                     <p><span class="text-capitalize">{{'sizes' | translate}}</span>: {{p.sizes}}</p>
-                                    <p><span class="text-capitalize">{{'care labels' | translate}}</span>: <img src="./assets/img{{x.carelabellogos}}" alt="" ng-repeat="x in p.carelabel" style="width:40px; padding-left:5px" data-toggle="tooltip" title="{{x.carelabels_en}}" /></p>
+                                    <p ng-if="p.carelabel[0].carelabels_en !== ''"><span class="text-capitalize">{{'care labels' | translate}}</span>: <img src="./assets/img/{{p.supplier}}{{x.carelabellogos}}" alt="" ng-repeat="x in p.carelabel track by $index" style="width:40px; padding-left:5px" data-toggle="tooltip" title="{{x.carelabels_en}}" /></p>
                                     <div style="padding:10px"><img src="./assets/img/brand_logo/{{p.brand_code}}.png"/></div>
                                     <span ng-if="p.outlet==1" class="inline-label red ng-binding ng-scope">{{'product_is_on_sale' | translate}}!</span>
                                     <span ng-if="p.isnew==1" class="inline-label green ng-binding ng-scope">{{'product_new' | translate}}</span>
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12" style="margin-top:20px">
+                    <div ng-if="p.size_specification.length>0" class="col-sm-12" style="margin-top:20px">
                         <h3 class="block-title inline-product-column-title"><span class="text-capitalize">{{'size specification' | translate}}</span> (cm)</h3>
                         <div class="table-responsive">
                             <table class="table table-bordered table-condensed text-small" style="font-size:11px">
@@ -89,7 +89,7 @@
                                 </tr>
                                 <tr ng-repeat="x in p.size_specification">
                                     <td style="font-weight:bold">{{x.size}}</td>
-                                    <td ng-repeat="y in x.value.split('|')">{{y}}</td>
+                                    <td ng-repeat="y in x.value.split('|') track by $index">{{y}}</td>
                                 </tr>
                             </table>
                         </div>

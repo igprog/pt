@@ -70,6 +70,7 @@ public class Products : System.Web.Services.WebService {
         public string specimageurl { get; set; }
         public string isnew { get; set; }
         public string supplier { get; set; }
+        public string longdesc_en { get; set; }  // only for CottonClassic
 
     }
 
@@ -359,8 +360,7 @@ public class Products : System.Web.Services.WebService {
             string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
             List<ColorCC> colors = JsonConvert.DeserializeObject<List<ColorCC>>(GetJsonFile("json", "colors_cc"));
 
-
-            using (var reader = new StreamReader(path)) {
+            using (var reader = new StreamReader(path, Encoding.ASCII)) {
                 while (!reader.EndOfStream) {
                     var line = reader.ReadLine();
                     var values = line.Split(';');
@@ -423,6 +423,7 @@ public class Products : System.Web.Services.WebService {
                            z.specimageurl = "";
                            z.isnew = "0";
                            z.supplier = supplier;
+                           z.longdesc_en = string.Format("{0};{1}", values[29], values[30]);
                            zz.Add(z);
                        }
                     }
@@ -430,15 +431,16 @@ public class Products : System.Web.Services.WebService {
             }
 
             List<Product> pp = new List<Product>();
-            foreach(Product p in xx) {
+            foreach (Product p in xx) {
                 if (!BrandToExclude(p.brand)) {
                     var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
                     Product p_ = new Product();
                     p_ = p;
                     p_.category_en = aa.category_en;
                     p_.modelimageurl = aa.imageurl;
+                    p_.longdesc_en = aa.longdesc_en;
                     pp.Add(p_);
-                    
+
                 }
             }
 
@@ -449,7 +451,7 @@ public class Products : System.Web.Services.WebService {
             }
 
             SaveDdb(pp, yy, zz);
-           
+
             time = stopwatch.Elapsed.TotalSeconds;
             return string.Format(@"{0} items updated successfully in {1} seconds.", pp.Count(), time);
         } catch (Exception e) {
@@ -457,7 +459,8 @@ public class Products : System.Web.Services.WebService {
         }
     }
 
-    /*
+
+    /********* Euroton *********/
     [WebMethod]
     public string ImportCsv(string file) {
         try {
@@ -472,7 +475,7 @@ public class Products : System.Web.Services.WebService {
             Style z = new Style();
             string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
 
-            using (var reader = new StreamReader(path)) {
+            using (var reader = new StreamReader(path, Encoding.ASCII)) {
                 while (!reader.EndOfStream) {
                     var line = reader.ReadLine();
                     var values = line.Split(';');
@@ -557,7 +560,6 @@ public class Products : System.Web.Services.WebService {
             return e.Message;
         }
     }
-    */
 
     [WebMethod]
     public string CreateDataBaseUtt() {
@@ -692,7 +694,13 @@ public class Products : System.Web.Services.WebService {
     [WebMethod]
     public string GetDistinctFilters(string category) {
         try {
-            Distinct x = GetDistinct(category, null, null);
+            Distinct x = new Distinct();
+            using (SQLiteConnection connection = new SQLiteConnection(
+                string.Format("Data Source={0}", Server.MapPath(string.Format("~/App_Data/{0}", productDataBase))))) {
+                connection.Open();
+                x = GetDistinct(connection, category, null, null);
+                connection.Close();
+            }
             return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {
             return null;
@@ -719,7 +727,8 @@ public class Products : System.Web.Services.WebService {
                                         GROUP BY p.style
                                         {2}
                                         LIMIT {0}", limit, category, OrderBy(sort, order));
-                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                //using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
                     List<ProductData> xx = new List<ProductData>();
                     while (reader.Read()) {
@@ -758,13 +767,13 @@ public class Products : System.Web.Services.WebService {
                         xx.Add(x);
                     }
                     xxx.products = xx;
-                    xxx.distinct = GetDistinct(category, null, null);
+                    xxx.distinct = GetDistinct(connection, category, null, null);
                     xxx.response.time = DateTime.Now.ToString();
                     xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
                     xxx.response.count = GetCount(string.Format(@"
                                 SELECT COUNT(DISTINCT p.style) FROM product p WHERE p.category_code = '{0}'", category), connection);
                     xxx.response.maxPrice = xx.Max(a => a.price_min.net);
-                }
+               
                 connection.Close();
             }
             return JsonConvert.SerializeObject(xxx, Formatting.None);
@@ -851,7 +860,7 @@ public class Products : System.Web.Services.WebService {
                 }
             }
             xxx.products = xx;
-            xxx.distinct = GetDistinct(null, group, type);
+            xxx.distinct = GetDistinct(connection, null, group, type);
             xxx.response.time = DateTime.Now.ToString();
             xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             xxx.response.count = GetCount(string.Format(@"
@@ -1055,7 +1064,7 @@ public class Products : System.Web.Services.WebService {
             }
 
             xxx.products = xx;
-            xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(category, null, null) : null;
+            xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
             xxx.response.time = DateTime.Now.ToString();
             xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             xxx.response.count = GetCount(string.Format(@"
@@ -1490,7 +1499,7 @@ public class Products : System.Web.Services.WebService {
         }
     }
 
-    private Distinct GetDistinct(string productCategory, string group, string type) {
+    private Distinct GetDistinct(SQLiteConnection connection, string productCategory, string group, string type) {
         string query = "";
         switch (type) {
             case "brand":
@@ -1506,78 +1515,82 @@ public class Products : System.Web.Services.WebService {
                 break;
         }
 
-        SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
-        connection.Open();
-        if (!string.IsNullOrEmpty(productCategory)) {
-            query = string.Format("WHERE p.category_code = '{0}'", productCategory);
-        }
-        string sql = string.Format(@"
-                                SELECT DISTINCT p.brand, p.brand_code FROM product p
+        //SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
+      //  using (connection) {
+          //  connection.Open();
+            if (!string.IsNullOrEmpty(productCategory)) {
+                query = string.Format("WHERE p.category_code = '{0}'", productCategory);
+            }
+            string sql = string.Format(@"
+                                    SELECT DISTINCT p.brand, p.brand_code FROM product p
+                                    LEFT OUTER JOIN style st
+                                    ON p.style = st.style    
+                                    {0}", query);
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            List<Brand> brands = new List<Brand>();
+            while (reader.Read()) {
+                Brand brand = new Brand();
+                brand.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                brand.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                brand.isselected = false;
+                brands.Add(brand);
+            }
+
+            List<ColorGroup> allColorGroups = JsonConvert.DeserializeObject<List<ColorGroup>>(GetJsonFile("json", "colorgrouping"));
+
+            List<ColorGroup> colorGroups = JsonConvert.DeserializeObject<List<ColorGroup>>(GetJsonFile("json", "colorgrouping"))
+                                        .GroupBy(a => a.colorfamily_en).Select(g => g.First()).ToList();
+
+            List<DistColorGroup> distinctColorGroups = new List<DistColorGroup>();
+            foreach (ColorGroup colorGroup in colorGroups) {
+                DistColorGroup distinctColorGroup = new DistColorGroup();
+                distinctColorGroup.colorfamily_en = colorGroup.colorfamily_en;
+                distinctColorGroup.colorchild = GetColorChild(allColorGroups, colorGroup.colorfamily_en);
+                distinctColorGroups.Add(distinctColorGroup);
+            }
+
+            sql = string.Format(@"
+                                SELECT DISTINCT p.size FROM product p
                                 LEFT OUTER JOIN style st
-                                ON p.style = st.style    
+                                ON p.style = st.style 
                                 {0}", query);
-        SQLiteCommand command = new SQLiteCommand(sql, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        List<Brand> brands = new List<Brand>();
-        while (reader.Read()) {
-            Brand brand = new Brand();
-            brand.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-            brand.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-            brand.isselected = false;
-            brands.Add(brand);
-        }
+            command = new SQLiteCommand(sql, connection);
+            reader = command.ExecuteReader();
+            List<Size> sizes = new List<Size>();
+            while (reader.Read()) {
+                Size size = new Size();
+                size.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                size.isselected = false;
+                sizes.Add(size);
+            }
 
-        List<ColorGroup> allColorGroups = JsonConvert.DeserializeObject<List<ColorGroup>>(GetJsonFile("json", "colorgrouping"));
+            sql = string.Format(@"
+                                SELECT DISTINCT p.gender_en, p.gender_code FROM product p
+                                LEFT OUTER JOIN style st
+                                ON p.style = st.style 
+                                {0}", query);
+            command = new SQLiteCommand(sql, connection);
+            reader = command.ExecuteReader();
+            List<Gender> genders = new List<Gender>();
+            while (reader.Read()) {
+                Gender gender = new Gender();
+                gender.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                gender.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                gender.isselected = false;
+                genders.Add(gender);
+            }
 
-        List<ColorGroup> colorGroups = JsonConvert.DeserializeObject<List<ColorGroup>>(GetJsonFile("json", "colorgrouping"))
-                                    .GroupBy(a => a.colorfamily_en).Select(g => g.First()).ToList();
+            Distinct xx = new Distinct();
+            xx = new Distinct();
+            xx.brand = brands;
+            xx.colorGroup = distinctColorGroups;
+            xx.size = sizes;
+            xx.gender = genders;
 
-        List<DistColorGroup> distinctColorGroups = new List<DistColorGroup>();
-        foreach (ColorGroup colorGroup in colorGroups) {
-            DistColorGroup distinctColorGroup = new DistColorGroup();
-            distinctColorGroup.colorfamily_en = colorGroup.colorfamily_en;
-            distinctColorGroup.colorchild = GetColorChild(allColorGroups, colorGroup.colorfamily_en);
-            distinctColorGroups.Add(distinctColorGroup);
-        }
-
-        sql = string.Format(@"
-                            SELECT DISTINCT p.size FROM product p
-                            LEFT OUTER JOIN style st
-                            ON p.style = st.style 
-                            {0}", query);
-        command = new SQLiteCommand(sql, connection);
-        reader = command.ExecuteReader();
-        List<Size> sizes = new List<Size>();
-        while (reader.Read()) {
-            Size size = new Size();
-            size.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-            size.isselected = false;
-            sizes.Add(size);
-        }
-
-        sql = string.Format(@"
-                            SELECT DISTINCT p.gender_en, p.gender_code FROM product p
-                            LEFT OUTER JOIN style st
-                            ON p.style = st.style 
-                            {0}", query);
-        command = new SQLiteCommand(sql, connection);
-        reader = command.ExecuteReader();
-        List<Gender> genders = new List<Gender>();
-        while (reader.Read()) {
-            Gender gender = new Gender();
-            gender.title = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-            gender.code = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-            gender.isselected = false;
-            genders.Add(gender);
-        }
-
-        Distinct xx = new Distinct();
-        xx.brand = brands;
-        xx.colorGroup = distinctColorGroups;
-        xx.size = sizes;
-        xx.gender = genders;
-
-        connection.Close();
+          //  connection.Close();
+       // }
+        
         return xx;
     }
 
