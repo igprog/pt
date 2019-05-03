@@ -261,6 +261,43 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.displayFilters = false;
     var type = "";
 
+    debugger;
+    var queryString = location.search;
+    var params = queryString.split('&');
+    //if (params.length > 1) {
+    //    $scope.page = params[1].substring(5, 6);
+    //}
+
+    if (params[0].substring(1, 6) == 'brand') {
+        $scope.group = params[0].substring(7);
+        type = "brand";
+        $scope.current = params[0].substring(7);
+    }
+    if (params[0].substring(1, 7) == 'gender') {
+        $scope.group = params[0].substring(8);
+        type = "gender";
+        $scope.current = params[0].substring(8);
+    }
+    if (params[0].substring(1, 6) == 'isnew') {
+        $scope.group = params[0].substring(7);
+        type = "isnew";
+        $scope.current = "new models";
+    }
+    if (params[0].substring(1, 7) == 'outlet') {
+        $scope.group = params[0].substring(8);
+        type = "outlet";
+        $scope.current = "outlet";
+    }
+
+
+    if (params[0].substring(1, 9) == 'category') {
+        $scope.category = params[0].substring(10);
+        $scope.current = params[0].substring(10);
+    } else {
+        $scope.category = "";
+    }
+
+    /*
     if (location.search.substring(1, 6) == 'brand') {
         $scope.group = location.search.substring(7);
         type = "brand";
@@ -289,8 +326,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     } else {
         $scope.category = "";
     }
+    */
 
-    debugger;
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 8;
     $scope.page = 1;
     $scope.searchQuery = null;
@@ -386,8 +423,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
    } 
 
-
-
+    debugger;
     if ($sessionStorage.d !== undefined) {
         $scope.d = JSON.parse($sessionStorage.d);
         setPages($scope.d.response.count);
@@ -409,7 +445,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     //if (!angular.isDefined($scope.d) && $scope.group == '') {
     //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
         //  var category = location.search.substring(10);
-        $scope.category = location.search.substring(10) == '' ? 'T-Shirt' : location.search.substring(10);
+
+        //params[0].substring(10);
+        $scope.category = params[0].substring(10) == '' ? 'T-Shirt' : params[0].substring(10);
+        //$scope.category = location.search.substring(10) == '' ? 'T-Shirt' : location.search.substring(10);
         load($scope.show, $scope.category);
     }
 
@@ -420,6 +459,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.href = function (x) {
         $window.location.href = x;
+    }
+
+    $scope.changeCategory = function (x) {
+        debugger;
+        $scope.filters = false;
+        $scope.href(x);
+
+        //$scope.page = 1;
+        //$sessionStorage.page = 1;
     }
 
     var searchProducts = function (limit, category) {
