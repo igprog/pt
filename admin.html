@@ -503,7 +503,6 @@
             <fieldset class="fieldset-border">
                 <legend class="fieldset-border">COTTON CLASSICS</legend>
                 <form id="formUpload" ng-submit="upload()" enctype="multipart/form-data" method="post">
-
                     <div class="row">
                         <div class="col-sm-6 pt5">
                             <input ng-model="csvFileName" name="UploadedFile" id="UploadedFile" type="file" accept=".csv" class="form-control">
@@ -644,74 +643,88 @@
 
     <script type="text/ng-template" id="pricecoeff">
         <div ng-controller="coeffCtrl" class="container">
-            <h2>Price Coefficient</h2>
-            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
-            <div class="row" style="margin:5px 0px 0px 0px">
-                <label class="col-sm-2">VAT:</label>
-                <div class="col-sm-2">
-                    <input ng-model="d.vat" type="text" class="form-control" />
+
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Price Coefficient</legend>
+                <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+                <div class="row" style="margin:5px 0px 0px 0px">
+                    <label class="col-sm-2">VAT:</label>
+                    <div class="col-sm-2">
+                        <input ng-model="d.vat" type="text" class="form-control" />
+                    </div>
                 </div>
-            </div>
-            <div class="row" style="margin:5px 0px 0px 0px">
-                <label class="col-sm-2">EURO RATE:</label>
-                <div class="col-sm-2">
-                    <input ng-model="d.eurorate" type="text" class="form-control" />
+                <div class="row" style="margin:5px 0px 0px 0px">
+                    <label class="col-sm-2">EURO RATE:</label>
+                    <div class="col-sm-2">
+                        <input ng-model="d.eurorate" type="text" class="form-control" />
+                    </div>
                 </div>
-            </div>
-            <h4>Category</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered table-condensed">
-                    <tr>
-                        <th>Code</th>
-                        <th>Coeff</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr ng-repeat="x in d.category">
-                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
-                    </tr>
-                </table>
-            </div>
-            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
-            <h4>Brand</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered table-condensed">
-                    <tr>
-                        <th>Code</th>
-                        <th>Coeff</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr ng-repeat="x in d.brand">
-                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
-                    </tr>
-                </table>
-            </div>
-            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
-            <h4>Style</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered table-condensed">
-                    <tr>
-                        <th>Code</th>
-                        <th>Coeff</th>
-                        <th>Value</th>
-                        <th></th>
-                    </tr>
-                    <tr ng-repeat="x in d.style">
-                        <td><input ng-model="x.code" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
-                        <td><input ng-model="x.value" type="text" class="form-control" /></td>
-                        <td><button class="btn btn-default" ng-click="remove(x)"><i class="fa fa-trash-o text-danger"></i></button></td>
-                    </tr>
-                </table>
-                <button class="btn btn-warning" ng-click="add()">+</button>
-            </div>
-            <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            </fieldset>
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Category</legend>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed">
+                        <tr>
+                            <th>Code</th>
+                            <th>Coeff</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr ng-repeat="x in d.category">
+                            <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            </fieldset>
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Brand</legend>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed">
+                        <tr>
+                            <th>Code</th>
+                            <th>Coeff</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr ng-repeat="x in d.brand">
+                            <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            </fieldset>
+
+            <fieldset class="fieldset-border">
+                <legend class="fieldset-border">Style</legend>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed">
+                        <tr>
+                            <th>Code</th>
+                            <th>Coeff</th>
+                            <th>Value</th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="x in d.style">
+                            <td><input ng-model="x.code" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.coeff" type="text" class="form-control" /></td>
+                            <td><input ng-model="x.value" type="text" class="form-control" /></td>
+                            <td><button class="btn btn-default" ng-click="remove(x)"><i class="fa fa-trash-o text-danger"></i></button></td>
+                        </tr>
+                    </table>
+                    <button class="btn btn-warning" ng-click="add()">+</button>
+                </div>
+                <button class="btn btn-primary pull-right" ng-click="save(d)"><i class="fa fa-floppy-o"></i> Save</button>
+            </fieldset>
+
+            <!--<fieldset class="fieldset-border">
+                <legend class="fieldset-border">Price</legend>
+                <a href="updateprice.html" target="_blank" class="btn btn-success">Update Price</a>
+            </fieldset>-->
 
            <!--<pre>{{d | json}}</pre>-->
-
         </div>
     </script>
 
