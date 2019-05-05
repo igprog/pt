@@ -433,7 +433,7 @@ public class Products : System.Web.Services.WebService {
 
             List<Product> pp = new List<Product>();
             foreach (Product p in xx) {
-                if (!BrandToExclude(p.brand)) {
+                if (!BrandToExclude(p.brand) || !CategoryToExclude(p.category_en)) {
                     var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
                     Product p_ = new Product();
                     p_ = p;
@@ -1962,6 +1962,7 @@ public class Products : System.Web.Services.WebService {
         switch (category) {
             case "T-Shirts":
             case "Shirts, T-Shirts":
+            case "Shirts":
                 x = "T-Shirt";
                 break;
             case "Workwear":
@@ -1980,6 +1981,26 @@ public class Products : System.Web.Services.WebService {
             case "Accessories, Workwear":
                 x = "Workwear";
                 break;
+            case "Pants, Sports":
+            case "Accessories, Sports":
+                x = "Sport";
+                break;
+            case "Polos":
+                x = "Poloshirt";
+                break;
+            case "Sweats":
+            case "Pullover":
+                x = "Sweatshirt";
+                break;
+            case "business, Jackets":
+                x = "Corporate Wear";
+                break;
+            case "Pants":
+                x = "Trousers and Accessories";
+                break;
+            case "Frottier":
+                x = "Towel";
+                break;
             default:
                 x = category;
                 break;
@@ -1996,6 +2017,29 @@ public class Products : System.Web.Services.WebService {
             case "Premier":
             case "SOL's Bags":
             case "SOL's Collection":
+                x = true;
+                break;
+            default:
+                x = false;
+                break;
+        }
+        return x;
+    }
+
+    private bool CategoryToExclude(string category) {
+        bool x = false;
+        switch (category) {
+            case "Sales Support":
+            case "Shirts, Traditional Costumes":
+            case "Fleece, Traditional Costumes":
+            case "Polos, Traditional Costumes":
+            case "Caps and Headwear, Traditional Costumes":
+            case "Accessories, Traditional Costumes":
+            case "Caps and Headwear, Sales Support":
+            case "Pullover, Traditional Costumes":
+            case "Pants, Traditional Costumes":
+            case "Sales Support, Shirts":
+            case "Accessories, Pants, Traditional Costumes":
                 x = true;
                 break;
             default:
