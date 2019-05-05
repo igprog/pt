@@ -261,7 +261,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.displayFilters = false;
     var type = "";
 
-    debugger;
     var queryString = location.search;
     var params = queryString.split('&');
     //if (params.length > 1) {
@@ -297,37 +296,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.category = "";
     }
 
-    /*
-    if (location.search.substring(1, 6) == 'brand') {
-        $scope.group = location.search.substring(7);
-        type = "brand";
-        $scope.current = location.search.substring(7);
-    }
-    if (location.search.substring(1, 7) == 'gender') {
-        $scope.group = location.search.substring(8);
-        type = "gender";
-        $scope.current = location.search.substring(8);
-    }
-    if (location.search.substring(1, 6) == 'isnew') {
-        $scope.group = location.search.substring(7);
-        type = "isnew";
-        $scope.current = "new models";
-    }
-    if (location.search.substring(1, 7) == 'outlet') {
-        $scope.group = location.search.substring(8);
-        type = "outlet";
-        $scope.current = "outlet";
-    }
-
-
-    if (location.search.substring(1, 9) == 'category') {
-        $scope.category = location.search.substring(10);
-        $scope.current = location.search.substring(10);
-    } else {
-        $scope.category = "";
-    }
-    */
-
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 8;
     $scope.page = 1;
     $scope.searchQuery = null;
@@ -362,16 +330,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             url: 'Products.asmx/GetProductsByCategory',
             method: 'POST',
             data: { limit:limit, category: category, sort: $scope.sort, order: $scope.sortOrder }
-            //data: { limit: $scope.show, category: category, sort: $scope.sort, order: $scope.sortOrder }
         })
       .then(function (response) {
           $scope.isloading = false;
           $sessionStorage.d = response.data.d;
           $scope.d = JSON.parse(response.data.d);
           setPages($scope.d.response.count);
-          //if ($sessionStorage.page !== undefined) {
-          //    $scope.setPage($sessionStorage.page);
-          //}
           $scope.filter = {
               price: $scope.d.response.maxPrice,
               size: '',
@@ -385,13 +349,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.getProductsByCategory = function (category) {
-        //debugger;
-        //var uri = window.location.toString();
-        //if (uri.indexOf("?") > 0) {
-        //    var clean_uri = uri.substring(0, uri.indexOf("?"));
-        //    window.history.replaceState({}, document.title, clean_uri);
-        //}
-
         $scope.searchQuery = '';
         $scope.category = category;
         $scope.page = 1;
@@ -404,7 +361,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $http({
             url: 'Products.asmx/GetProductsByGroup',
             method: 'POST',
-            data: { limit: $scope.show, group: $scope.group, type: type }
+            data: { limit: $scope.show, group: $scope.group, type: type, sort: $scope.sort, order: $scope.sortOrder }
         })
       .then(function (response) {
           $scope.isloading = false;
@@ -423,13 +380,11 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
    } 
 
-    debugger;
     if ($sessionStorage.d !== undefined) {
         $scope.d = JSON.parse($sessionStorage.d);
         setPages($scope.d.response.count);
         if ($sessionStorage.page !== undefined) {
             $scope.page = $sessionStorage.page;
-            //$scope.setPage($sessionStorage.page);
         }
         if ($sessionStorage.search !== undefined) {
             $scope.searchQuery = $sessionStorage.search;
@@ -442,13 +397,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     if (!angular.isDefined($scope.d) || $scope.group == '') {
-    //if (!angular.isDefined($scope.d) && $scope.group == '') {
-    //if (location.search.substring(10) != '' && !angular.isDefined($scope.d)) {
-        //  var category = location.search.substring(10);
-
-        //params[0].substring(10);
         $scope.category = params[0].substring(10) == '' ? 'T-Shirt' : params[0].substring(10);
-        //$scope.category = location.search.substring(10) == '' ? 'T-Shirt' : location.search.substring(10);
         load($scope.show, $scope.category);
     }
 
@@ -465,15 +414,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         debugger;
         $scope.filters = false;
         $scope.href(x);
-
-        //$scope.page = 1;
-        //$sessionStorage.page = 1;
     }
 
     var searchProducts = function (limit, category) {
         $sessionStorage.search = $scope.searchQuery;
-        //$sessionStorage.limit = limit;
-        //$sessionStorage.category = category;
         $scope.isloading = true;
         $http({
             url: 'Products.asmx/SearchProducts',

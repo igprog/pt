@@ -38,14 +38,10 @@
             </div>
 
             <div class="right-entries">
-                <!--<a class="header-functionality-entry open-search-popup" href="#"><i class="fa fa-search"></i><span>{{'search' | translate}}</span></a>-->
                 <a class="header-functionality-entry" href="cart.html">
                     <i class="fa fa-shopping-cart"></i><span ng-if="priceTotal.net>0" class="badge" style="position:relative; top:-10px;">{{groupingCart.length}}</span><span class="text-capitalize"> {{'basket' | translate}}</span>
                     <b ng-if="priceTotal.net>0"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceTotal.net * config.currency.course | number:2}}</b>
                 </a>
-                <!--<a class="header-functionality-entry open-cart-popup" href="cart.html"><i class="fa fa-shopping-cart"></i><span class="badge" style="position:relative; top:-10px;">{{groupingCart.length}}</span><span> {{'basket' | translate}}</span>
-                 <b><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceTotal.net * config.currency.course | number:2}}</b>
-                </a>-->
             </div>
 
         </div>
@@ -69,8 +65,8 @@
                                     <img class="submenu-background" src="assets/img/various/menu-logo-brands.jpg" alt="" />
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="submenu-list-title"><a href="index.html?brand:all">{{'brands' | translate}}</a><span class="toggle-list-button"></span></div>
-                                            <ul class="list-type-1 toggle-list-container">
+                                            <div class="submenu-list-title"><a href="index.html?brand:all">{{'all brands' | translate}}</a><span class="toggle-list-button"></span></div>
+                                            <ul class="list-type-1 toggle-list-container" style="display:block">
                                                 <li><a href="index.html?brand:Gildan"><i class="fa fa-angle-right"></i>Gildan</a></li>
                                                 <li><a href="index.html?brand:K-UP"><i class="fa fa-angle-right"></i>K-UP</a></li>
                                                 <li><a href="index.html?brand:Kariban"><i class="fa fa-angle-right"></i>Kariban</a></li>

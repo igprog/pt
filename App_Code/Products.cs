@@ -153,7 +153,7 @@ public class Products : System.Web.Services.WebService {
         public List<CaseQty> piecesPerBox = new List<CaseQty>();
         public int outlet { get; set; }
         public string supplier { get; set; }
-        public double myprice { get; set; }
+       // public double myprice { get; set; }
 
         //   public int max_stock { get; set; }
     }
@@ -848,7 +848,7 @@ public class Products : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string GetProductsByGroup(int limit, string group, string type) {
+    public string GetProductsByGroup(int limit, string group, string type, string sort, string order) {
         try {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -885,7 +885,8 @@ public class Products : System.Web.Services.WebService {
                                             ON p.sku = t.sku
                                             {1}
                                             GROUP BY p.style
-                                            LIMIT {0}", limit, groupQuery);
+                                            {2}
+                                            LIMIT {0}", limit, groupQuery, OrderBy(sort, order));
                 SQLiteCommand command = new SQLiteCommand(sql, connection);
                 SQLiteDataReader reader = command.ExecuteReader();
             
@@ -1720,7 +1721,7 @@ public class Products : System.Web.Services.WebService {
         string sql = "";
         if (!string.IsNullOrEmpty(sort)) {
             if (sort == "price") {
-                sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS INTEGER) {1}", sort, order);
+                sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS DOUBLE) {1}", sort, order);
             } else {
                 sql = string.Format(@"ORDER BY p.supplier DESC, p.{0} {1}", sort, order);
             }
