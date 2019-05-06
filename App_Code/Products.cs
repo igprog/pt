@@ -405,7 +405,7 @@ public class Products : System.Web.Services.WebService {
                         y.supplier = supplier;
                         yy.Add(y);
 
-                        if (!string.IsNullOrEmpty(values[28]) || Convert.ToInt32(values[28]) !=0 )  {
+                        if (!string.IsNullOrEmpty(values[28]) && values[28] != "0" )  {
                            z = new Style();
                            z.style = values[28];
                            z.gsmweight = "";
@@ -431,30 +431,46 @@ public class Products : System.Web.Services.WebService {
                 }
             }
 
-            List<Product> pp = new List<Product>();
+            List<Product> products = new List<Product>();
             foreach (Product p in xx) {
-                if (!BrandToExclude(p.brand) || !CategoryToExclude(p.category_en)) {
-                    var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
-                    Product p_ = new Product();
-                    p_ = p;
-                    p_.category_en = aa.category_en;
-                    p_.modelimageurl = aa.imageurl;
-                    p_.longdesc_en = aa.longdesc_en;
-                    pp.Add(p_);
-
+                var aa = zz.Where(a => a.style == p.style).FirstOrDefault();
+                if (!CategoryToExclude(aa.category_en)) {
+                    if (!BrandToExclude(p.brand)) {
+                        Product p_ = new Product();
+                        p_ = p;
+                        p_.category_en = aa.category_en;
+                        p_.modelimageurl = aa.imageurl;
+                        p_.longdesc_en = aa.longdesc_en;
+                        products.Add(p_);
+                    }
                 }
             }
 
-            foreach (Style s in zz) {
-                var bb = xx.Where(a => a.style == s.style).ToList();
-                s.sizes = GetSizes(bb);
-                s.colors = GetColors(bb);
+            List<Stock> stock = new List<Stock>();
+            foreach (Stock st in yy) {
+                if (products.Any(a => a.sku == st.sku)) {
+                    Stock st_ = new Stock();
+                    st_ = st;
+                    stock.Add(st_);
+                }
             }
 
-            SaveDdb(pp, yy, zz);
+            List<Style> styles = new List<Style>();
+            foreach (Style s in zz) {
+                if (products.Any(a => a.style == s.style)) {
+                    Style s_ = new Style();
+                    s_ = s;
+                    var bb = products.Where(a => a.style == s.style).ToList();
+                    s_.sizes = GetSizes(bb);
+                    s_.colors = GetColors(bb);
+                    styles.Add(s_);
+                }
+            }
+
+            SaveDdb(products, stock, styles);
 
             time = stopwatch.Elapsed.TotalSeconds;
-            return string.Format(@"{0} items updated successfully in {1} seconds.", pp.Count(), time);
+            return string.Format(@"{0} items updated successfully in {1} seconds.", products.Count(), time);
         } catch (Exception e) {
             return e.Message;
         }
@@ -1801,47 +1817,43 @@ public class Products : System.Web.Services.WebService {
             using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
                 using (var command = new SQLiteCommand(connection)) {
-                    using (var transaction = connection.BeginTransaction()) {
+                using (var transaction = connection.BeginTransaction()) {
                         sql_delete = string.Format("DELETE FROM product WHERE supplier = '{0}';", xx[0].supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Product p in xx) {
-                            sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
-                                                , p.sku, p.colorname, p.size, p.style, p.brand.Replace("'", ""), p.modelimageurl, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", ""), p.gender_en.Replace("'", "")
-                                                , p.category_en.Replace("&", "and"), p.colorhex, p.colorgroup_id, p.isnew, p.colorimageurl, p.packshotimageurl
-                                                , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
-                                                , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
-
+                                sql = string.Format(@"INSERT OR REPLACE INTO product (sku, colorname, size, style, brand, modelimageurl, shortdesc_en, longdesc_en, gender_en, category_en, colorhex, colorgroup_id, isnew, colorimageurl, packshotimageurl, category_code, brand_code, gender_code, weight, colorswatch, outlet, caseqty, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}')"
+                                                    , p.sku, p.colorname, p.size, p.style, p.brand.Replace("'", ""), p.modelimageurl, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", ""), p.gender_en.Replace("'", "")
+                                                    , p.category_en.Replace("&", "and"), p.colorhex, p.colorgroup_id, p.isnew, p.colorimageurl, p.packshotimageurl
+                                                    , p.category_en.Replace("&", "And").Replace(" ", ""), p.brand.Replace("&", "And").Replace(" ", "").Replace("'", "")
+                                                    , p.gender_en.Replace(" ", "").Replace("'", ""), p.weight, p.colorswatch, p.outlet, p.caseqty, p.supplier);
+                                command.CommandText = sql;
+                                command.ExecuteNonQuery();
+                            }
                         sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", yy[0].supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Stock s in yy) {
-                            sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"
-                                                , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
-                                                , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, s.supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
-
-                      
+                                sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"
+                                                    , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
+                                                    , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, s.supplier);
+                                command.CommandText = sql;
+                                command.ExecuteNonQuery();
+                            }
                         sql_delete = string.Format("DELETE FROM style WHERE supplier = '{0}';", distinctStyle[0].supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Style s in distinctStyle) {
-                            sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
-                                                , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
-                                                , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
-                                                , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, s.supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
-                     
+                                sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
+                                                    , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
+                                                    , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
+                                                    , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, s.supplier);
+                                command.CommandText = sql;
+                                command.ExecuteNonQuery();
+                            }
                         foreach (Product p in xx) {
                             sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
@@ -1855,7 +1867,6 @@ public class Products : System.Web.Services.WebService {
                 }
                 connection.Close();
             }
-
     }
 
     private string GetSize(string sku) {
