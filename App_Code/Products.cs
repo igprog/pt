@@ -1963,6 +1963,7 @@ public class Products : System.Web.Services.WebService {
             case "T-Shirts":
             case "Shirts, T-Shirts":
             case "Shirts":
+            case "Sweats, T-Shirts":
                 x = "T-Shirt";
                 break;
             case "Workwear":
@@ -1979,13 +1980,28 @@ public class Products : System.Web.Services.WebService {
             case "Bags, Workwear":
             case "Accessories, Shirts, Workwear":
             case "Accessories, Workwear":
+            case "Caps and Headwear, Workwear":
+            case "Accessories, Shoes":
                 x = "Workwear";
                 break;
             case "Pants, Sports":
             case "Accessories, Sports":
+            case "Sports":
+            case "Sports, Underwear":
+            case "Pants, Underwear":
+            case "Bags, Sports":
+            case "Polos, Sports":
+            case "Jackets, Sports":
+            case "Frottier, Sports":
+            case "Sports, Sweats":
+            case "Shirts, Sports":
+            case "Jackets, Pants, Sports":
+            case "Accessories, Caps and Headwear, Sports":
                 x = "Sport";
                 break;
             case "Polos":
+            case "Polos, T-Shirts":
+            case "Polos, Sweats":
                 x = "Poloshirt";
                 break;
             case "Sweats":
@@ -1993,14 +2009,50 @@ public class Products : System.Web.Services.WebService {
                 x = "Sweatshirt";
                 break;
             case "business, Jackets":
+            case "business, Pants":
+            case "Accessories, business":
+            case "Accessories, business, Shirts":
+            case "business":
                 x = "Corporate Wear";
                 break;
             case "Pants":
+            case "Pants, Sports, Sweats":
+            case "Accessories":
+            case "business, Underwear":
+            case "Pants, Sweats":
+            case "Underwear":
+            case "Pants, Sports, Underwear":
+            case "Accessories, Sports, Underwear":
                 x = "Trousers and Accessories";
                 break;
             case "Frottier":
                 x = "Towel";
                 break;
+            case "Jackets":
+                x = "Jacket";
+                break;
+            case "Caps and Headwear":
+            case "Accessories, Caps and Headwear":
+            case "Caps and Headwear, Sports":
+            case "Caps and Headwear, Fleece":
+                x = "Cap";
+                break;
+            case "Bags":
+            case "Umbrellas":
+                x = "Bag";
+                break;
+            case "Baby":
+            case "Baby, T-Shirts":
+            case "Baby, Frottier":
+                x = "Kid";
+                break;
+            case "Fleece":
+            case "Accessories, Fleece":
+            case "Fleece, Jackets":
+            case "Fleece, Sweats":
+                x = "Polar and Softshell";
+                break;
+
             default:
                 x = category;
                 break;
