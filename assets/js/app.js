@@ -1037,7 +1037,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
              '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
-             sendMail(sendto, subject, body, null);
+             sendMail(sendto, subject, body, []);
              if (isCheckout == true) {
                  $scope.nextStep('shippingMethodTpl', 3);
              }
@@ -1054,15 +1054,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     var sendMail = function (sendto, subject, body, cc) {
         $http({
-            url: 'https://promo-tekstil.com/assets/php/mailer/sendmail.php',
+            url: 'Mail.asmx/SendMail',
             method: 'POST',
-            data: { sendto:sendto, subject:subject, body:body, cc:cc }
+            data: { sendTo: sendto, subject: subject, body: body, cc: cc }
         })
      .then(function (response) {
-        // alert(response.data);
+         //alert($translate.instant(response.data.d));
      },
      function (response) {
-         alert(response.data);
+         alert(response.data.d);
      });
     }
 
@@ -1163,7 +1163,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
              '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com ' + $translate.instant('team') + '</a></p>';
-             sendMail(sendto, subject, body, null);
+             sendMail(sendto, subject, body, []);
 
            //TODO
             var bodyToMe =
@@ -1222,7 +1222,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          '<br/>' +
          '<p>Vaš <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
 
-         sendMail(sendto, subject, body, null);
+         sendMail(sendto, subject, body, []);
 
          $scope.loginMsg = $translate.instant("your account information has been sent to the email address");
          $scope.loginMsgClass = 'info';
@@ -1383,7 +1383,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 }])
 
 .controller('contactCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
-
     $scope.d = {
         firstName: null,
         lastName: null,
@@ -1391,7 +1390,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         message: null
     }
     $scope.alertmsg = null;
-
     $scope.issent = false;
     $scope.isrequired = false;
     $scope.send = function (d) {
@@ -1408,7 +1406,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             return false;
         }
 
-
         $scope.issent = false;
         var subject = $translate.instant('inquiry') + ' - Promo-Tekstil.com';
         var body = '<p>' + $translate.instant('inquiry') + ':</p>' +
@@ -1418,14 +1415,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         '<br/>' +
         '<p>Upit: ' + d.message + '</p>';
         $http({
-            url: 'https://promo-tekstil.com/assets/php/mailer/sendmail.php',
+            url: 'Mail.asmx/SendMail',
             method: 'POST',
-            data: { sendto:$rootScope.config.email, subject:subject, body:body, cc:null }
+            data: { sendTo: $rootScope.config.email, subject: subject, body: body, cc: $rootScope.config.emailcc }
         })
      .then(function (response) {
          $scope.issent = true;
          $scope.alertmsg = null;
-         $scope.response = response.data;
+         $scope.response = $translate.instant(response.data.d);
          $window.location.href = '#msg';
      },
      function (response) {

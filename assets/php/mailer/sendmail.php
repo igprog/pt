@@ -14,14 +14,14 @@ $cc = $postData->cc;
 $mail = new PHPMailer();
 $mail->CharSet = "UTF-8";
 $mail->IsSMTP();
-$mail->Host = "mi3-wss5.a2hosting.com";
+$mail->Host = "mail.promo-tekstil.com";
 $mail->SMTPAuth = true;
 $mail->SMTPSecure = "ssl";
 $mail->Port = 465;
-$mail->Username = "web@promo-tekstil.com";
-$mail->Password = "vMap90#3";
+$mail->Username = "info@promo-tekstil.com";
+$mail->Password = "PromoTekstil$";
 
-$mail->From = "web@promo-tekstil.com";
+$mail->From = "info@promo-tekstil.com";
 $mail->FromName = "Promo-Tekstil.com";
 $mail->AddAddress($sendto);
 foreach ($cc as $m) {
