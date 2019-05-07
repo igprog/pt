@@ -324,7 +324,6 @@ public class Products : System.Web.Services.WebService {
                 z.isnew = x.isnew.ToString();
                 z.supplier = x.supplier;
                 zz.Add(z);
-
             }
 
             List<Style> distinctStyle = zz
@@ -475,7 +474,6 @@ public class Products : System.Web.Services.WebService {
             return e.Message;
         }
     }
-
 
     /********* Euroton *********/
     [WebMethod]
@@ -796,7 +794,7 @@ public class Products : System.Web.Services.WebService {
                                         ON p.sku = s.sku
                                         LEFT OUTER JOIN translation t
                                         ON p.sku = t.sku
-                                        WHERE p.category_code = '{1}'
+                                        WHERE p.category_code = '{1}' AND CAST(s.price AS DOUBLE) > 0
                                         GROUP BY p.style
                                         {2}
                                         LIMIT {0}", limit, category, OrderBy(sort, order));
@@ -833,9 +831,9 @@ public class Products : System.Web.Services.WebService {
                     //TODO
                     //  x.myprice = reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26));
 
-                   // x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
+                    // x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
 
-                    x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26)));
+                        x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26)));
 
                    // x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
 
@@ -888,6 +886,7 @@ public class Products : System.Web.Services.WebService {
                     groupQuery = string.Format("WHERE st.outlet = '{0}'", group);
                     break;
             }
+            groupQuery = string.IsNullOrEmpty(groupQuery) ? "WHERE CAST(s.price AS DOUBLE) > 0" : string.Format("{0} AND CAST(s.price AS DOUBLE) > 0", groupQuery);
 
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
             using (connection) {
@@ -992,11 +991,18 @@ public class Products : System.Web.Services.WebService {
                     isWhere = true;
                     break;
             }
+            if (string.IsNullOrEmpty(groupQuery)) {
+                groupQuery = "WHERE CAST(s.price AS DOUBLE) > 0";
+                isWhere = true;
+            } else {
+                groupQuery = string.Format("{0} AND CAST(s.price AS DOUBLE) > 0", groupQuery);
+            }
 
             //TODO
             string sqlCategoryQuery = "";
             if (!string.IsNullOrEmpty(category)) {
-                sqlCategoryQuery = string.Format("WHERE p.category_code = '{0}'", category);
+                //sqlCategoryQuery = string.Format("WHERE p.category_code = '{0}'", category);
+                sqlCategoryQuery = string.Format("AND p.category_code = '{0}'", category);
                 isWhere = true;
             }
             
@@ -1005,9 +1011,9 @@ public class Products : System.Web.Services.WebService {
             
             if (!string.IsNullOrWhiteSpace(search)) {
                 sqlSearchQuery = string.Format(@"
-                    {1} p.sku LIKE '%{0}%' OR p.style LIKE '%{0}%' 
+                    {1} (p.sku LIKE '%{0}%' OR p.style LIKE '%{0}%' 
                     OR p.brand LIKE '%{0}%' OR p.shortdesc_en LIKE '%{0}%' OR p.longdesc_en LIKE '%{0}%'
-                    OR t.shortdesc_hr LIKE '%{0}%' OR t.longdesc_hr LIKE '%{0}%' OR t.category_hr LIKE '%{0}%' ", search, isWhere == true ? "AND" : "WHERE");
+                    OR t.shortdesc_hr LIKE '%{0}%' OR t.longdesc_hr LIKE '%{0}%' OR t.category_hr LIKE '%{0}%') ", search, isWhere == true ? "AND" : "WHERE");
                 isWhere = true;
             }
             else {
@@ -1154,9 +1160,18 @@ public class Products : System.Web.Services.WebService {
                                             SELECT COUNT(DISTINCT p.style) FROM product p
                                             LEFT OUTER JOIN style st
                                             ON p.style = st.style
+                                            LEFT OUTER JOIN stock s
+                                            ON p.sku = s.sku
                                             LEFT OUTER JOIN translation t
                                             ON p.sku = t.sku
                                             {0} {1} {2} {3}"
+                //xxx.response.count = GetCount(string.Format(@"
+                //                            SELECT COUNT(DISTINCT p.style) FROM product p
+                //                            LEFT OUTER JOIN style st
+                //                            ON p.style = st.style
+                //                            LEFT OUTER JOIN translation t
+                //                            ON p.sku = t.sku
+                //                            {0} {1} {2} {3}"
                                 , groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
                 xxx.response.maxPrice = xx.Count > 0 ? xx.Max(a => a.price_min.net) : 0;
                 connection.Close();
@@ -1737,7 +1752,8 @@ public class Products : System.Web.Services.WebService {
         string sql = "";
         if (!string.IsNullOrEmpty(sort)) {
             if (sort == "price") {
-                sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS DOUBLE) {1}", sort, order);
+                //sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS DOUBLE) {1}", sort, order);
+                sql = string.Format(@"ORDER BY CAST(s.{0} AS DOUBLE) {1}", sort, order);
             } else {
                 sql = string.Format(@"ORDER BY p.supplier DESC, p.{0} {1}", sort, order);
             }
