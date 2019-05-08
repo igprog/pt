@@ -84,6 +84,16 @@
       "code": "TrousersAndAccessories",
       "coeff": 2.0,
       "value": 0.0
+    },
+    {
+      "code": "Lacuna",
+      "coeff": 1.6,
+      "value": 0.0
+    },
+    {
+      "code": "Workwear",
+      "coeff": 1.6,
+      "value": 0.0
     }
   ],
   "brand": [
@@ -133,6 +143,16 @@
       "value": 0.0
     },
     {
+      "code": "JustHoods",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "AmericanApparel",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
       "code": "AllWeDois",
       "coeff": 1.0,
       "value": 0.0
@@ -169,6 +189,161 @@
     },
     {
       "code": "TriDri",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "UBClassics",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "JustPolos",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "BAndCCollection",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "JamesAndNicholson",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "MyrtleBeach",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Stedman",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Bella+Canvas",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Russell",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "RussellCollection",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "RussellWorkwear",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "FruitoftheLoom",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "TEEJAYS",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "ResultHeadwear",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Spiro",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Result",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Atlantis",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Karlowsky",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Promodoro",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Continental",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "EarthPositive",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Fare",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Halfar",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "TheOneTowelling",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "WestfordMill",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Quadra",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "BagBase",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Mantis",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Babybugz",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "HRM",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Korntex",
+      "coeff": 1.0,
+      "value": 0.0
+    },
+    {
+      "code": "Extras",
       "coeff": 1.0,
       "value": 0.0
     }
