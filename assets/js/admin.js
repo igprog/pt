@@ -6,10 +6,24 @@ angular.module('app', [])
 
 .controller('adminCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
+    var reloadPage = function () {
+        if (typeof (Storage) !== 'undefined') {
+            if (localStorage.version) {
+                if (localStorage.version != $rootScope.config.version) {
+                    localStorage.version = $rootScope.config.version;
+                    window.location.reload(true);
+                }
+            } else {
+                localStorage.version = $rootScope.config.version;
+            }
+        }
+    }
+
     var getConfig = function () {
         $http.get('./config/config.json')
           .then(function (response) {
               $rootScope.config = response.data;
+              reloadPage();
           });
     };
     getConfig();

@@ -840,7 +840,7 @@ public class Products : System.Web.Services.WebService {
 
                     // x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
                     //x.price_max = pr.GetPrice(x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MAX"));
-                    x.stock = new List<Stock>();
+                        x.stock = new List<Stock>();
                         x.outlet = reader.GetValue(21) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(21));  //  GetOutlet(connection, x.style);
                         x.isnew = reader.GetValue(22) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(22));
                         x.shortdesc_hr = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
@@ -952,6 +952,8 @@ public class Products : System.Web.Services.WebService {
                                                             SELECT COUNT(DISTINCT p.style) FROM product p
                                                             LEFT OUTER JOIN style st
                                                             ON p.style = st.style
+                                                            LEFT OUTER JOIN stock s
+                                                            ON p.sku = s.sku
                                                             {0}", groupQuery), connection);
                 xxx.response.maxPrice = xx.Max(a => a.price_min.net);
                 connection.Close();

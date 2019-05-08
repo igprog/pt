@@ -29,27 +29,28 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $rootScope.u = JSON.parse($sessionStorage.u);
     }
 
+    var reloadPage = function () {
+        if (typeof (Storage) !== 'undefined') {
+            if (localStorage.version) {
+                if (localStorage.version != $rootScope.config.version) {
+                    localStorage.version = $rootScope.config.version;
+                    window.location.reload(true);
+                }
+            } else {
+                localStorage.version = $rootScope.config.version;
+            }
+        }
+    }
+
     var getConfig = function () {
         $http.get('./config/config.json')
           .then(function (response) {
               $sessionStorage.config = response.data;
               $rootScope.config = response.data;
+              reloadPage();
           });
     };
-    if (!angular.isDefined($sessionStorage.config)) {
-        getConfig();
-    } else {
-        $rootScope.config = $sessionStorage.config;
-    }
-
-    //$scope.sort = 'uttprice';
-    //$scope.sortorder = 'ASC';
-    //$scope.colorFilter = '';
-    ////  $scope.distinct.brand = '';
-
-    //$scope.setSortOrder = function () {
-    //    $scope.sortorder = $scope.sortorder == 'ASC' ? 'DESC' : 'ASC';
-    //}
+    getConfig();
 
     var loadCategories = function () {
         $http({
@@ -59,7 +60,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         })
       .then(function (response) {
          $scope.categories = JSON.parse(response.data.d);
-        //  loadProducts(1000);
       },
       function (response) {
           alert(JSON.parse(response.data.d));
@@ -95,7 +95,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          alert(response.data.d);
      });
     }
-    loadNewProducts();
+    //loadNewProducts();
 
     $scope.href = function (x) {
         $window.location.href = x;
@@ -115,7 +115,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          alert(response.data.d);
      });
     }
-    initFeatured();
+    //initFeatured();
 
     $scope.isShowFeatured = false;
     $scope.showFeatured = function () {
@@ -184,76 +184,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        // $localStorage.config.currency = x;  // TODO
     };
 
-    /******* Test mail ***********
-    $scope.testMail1 = function () {
-        $http({
-            url: 'Mail.asmx/TestMail1',
-            method: 'POST',
-            data: { }
-        })
-      .then(function (response) {
-          alert(response.data.d);
-      },
-      function (response) {
-          alert(JSON.parse(response.data.d));
-      });
-    }
-
-    $scope.testMail2 = function () {
-        $http({
-            url: 'Mail.asmx/TestMail2',
-            method: 'POST',
-            data: {}
-        })
-      .then(function (response) {
-          alert(response.data.d);
-      },
-      function (response) {
-          alert(JSON.parse(response.data.d));
-      });
-    }
-
-    $scope.sendto = 'igprog@yahoo.com';
-    $scope.subject = 'Registracija - Promo-Tekstil.com';
-    $scope.body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
-    '<p>Poštovani [First name, Last name, Company]</p>,' +
-    '<p>Zahvaljujemo na registraciji na Promo-Tekstil.com</p>' +
-    '<p>Vaši korisnički podaci za prijavu:</p>' +
-    '<p>Korisničko ime: [username]</p>' +
-    '<p>Lozinka: [password]</p>' +
-    '<p>Prijavite se klikom na poveznicu: [login-link]</p>' +
-    '<p>Vaš korisnički profil možete uređivati na poveznici: [user-area-link]</p>' +
-    '<br/>' +
-    '<p>Želimo vam ugodnu kupovinu.</p>' +
-    '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila [info@promo-tekstil.com].</p>' +
-    '<br/>' +
-    '<p>Srdačno,</p>' +
-    '<br/>' +
-    '<p>Vaš Promo-Tekstil.com Tim</p>';
-    
-
-    $scope.testMailPhp = function () {
-        $http({
-            url: 'https://promo-tekstil.com/assets/php/mailer/testmail.php',
-            method: 'POST',
-            data: { sendto: $scope.sendto, subject: $scope.subject, body: $scope.body }
-        })
-     .then(function (response) {
-         alert(response.data);
-     },
-     function (response) {
-         alert(response.data);
-     });
-    }
-
-    ******* end Test mail ***********/
-
 }])
 
-.controller('productsCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate) {
+//.controller('productsCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate) {
 
 
-}])
+//}])
 
 .controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
     $scope.isloading = false;
@@ -411,7 +347,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.changeCategory = function (x) {
-        debugger;
         $scope.filters = false;
         $scope.href(x);
     }
@@ -521,7 +456,11 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
               $rootScope.config = response.data;
           });
     };
-    if (!angular.isDefined($sessionStorage.config)) { getConfig(); }
+    if (!angular.isDefined($sessionStorage.config)) {
+        getConfig();
+    } else {
+        $rootScope.config = $sessionStorage.config;
+    }
 
     $scope.stockGroupedByColor = [];
     $scope.loading = false;
@@ -791,23 +730,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         return (functions.shortdesc(x, lang));
     }
 
-    //$scope.priceTotal = [];
-    //$scope.getTotalPrice = function (x) {
-    //    $http({
-    //        url: 'Cart.asmx/GetTotalPrice',
-    //        method: 'POST',
-    //        data: { groupingCart: x, user: $rootScope.u }
-    //    })
-    //   .then(function (response) {
-    //       $scope.totals = JSON.parse(response.data.d);
-    //   },
-    //   function (response) {
-    //       alert(response.data.d);
-    //   });
-    //}
-
-
-
 }])
 
 .controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
@@ -863,7 +785,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              if (isCheckout == true) {
                  $scope.nextStep('deliveryTpl', 2);
              } else {
-                // $window.location.href = 'user.html';
                  $scope.successLoginMsg = $translate.instant("you have successfully logged in into") + " " + $rootScope.config.appname;
                  $scope.loginMsgClass = 'message-box message-success';
                  $scope.showSuccessLoginMsg = true;
@@ -890,7 +811,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          alert(JSON.parse(response.data.d));
      });
     }
-   // $rootScope.u = !angular.isDefined($sessionStorage.u) ? $scope.initUser() : JSON.parse($sessionStorage.u);
 
     $scope.toggleTpl = function (x) {
         $scope.tpl = x;
@@ -1009,7 +929,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             return false;
         }
 
-
         $http({
             url: 'Users.asmx/Signup',
             method: 'POST',
@@ -1106,9 +1025,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
            if (response.data.d.startsWith($translate.instant('no stock for'))) {
                alert(response.data.d);
            }
-           //if (response.data.d.startsWith("No Stock for")) {
-           //    alert(response.data.d);
-           //}
 
            $scope.order = JSON.parse(response.data.d);
 
@@ -1165,7 +1081,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com ' + $translate.instant('team') + '</a></p>';
              sendMail(sendto, subject, body, []);
 
-           //TODO
             var bodyToMe =
                '<p>' + $translate.instant('new order') + ': ' +
                '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
@@ -1199,9 +1114,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
      .then(function (response) {
          var user = JSON.parse(response.data.d);
          var sendto = user.email;
-          //  + $translate.instant('account information'); //  $translate.instant('account information') + ' - Promo-Tekstil.com';  //TODO - Translate not working
-
-        // var subject = 'account information - Promo-Tekstil.com'; //  $translate.instant('account information') + ' - Promo-Tekstil.com';  //TODO - Translate not working
          var subject = $translate.instant('account information') + ' - Promo-Tekstil.com';
          var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
          '<br/>' +
@@ -1248,9 +1160,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             })
                .then(function (response) {
                    $rootScope.orderOptions = JSON.parse(response.data.d);
-                   //$scope.toggleTpl(tpl);
-                   //$scope.currentStep = step;
-                   //gotoAnchor('checkout');
                },
                function (response) {
                    alert(response.data.d);
@@ -1262,27 +1171,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.toggleTpl(tpl);
         $scope.currentStep = step;
         gotoAnchor('checkout');
-
-        //if (step == 3) {
-        //    $http({
-        //        url: 'Orders.asmx/GetOrderOptionsJson',
-        //        method: 'POST',
-        //        data: ''
-        //    })
-        //       .then(function (response) {
-        //           $rootScope.orderOptions = JSON.parse(response.data.d);
-        //           $scope.toggleTpl(tpl);
-        //           $scope.currentStep = step;
-        //           gotoAnchor('checkout');
-        //       },
-        //       function (response) {
-        //           alert(response.data.d);
-        //       });
-        //    } else {
-        //        $scope.toggleTpl(tpl);
-        //        $scope.currentStep = step;
-        //        gotoAnchor('checkout');
-        //    }
     }
 
     $scope.setProgressBarClass = function (x) {
