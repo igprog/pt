@@ -294,7 +294,7 @@ public class Products : System.Web.Services.WebService {
                 y.color = x.colorname;
                 y.size = x.size;
                 y.sku = x.sku;
-                y.uttstock = node.SelectSingleNode("zalihaProizvoda").InnerText;
+                y.uttstock = node.SelectSingleNode("zalihaProizvoda").InnerText.Split(',')[0];
                 y.suppstock = "";
                 y.price = !string.IsNullOrEmpty(node.SelectSingleNode("cijena").InnerText) ? Convert.ToDouble(node.SelectSingleNode("cijena").InnerText.Replace(",", "."))/eurHrkCourse : 0;
                 y.specialprice = 0;
