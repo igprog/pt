@@ -1,7 +1,7 @@
 ﻿<div ng-controller="productCtrl" class="content-push" >
     <div class="breadcrumb-box">
         <a href="index.html">{{'home' | translate}}</a>
-        <a href="shop.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
+        <a href="index.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
         <a ng-show="shortdesc(p, config.language.code)" href="#"><span style="font-weight:bold">{{p.style}}</span>
             {{shortdesc(p, config.language.code)}}
         </a>

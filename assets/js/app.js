@@ -32,7 +32,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     var reloadPage = function () {
         if (typeof (Storage) !== 'undefined') {
             if (localStorage.version) {
-                if (localStorage.version != $rootScope.config.version) {
+                if (localStorage.version !== $rootScope.config.version) {
                     localStorage.version = $rootScope.config.version;
                     window.location.reload(true);
                 }
@@ -448,7 +448,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.limit = 50;
     $scope.addedToCart = false;
     $scope.enableButton = false;
-
     var getConfig = function () {
         $http.get('./config/config.json')
           .then(function (response) {

@@ -75,6 +75,7 @@ public class Orders : System.Web.Services.WebService {
         public int quantity { get; set; }
         public string color { get; set; }
         public string size { get; set; }
+        public string supplier { get; set; }
 
     }
 
@@ -314,6 +315,7 @@ public class Orders : System.Web.Services.WebService {
                     i.size = variant.size;
                     i.style = variant.style;
                     i.shortdesc_en = variant.shortdesc_en;
+                    i.supplier = variant.supplier;
                     order.items.Add(i);
                     order.netPrice += Math.Round(variant.myprice.net * pr.GetCoeff().eurorate * variant.quantity, 2);
                     order.grossPrice += Math.Round(variant.myprice.gross * pr.GetCoeff().eurorate * variant.quantity, 2);
@@ -529,11 +531,15 @@ public class Orders : System.Web.Services.WebService {
         foreach(string s in str) {
             if (!string.IsNullOrEmpty(s)){
                 Item x = new Item();
-                x.sku = s.Split(':')[0];
-                x.quantity = Convert.ToInt32(s.Split(':')[1]);
-                if (s.Split(':').Length > 2) {
-                    x.color = s.Split(':')[2];
-                    x.size = s.Split(':')[3];
+                string[] str_ = s.Split(':');
+                x.sku = str_[0];
+                x.quantity = Convert.ToInt32(str_[1]);
+                if (str_.Length > 2) {
+                    x.color = str_[2];
+                    x.size = str_[3];
+                    if (str_.Length > 4) {
+                        x.supplier = str_[4];
+                    }
                 }
                 xx.Add(x);
             }
@@ -543,7 +549,7 @@ public class Orders : System.Web.Services.WebService {
     private string SetItems(List<Item> items) {
         string str = "";
         foreach (Item item in items) {
-            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ";";
+            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ";";
         }
         return str;
     }

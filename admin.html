@@ -214,7 +214,6 @@
                                     <td><input ng-model="o.pin" type="text" class="form-control" /></td>
                                 </tr>
                             </table>
-                            <!--<pre>{{o | json}}</pre>-->
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -306,40 +305,50 @@
                             <div class="small">Net price: {{o.netPrice}} kn</div>
                         </div>
                     </div>
-
                     <div class="row">
-                        <div class="col-sm-6 well">
-                            <label>Items</label>
-                            <div class="table-responsive">
-                                <table class="table table-condensed">
-                                    <tr>
-                                        <th>sku</th>
-                                        <th>qty</th>
-                                        <th>color</th>
-                                        <th>size</th>
-                                        <th><a href="" class="btn btn-warning" ng-click="checkStock()"><i class="fa fa-check"></i> Check stock</a></th>
-                                    </tr>
-                                    <tr ng-repeat="x in items track by $index">
-                                        <td class="nowrap">{{x.sku}}</td>
-                                        <td><input ng-model="x.qty" type="number" min="0" class="form-control" style="width:100px" /></td>
-                                        <td><input ng-model="x.color" class="form-control" /></td>
-                                        <td><input ng-model="x.size" class="form-control" /></td>
-                                        <td><label class="label label-{{x.isoderable=='Orderable'?'success':'danger'}} mt5">{{x.isoderable}}</label></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div ng-if="config.debug">
-                                <label>Stock request</label>
-                                <pre>{{stockRequest | json}}</pre>
+                        <div class="col-sm-9">
+                            <div class="well">
+                                <div class="row p10">
+                                    <div class="col-sm-6">
+                                        <label>Items</label>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <button class="btn btn-warning" ng-click="checkStock()"><i class="fa fa-check"></i> Check stock</button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-condensed">
+                                        <tr>
+                                            <th>sku</th>
+                                            <th>qty</th>
+                                            <th>color</th>
+                                            <th>size</th>
+                                            <th></th>
+                                            <th>supplier</th>
+                                        </tr>
+                                        <tr ng-repeat="x in items track by $index">
+                                            <td class="nowrap">{{x.sku}}</td>
+                                            <td><input ng-model="x.qty" type="number" min="0" class="form-control" style="width:100px" /></td>
+                                            <td><input ng-model="x.color" class="form-control" /></td>
+                                            <td><input ng-model="x.size" class="form-control" /></td>
+                                            <td><label class="label label-{{x.isoderable=='Orderable'?'success':'danger'}} mt5">{{x.isoderable}}</label></td>
+                                            <td class="text-uppercase"><label>{{x.supplier}}</label></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div ng-if="config.debug">
+                                    <label>Stock request</label>
+                                    <pre>{{stockRequest | json}}</pre>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                             <a href="" class="btn btn-success m10" ng-click="sendOrder(o)"><i class="fa fa-paper-plane-o"></i> Send order</a>
                             <label>Send order request</label>
                             <pre>{{sendOrderRequest | json}}</pre>
                         </div>
                     </div>
-                    <div class="row well">
+                    <div class="row">
                         <div class="col-sm-6">
                             <label>Stock response</label>
                             <pre class="alert alert-danger">{{stockResponse | json}}</pre>
@@ -348,7 +357,6 @@
                             <label>Order response</label>
                             <pre class="alert alert-danger">{{orderResponse | json}}</pre>
                         </div>
-
                     </div>
                 </div>
             </div>

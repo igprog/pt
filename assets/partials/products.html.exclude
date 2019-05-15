@@ -1,0 +1,58 @@
+﻿<div ng-controller="productsCtrl" ng-cloak>
+
+    {{'products' | translate}}: <span class="badge">{{products.length}}</span>
+   <!--<pre>{{products | json}}</pre>-->
+
+    <div class="information-blocks">
+        <div class="tabs-container">
+            <div class="swiper-tabs tabs-switch">
+                <div class="title">Products</div>
+                <div class="list">
+                    <a class="block-title tab-switcher active">Featured Products</a>
+                    <a class="block-title tab-switcher">Popular Products</a>
+                    <a class="block-title tab-switcher">New Arrivals</a>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div>
+                <div class="tabs-entry">
+                    <div class="products-swiper">
+                        <div class="swiper-container" data-autoplay="0" data-loop="0" data-speed="500" data-center="0" data-slides-per-view="responsive" data-xs-slides="2" data-int-slides="2" data-sm-slides="3" data-md-slides="4" data-lg-slides="4" data-add-slides="4">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" ng-repeat="x in products | limitTo:10 track by $index">
+                                    <div class="paddings-container">
+                                        <div class="product-slide-entry">
+                                            <div class="product-image">
+                                                <img src="{{x.style.imageurl}}" alt="" />
+                                                <a class="top-line-a left"><i class="fa fa-retweet"></i></a>
+                                                <a class="top-line-a right"><i class="fa fa-heart"></i></a>
+                                                <div class="bottom-line">
+                                                    <a class="bottom-line-a"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                                </div>
+                                            </div>
+                                            <a class="tag" href="#">{{x.style.category_en}}</a>
+                                            <span class="badge">{{x.style.style}}</span>
+                                            <a class="title" href="product.html?style:{{x.style.style}}">{{(x.style.shortdesc_en | translate).replace('amp;', '')}}</a>
+                                            <div class="rating-box">
+                                                <div class="star"><i class="fa fa-star"></i></div>
+                                                <div class="star"><i class="fa fa-star"></i></div>
+                                                <div class="star"><i class="fa fa-star"></i></div>
+                                                <div class="star"><i class="fa fa-star"></i></div>
+                                                <div class="star"><i class="fa fa-star"></i></div>
+                                            </div>
+                                            <div class="price">
+                                                <div class="prev"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{x.price.net*config.currency.course | number:2}}</div>
+                                                <div class="current"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{x.price.net*config.currency.course | number:2}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

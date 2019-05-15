@@ -167,6 +167,7 @@ angular.module('app', [])
             item.qty = value.quantity;
             item.color = value.color;
             item.size = value.size;
+            item.supplier = value.supplier;
             items.push(item);
         });
         return items;
