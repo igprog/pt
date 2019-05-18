@@ -104,9 +104,19 @@ namespace Igprog {
                 category_code NVARCHAR(50),
                 specimageurl NVARCHAR(50),
                 isnew NVARCHAR(50),
-                supplier NVARCHAR(50))";
+                supplier NVARCHAR(50),
+                brand NVARCHAR(50),
+                shortdesc_en NVARCHAR(50),
+                gender_en NVARCHAR(50),
+                brand_code NVARCHAR(50),
+                gender_code NVARCHAR(50),
+                shortdesc_hr NVARCHAR(50),
+                price_min NVARCHAR(50))";
+
+
+
+
             //string sql = @"
-            //    DROP TABLE IF EXISTS style;
             //    CREATE TABLE IF NOT EXISTS style
             //    (style NVARCHAR(50) PRIMARY KEY,
             //    gsmweight NVARCHAR(50),
@@ -180,7 +190,7 @@ namespace Igprog {
         public void Translation(string path) {
             string sql = @"
                 CREATE TABLE IF NOT EXISTS translation
-                (sku NVARCHAR(50) PRIMARY KEY,
+                (style NVARCHAR(50) PRIMARY KEY,
                 shortdesc_en NVARCHAR(50),
                 shortdesc_hr NVARCHAR(50),
                 longdesc_en NVARCHAR(200),
@@ -188,6 +198,16 @@ namespace Igprog {
                 category_en NVARCHAR(50),
                 category_hr NVARCHAR(50),
                 supplier NVARCHAR(50))";
+            //string sql = @"
+            //    CREATE TABLE IF NOT EXISTS translation
+            //    (sku NVARCHAR(50) PRIMARY KEY,
+            //    shortdesc_en NVARCHAR(50),
+            //    shortdesc_hr NVARCHAR(50),
+            //    longdesc_en NVARCHAR(200),
+            //    longdesc_hr NVARCHAR(200),
+            //    category_en NVARCHAR(50),
+            //    category_hr NVARCHAR(50),
+            //    supplier NVARCHAR(50))";
             CreateTable(path, sql);
         }
 

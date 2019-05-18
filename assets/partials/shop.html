@@ -1,10 +1,9 @@
 <div class="content-push" ng-controller="shopCtrl">
-    <span class="pull-right text-primary text-bold">{{'loading time' | translate}} {{d.response.responseTime | number:2}} s</span>
+    <span class="pull-right text-primary text-bold" title="{{config.debug?(d.response | json):''}}">{{'loading time' | translate}} {{d.response.responseTime | number:2}} s</span>
     <div class="breadcrumb-box">
         <a href="index.html"><span class="text-capitalize">{{'home' | translate}}</span></a>
         <a href="#"><span class="text-capitalize">{{current | translate}}</span></a>
     </div>
-
     <div class="information-blocks" style="margin:0">
         <div class="row">
                 <div class="col-md-3 col-sm-4 blog-sidebar">
@@ -161,7 +160,12 @@
                                 <div class="product-slide-entry shift-image">
                                     <a href="product.html?style={{x.style}}">
                                         <div class="product-image" >
-                                            <div ng-if="x.supplier!=='lacuna'">
+                                            <div>
+                                                <img check-image ng-if="x.imageurl" ng-src="{{x.imageurl}}" alt="" class="img-resize" />
+                                            </div>
+
+                                            <!--OLD-->
+                                            <!--<div ng-if="x.supplier!=='lacuna'">
                                                 <img check-image ng-if="x.modelimageurl!=null" ng-src="{{x.modelimageurl}}" alt="" class="img-resize" />
                                                 <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1">
                                                     <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{x.packshotimageurl[0]}}" alt="" />
@@ -176,7 +180,7 @@
                                                     <img check-image ng-if="x.packshotimageurl.length==1" src="{{x.packshotimageurl[0]}}" alt="" />
                                                     <img check-image ng-if="x.packshotimageurl.length>1" src="{{x.packshotimageurl[1]}}" alt="" />
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </a>
                                     <a href="product.html?style={{x.style}}">

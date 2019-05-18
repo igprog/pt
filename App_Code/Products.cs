@@ -71,6 +71,13 @@ public class Products : System.Web.Services.WebService {
         public string isnew { get; set; }
         public string supplier { get; set; }
         public string longdesc_en { get; set; }  // only for CottonClassic
+        public string brand { get; set; }
+        public string shortdesc_en { get; set; }
+        public string gender_en { get; set; } 
+        public string brand_code { get; set; } 
+        public string gender_code { get; set; } 
+        public string shortdesc_hr { get; set; } 
+        public double price_min { get; set; }
 
     }
 
@@ -153,6 +160,8 @@ public class Products : System.Web.Services.WebService {
         public List<CaseQty> piecesPerBox = new List<CaseQty>();
         public int outlet { get; set; }
         public string supplier { get; set; }
+
+        public string imageurl { get; set; }
        // public double myprice { get; set; }
 
         //   public int max_stock { get; set; }
@@ -206,6 +215,13 @@ public class Products : System.Web.Services.WebService {
 
     public class Response {
         public string time { get; set; }
+        public double responseTime1 { get; set; }
+        public double responseTime2 { get; set; }
+        public double responseTime3 { get; set; }
+        public double responseTime4 { get; set; }
+        public double responseTime5 { get; set; }
+        public double responseTime6 { get; set; }
+        public double responseTime7 { get; set; }
         public double responseTime { get; set; }
         public int count { get; set; }
         public double maxPrice { get; set; }
@@ -229,6 +245,7 @@ public class Products : System.Web.Services.WebService {
     }
 
     public class Translation {
+        public string style { get; set; }
         public string shortdesc_en { get; set; }
         public string shortdesc_hr { get; set; }
         public string longdesc_en { get; set; }
@@ -597,9 +614,11 @@ public class Products : System.Web.Services.WebService {
 
             db.CreateDataBase(productDataBase, db.product);
             db.CreateDataBase(productDataBase, db.style);
-            db.CreateDataBase(productDataBase, db.stock);
+            //db.CreateDataBase(productDataBase, db.stock);
             db.CreateDataBase(productDataBase, db.size);
             db.CreateDataBase(productDataBase, db.translation);
+
+            List<Translation> tt = GetTranslations();
 
             using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
@@ -624,26 +643,50 @@ public class Products : System.Web.Services.WebService {
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
                         foreach (Style s in style) {
-                            sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
+                            var prod = products.Find(a => a.style == s.style);
+                            double price_min = stock.Where(a => a.style == s.style).Min(a => a.price);
+                            var tran = tt.Find(a => a.style == s.style);
+                            sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
+                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
                                                 , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
                                                 , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
-                                                , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier);
+                                                , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier
+                                                , prod.brand.Replace("'", ""), prod.shortdesc_en.Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", ""), prod.brand.Replace("&", "And").Replace(" ", "").Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", "")
+                                                , tran!=null?tran.shortdesc_hr:"", price_min);
                             command.CommandText = sql;
+                            command.ExecuteNonQuery();
+
+                            string sql_tran = string.Format(@"INSERT OR IGNORE INTO translation (style, shortdesc_en, longdesc_en, category_en, supplier)
+                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                                               , s.style, prod.shortdesc_en.Replace("'", ""), prod.longdesc_en.Replace("'", "")
+                                               , s.category_en.Replace("&", "and"), supplier);
+                            command.CommandText = sql_tran;
                             command.ExecuteNonQuery();
                         }
 
-                        sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", supplier);
-                        command.CommandText = sql_delete;
-                        command.ExecuteNonQuery();
-                        foreach (Stock s in stock) {
-                            sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"
-                                                , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
-                                                , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
+
+                        //OLD
+                        //foreach (Style s in style) {
+                        //    sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
+                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
+                        //                        , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
+                        //                        , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
+                        //                        , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier);
+                        //    command.CommandText = sql;
+                        //    command.ExecuteNonQuery();
+                        //}
+
+                        //sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", supplier);
+                        //command.CommandText = sql_delete;
+                        //command.ExecuteNonQuery();
+                        //foreach (Stock s in stock) {
+                        //    sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
+                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"
+                        //                        , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
+                        //                        , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, supplier);
+                        //    command.CommandText = sql;
+                        //    command.ExecuteNonQuery();
+                        //}
 
                         foreach (SizeSpecification s in size) {
                             sql = string.Format(@"INSERT INTO size (style, size, name_en, value, supplier)
@@ -664,14 +707,24 @@ public class Products : System.Web.Services.WebService {
                               command.ExecuteNonQuery();
                           } */
 
-                        foreach (Product p in products) {
-                            sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                                                , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
-                                                , p.category_en.Replace("&", "and"), supplier);
-                            command.CommandText = sql;
-                            command.ExecuteNonQuery();
-                        }
+
+                        //foreach (Style s in style) {
+                        //    sql = string.Format(@"INSERT OR IGNORE INTO translation (style, shortdesc_en, longdesc_en, category_en, supplier)
+                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                        //                        , s.style, s.shortdesc_en.Replace("'", ""), s.longdesc_en.Replace("'", "")
+                        //                        , s.category_en.Replace("&", "and"), supplier);
+                        //    command.CommandText = sql;
+                        //    command.ExecuteNonQuery();
+                        //}
+
+                        //foreach (Product p in products) {
+                        //    sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
+                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                        //                        , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
+                        //                        , p.category_en.Replace("&", "and"), supplier);
+                        //    command.CommandText = sql;
+                        //    command.ExecuteNonQuery();
+                        //}
 
                         transaction.Commit();
                     }
@@ -777,6 +830,69 @@ public class Products : System.Web.Services.WebService {
         }
     }
 
+
+    [WebMethod]
+    public string GetProductsByCategory(int limit, string category, string sort, string order) {
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            ProductsData xxx = new ProductsData();
+            xxx.response.responseTime1 = stopwatch.Elapsed.TotalSeconds;
+            Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            xxx.response.responseTime2 = stopwatch.Elapsed.TotalSeconds;
+            using (SQLiteConnection connection = new SQLiteConnection(
+                string.Format("Data Source={0}", Server.MapPath(string.Format("~/App_Data/{0}", productDataBase))))) {
+                                                    // 0          1       2            3              4        5          6          7           8             9           10                11           12            13
+                string sql = string.Format(@"SELECT style, imageurl, isnew, category_code, outlet, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min FROM style
+                                        WHERE category_code = '{0}' AND CAST(price_min AS DOUBLE) > 0 {1} LIMIT {2}", category, OrderBy(sort, order), limit);
+                xxx.response.responseTime3 = stopwatch.Elapsed.TotalSeconds;
+                using(SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    connection.Open();
+                    xxx.response.responseTime4 = stopwatch.Elapsed.TotalSeconds;
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        xxx.response.responseTime5 = stopwatch.Elapsed.TotalSeconds;
+                        List<ProductData> xx = new List<ProductData>();
+                        while (reader.Read()) {
+                          //  ProductData x = GetProductData(reader, priceCoeff); // new ProductData();
+
+                            //x.supplier = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
+                            //x.style = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                            //x.imageurl = reader.GetValue(1) == DBNull.Value ? "" : GetImgUrl(reader.GetString(1), x.supplier);
+                            //x.brand = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
+                            //x.shortdesc_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
+                            //x.gender_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
+                            //x.isnew = reader.GetValue(2) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(2));
+                            //x.category_code = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
+                            //x.brand_code = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
+                            //x.gender_code = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
+                            //x.stock = new List<Stock>();
+                            //x.outlet = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(4));  //  GetOutlet(connection, x.style);
+                            //x.isnew = reader.GetValue(5) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(5));
+                            //x.shortdesc_hr = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
+                            //double price_min = reader.GetValue(13) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(13));
+                            //x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, price_min);
+                            xx.Add(GetProductData(reader, priceCoeff));
+                        }
+                        xxx.products = xx;
+                    };
+                }
+
+                xxx.response.responseTime6 = stopwatch.Elapsed.TotalSeconds;
+                xxx.response.count = GetCount(string.Format(@"
+                                    SELECT COUNT(style) FROM style WHERE category_code = '{0}'", category), connection);
+                xxx.response.maxPrice = xxx.products.Max(a => a.price_min.net);
+                xxx.response.responseTime7 = stopwatch.Elapsed.TotalSeconds;
+                connection.Close();
+                xxx.response.time = DateTime.Now.ToString();
+                xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
+            }
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
+        } catch (Exception e) { return e.Message; }
+    }
+
+
+
+    /* //OLD
     [WebMethod]
     public string GetProductsByCategory(int limit, string category, string sort, string order) {
         try {
@@ -784,6 +900,7 @@ public class Products : System.Web.Services.WebService {
             stopwatch.Start();
             ProductsData xxx = new ProductsData();
             Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            xxx.response.responseTime1 = stopwatch.Elapsed.TotalSeconds;
             using (SQLiteConnection connection = new SQLiteConnection(
                 string.Format("Data Source={0}", Server.MapPath(string.Format("~/App_Data/{0}", productDataBase))))) {
                 connection.Open();
@@ -799,10 +916,14 @@ public class Products : System.Web.Services.WebService {
                                         {2}
                                         LIMIT {0}", limit, category, OrderBy(sort, order));
                 //using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+
+                xxx.response.responseTime2 = stopwatch.Elapsed.TotalSeconds;
                 SQLiteCommand command = new SQLiteCommand(sql, connection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-                    List<ProductData> xx = new List<ProductData>();
-                    while (reader.Read()) {
+                xxx.response.responseTime3 = stopwatch.Elapsed.TotalSeconds;
+                SQLiteDataReader reader = command.ExecuteReader();
+                
+                List<ProductData> xx = new List<ProductData>();
+                while (reader.Read()) {
                         ProductData x = new ProductData();
                         x.supplier = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
                         // x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
@@ -829,9 +950,9 @@ public class Products : System.Web.Services.WebService {
                         x.gender_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
 
                     //TODO
-                    //  x.myprice = reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26));
+                     // x.myprice = reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26));
 
-                    // x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
+                     //x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, GetUttPrice(connection, x.style, "MIN"));
 
                         x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, reader.GetValue(26) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(26)));
 
@@ -848,19 +969,78 @@ public class Products : System.Web.Services.WebService {
                         xx.Add(x);
                     }
                     xxx.products = xx;
-                    //xxx.distinct = GetDistinct(connection, category, null, null);
-                    xxx.response.time = DateTime.Now.ToString();
-                    xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
-                    xxx.response.count = GetCount(string.Format(@"
+               
+                //xxx.distinct = GetDistinct(connection, category, null, null);
+                xxx.response.count = GetCount(string.Format(@"
                                     SELECT COUNT(DISTINCT p.style) FROM product p WHERE p.category_code = '{0}'", category), connection);
                     xxx.response.maxPrice = xx.Max(a => a.price_min.net);
-
+                xxx.response.responseTime4 = stopwatch.Elapsed.TotalSeconds;
                 connection.Close();
+                xxx.response.time = DateTime.Now.ToString();
+                xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             }
             return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
+    */
 
+
+    [WebMethod]
+    public string GetProductsByGroup(int limit, string group, string type, string sort, string order) {
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            List<Categories.SelectedCategories> sc = categories.GetCategories();
+            Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            ProductsData xxx = new ProductsData();
+            string groupQuery = "";
+            switch (type) {
+                case "brand":
+                    if(group != "all") {
+                        groupQuery = string.Format("WHERE brand_code = '{0}'", group);
+                    }
+                break;
+                case "gender":
+                    groupQuery = string.Format("WHERE gender_code = '{0}'", group);
+                    break;
+                case "isnew":
+                    groupQuery = string.Format("WHERE isnew = '{0}'", group);
+                    break;
+                case "outlet":
+                    groupQuery = string.Format("WHERE outlet = '{0}'", group);
+                    break;
+            }
+            groupQuery = string.IsNullOrEmpty(groupQuery) ? "WHERE CAST(price_min AS DOUBLE) > 0" : string.Format("{0} AND CAST(price_min AS DOUBLE) > 0", groupQuery);
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                string sql = string.Format(@"SELECT style, imageurl, isnew, category_code, outlet, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min FROM style
+                                            {0} {1} LIMIT {2}", groupQuery, OrderBy(sort, order), limit);
+                List<ProductData> xx = new List<ProductData>();
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            ProductData x = GetProductData(reader, priceCoeff);
+                            if (sc.Exists(a => a.code.ToLower() == x.category_code.ToLower())) {
+                                if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true) {
+                                    xx.Add(x);
+                                }
+                            }
+                        }
+                    } 
+                }
+                xxx.products = xx;
+                xxx.response.time = DateTime.Now.ToString();
+                xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
+                xxx.response.count = GetCount(string.Format(@"
+                                    SELECT COUNT(style) FROM style {0}", groupQuery), connection);
+                xxx.response.maxPrice = xx.Max(a => a.price_min.net);
+                connection.Close();
+            }  
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
+        } catch (Exception e) { return e.Message; }
+    }
+
+    /*  //OLD
     [WebMethod]
     public string GetProductsByGroup(int limit, string group, string type, string sort, string order) {
         try {
@@ -888,8 +1068,7 @@ public class Products : System.Web.Services.WebService {
             }
             groupQuery = string.IsNullOrEmpty(groupQuery) ? "WHERE CAST(s.price AS DOUBLE) > 0" : string.Format("{0} AND CAST(s.price AS DOUBLE) > 0", groupQuery);
 
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
-            using (connection) {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
                 string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier, MIN(s.price) FROM product p
                                             LEFT OUTER JOIN style st
@@ -904,7 +1083,7 @@ public class Products : System.Web.Services.WebService {
                                             LIMIT {0}", limit, groupQuery, OrderBy(sort, order));
                 SQLiteCommand command = new SQLiteCommand(sql, connection);
                 SQLiteDataReader reader = command.ExecuteReader();
-            
+
                 List<ProductData> xx = new List<ProductData>();
                 while (reader.Read()) {
                     ProductData x = new ProductData();
@@ -938,8 +1117,10 @@ public class Products : System.Web.Services.WebService {
                     x.isnew = reader.GetValue(22) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(22));
                     x.shortdesc_hr = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
                     //x.longdesc_hr = reader.GetValue(24) == DBNull.Value ? null : reader.GetString(24).Split(';');
-                    if (sc.Exists(a => a.code.ToLower() == x.category_code.ToLower())) {
-                        if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true) {
+                    if (sc.Exists(a => a.code.ToLower() == x.category_code.ToLower()))
+                    {
+                        if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true)
+                        {
                             xx.Add(x);
                         }
                     }
@@ -962,7 +1143,196 @@ public class Products : System.Web.Services.WebService {
             return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
+    */
 
+    [WebMethod]
+    public string SearchProducts(int limit, int page, string category, string search, Distinct filter, string group, string type, string sort, string order) {
+        try {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            List<Categories.SelectedCategories> sc = categories.GetCategories();
+            Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            ProductsData xxx = new ProductsData();
+            bool isWhere = false;
+            string groupQuery = "";
+            switch (type) {
+                case "brand":
+                    if(group != "all") {
+                        groupQuery = string.Format("WHERE brand_code = '{0}'", group);
+                        isWhere = true;
+                    }
+                break;
+                case "gender":
+                    groupQuery = string.Format("WHERE gender_code = '{0}'", group);
+                    isWhere = true;
+                    break;
+                case "isnew":
+                    groupQuery = string.Format("WHERE isnew = '{0}'", group);
+                    isWhere = true;
+                    break;
+                case "outlet":
+                    groupQuery = string.Format("WHERE outlet = '{0}'", group);
+                    isWhere = true;
+                    break;
+            }
+            if (string.IsNullOrEmpty(groupQuery)) {
+                groupQuery = "WHERE CAST(price_min AS DOUBLE) > 0";
+                isWhere = true;
+            } else {
+                groupQuery = string.Format("{0} AND CAST(price_min AS DOUBLE) > 0", groupQuery);
+            }
+
+            //TODO
+            string sqlCategoryQuery = "";
+            if (!string.IsNullOrEmpty(category)) {
+                sqlCategoryQuery = string.Format("AND category_code = '{0}'", category);
+                isWhere = true;
+            }
+            
+            string sqlSearchQuery = "";
+            string sqlFilterQuery = "";
+            
+            if (!string.IsNullOrWhiteSpace(search)) {
+                sqlSearchQuery = string.Format(@"
+                    {1} (style LIKE '%{0}%' 
+                    OR brand LIKE '%{0}%' OR shortdesc_en LIKE '%{0}%' OR shortdesc_hr LIKE '%{0}%') ", search, isWhere == true ? "AND" : "WHERE");
+                isWhere = true;
+            }
+            else {
+                if(filter != null) {
+                    /*
+                    StringBuilder sqlColorfilter = new StringBuilder();
+                    if (filter.colorGroup.Count > 0) {
+                        if (filter.colorGroup.Count(a => a.isselected == true) > 0) {
+                            bool isOr = false;
+                            sqlColorfilter.AppendLine(string.Format("{0} (", isWhere == true ? "AND" : "WHERE"));
+                            isWhere = true;
+                            foreach (DistColorGroup cg in filter.colorGroup) {
+                                if (cg.isselected == true) {
+                                    if (isOr == true) {
+                                        sqlColorfilter.AppendLine("OR (");
+                                    } else {
+                                        sqlColorfilter.AppendLine(" (");
+                                    }
+                                    int count = 0;
+                                    foreach (var cc in cg.colorchild) {
+                                        sqlColorfilter.AppendLine(string.Format(@"{0} p.colorname = '{1}'", count > 0 && count < cg.colorchild.Count ? "OR" : "", cc.colorgroupname));
+                                        count += 1;
+                                    }
+                                    sqlColorfilter.AppendLine(" )");
+                                    isOr = true;
+                                }
+                            }
+                            sqlColorfilter.AppendLine(" )");
+                        }
+                    }
+
+                    StringBuilder sqlSizeFilter = new StringBuilder();
+                    if (filter.size.Count > 0) {
+                        if (filter.size.Count(a => a.isselected == true) > 0) {
+                            isWhere = true;
+                            sqlSizeFilter.AppendLine("AND (");
+                            int count = 0;
+                            foreach (Size s in filter.size) {
+                                if (s.isselected == true) {
+                                    sqlSizeFilter.AppendLine(string.Format(@"{0} p.size = '{1}'", count > 0 && count < filter.size.Count ? "OR" : "", s.title));
+                                    count += 1;
+                                }
+                            }
+                            sqlSizeFilter.AppendLine(" )");
+                        }
+                    }
+                    */
+
+                    StringBuilder sqlBrandFilter = new StringBuilder();
+                    if (filter.brand.Count > 0) {
+                        if (filter.brand.Count(a => a.isselected == true) > 0) {
+                            isWhere = true;
+                            sqlBrandFilter.AppendLine("AND (");
+                            int count = 0;
+                            foreach (Brand b in filter.brand) {
+                                if (b.isselected == true) {
+                                    sqlBrandFilter.AppendLine(string.Format(@"{0} brand_code = '{1}'", count > 0 && count < filter.brand.Count ? "OR" : "", b.code));
+                                    count += 1;
+                                }
+                            }
+                            sqlBrandFilter.AppendLine(" )");
+                        }
+                    }
+
+                    StringBuilder sqlGenderFilter = new StringBuilder();
+                    if (filter.gender.Count > 0) {
+                        if (filter.gender.Count(a => a.isselected == true) > 0) {
+                            isWhere = true;
+                            sqlGenderFilter.AppendLine("AND (");
+                            int count = 0;
+                            foreach (Gender g in filter.gender) {
+                                if (g.isselected == true) {
+                                    sqlGenderFilter.AppendLine(string.Format(@"{0} gender_code = '{1}'", count > 0 && count < filter.gender.Count ? "OR" : "", g.code));
+                                    count += 1;
+                                }
+                            }
+                            sqlGenderFilter.AppendLine(" )");
+                        }
+                    }
+                    //sqlFilterQuery = sqlColorfilter + " " + sqlSizeFilter + " " + sqlBrandFilter + "" + sqlGenderFilter;
+                    sqlFilterQuery = sqlBrandFilter + "" + sqlGenderFilter;
+                }
+            }
+            List<ProductData> xx = new List<ProductData>();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                string sql = string.Format(@"SELECT style, imageurl, isnew, category_code, outlet, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min FROM style
+                                            {5} {2} {3} {4} LIMIT {0}  OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
+
+                //string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier, MIN(s.price) FROM product p
+                //                            LEFT OUTER JOIN style st
+                //                            ON p.style = st.style
+                //                            LEFT OUTER JOIN stock s
+                //                            ON p.sku = s.sku
+                //                            LEFT OUTER JOIN translation t
+                //                            ON p.sku = t.sku
+                //                            {5}
+                //                            {2} {3} {4}
+                //                            GROUP BY p.style
+                //                            {6}
+                //                            LIMIT {0} OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            ProductData x = GetProductData(reader, priceCoeff);
+                            if (sc.Exists(a => a.code.ToLower() == x.category_code.ToLower())) {
+                                if (sc.Find(a => a.code.ToLower() == x.category_code.ToLower()).isselected == true) {
+                                    xx.Add(x);
+                                }
+                            }
+                        }
+                    }    
+                }
+                xxx.products = xx;
+                //xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
+                xxx.response.count = GetCount(string.Format(@"
+                                    SELECT COUNT(style) FROM style {0} {1} {2} {3}", groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
+                //xxx.response.count = GetCount(string.Format(@"
+                //                            SELECT COUNT(DISTINCT p.style) FROM product p
+                //                            LEFT OUTER JOIN style st
+                //                            ON p.style = st.style
+                //                            LEFT OUTER JOIN stock s
+                //                            ON p.sku = s.sku
+                //                            LEFT OUTER JOIN translation t
+                //                            ON p.sku = t.sku
+                //                            {0} {1} {2} {3}"
+                //                , groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
+                connection.Close();
+            }
+            xxx.response.maxPrice = xx.Count > 0 ? xx.Max(a => a.price_min.net) : 0;
+            xxx.response.time = DateTime.Now.ToString();
+            xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
+            return JsonConvert.SerializeObject(xxx, Formatting.None);
+        } catch (Exception e) { return e.Message; }
+    }
+
+    /*  //OLD
     [WebMethod]
     public string SearchProducts(int limit, int page, string category, string search, Distinct filter, string group, string type, string sort, string order) {
         try {
@@ -1156,8 +1526,6 @@ public class Products : System.Web.Services.WebService {
 
                 xxx.products = xx;
                 //xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
-                xxx.response.time = DateTime.Now.ToString();
-                xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
                 xxx.response.count = GetCount(string.Format(@"
                                             SELECT COUNT(DISTINCT p.style) FROM product p
                                             LEFT OUTER JOIN style st
@@ -1167,21 +1535,98 @@ public class Products : System.Web.Services.WebService {
                                             LEFT OUTER JOIN translation t
                                             ON p.sku = t.sku
                                             {0} {1} {2} {3}"
-                //xxx.response.count = GetCount(string.Format(@"
-                //                            SELECT COUNT(DISTINCT p.style) FROM product p
-                //                            LEFT OUTER JOIN style st
-                //                            ON p.style = st.style
-                //                            LEFT OUTER JOIN translation t
-                //                            ON p.sku = t.sku
-                //                            {0} {1} {2} {3}"
                                 , groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
                 xxx.response.maxPrice = xx.Count > 0 ? xx.Max(a => a.price_min.net) : 0;
                 connection.Close();
+                xxx.response.time = DateTime.Now.ToString();
+                xxx.response.responseTime = stopwatch.Elapsed.TotalSeconds;
             }
             return JsonConvert.SerializeObject(xxx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
+    */
 
+    [WebMethod]
+    public string GetProduct(string style, string color) {
+        try {
+            Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            ProductData x = new ProductData();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+                connection.Open();
+                string sqlQuery = string.IsNullOrWhiteSpace(color) ? "GROUP BY p.style" : string.Format("AND p.colorname = '{0}'", color.Replace("%20", " "));
+                string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, st.carelabels_en, st.carelabellogos, p.category_code, p.brand_code, st.specimageurl, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier, MIN(s.price) FROM product p
+                                            LEFT OUTER JOIN style st
+                                            ON p.style = st.style                                    
+                                            LEFT OUTER JOIN stock s
+                                            ON p.sku = s.sku
+                                            LEFT OUTER JOIN translation t
+                                            ON p.style = t.style
+                                            WHERE p.style = '{0}' {1}", style, sqlQuery);
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            x.supplier = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
+                            x.sku = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                            x.colorname = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                            x.size = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
+                            x.style = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
+                            x.brand = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
+                            x.modelimageurl = reader.GetValue(5) == DBNull.Value ? "" : GetImgUrl(reader.GetString(5), x.supplier);
+                            x.shortdesc_en = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
+                            x.longdesc_en = reader.GetValue(7) == DBNull.Value ? null : reader.GetString(7).Split(reader.GetString(7).Contains("|") ? '|' : ';');
+                            x.gender_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
+                            x.category_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
+                            x.colorhex = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
+                            x.colorgroup_id = reader.GetValue(11) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(11));
+                            x.isnew = reader.GetValue(25) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(25));
+                            x.sizes = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
+                            x.colors = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
+                            x.uttprice = reader.GetValue(15) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(15));
+                            x.colorimageurl = reader.GetValue(16) == DBNull.Value ? "" : GetImgUrl(reader.GetString(16), x.supplier);
+                            x.packshotimageurl = reader.GetValue(17) == DBNull.Value ? null : GetPackshotImageList(reader.GetString(17), x.supplier);
+                            x.carelabel = GetCareLabel(reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18), reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19));
+                            x.category_code = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
+                            x.brand_code = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
+
+                            x.price_min = pr.GetPrice(
+                                priceCoeff,
+                                reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20),
+                                reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21),
+                                x.style,
+                                reader.GetValue(29) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(29)));
+
+                            //x.price_min = pr.GetPrice(
+                            //    priceCoeff,
+                            //    reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20),
+                            //    reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21),
+                            //    x.style,
+                            //    GetUttPrice(connection, x.style, "MIN"));
+
+                            //x.price_max = pr.GetPrice(
+                            //    reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20),
+                            //    reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21),
+                            //    x.style,
+                            //    GetUttPrice(connection, x.style, "MAX"));
+                            List<Stock> st = new List<Stock>();
+                            x.stock = st;
+                            x.size_specification = GetSizeSpecification(connection, x.style);
+                            x.specimageurl = reader.GetValue(22) == DBNull.Value ? "" : reader.GetString(22);
+                            x.gender_code = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
+                            x.piecesPerBox = GetPiecesPerBox(connection, x.style);
+                            x.outlet = reader.GetValue(24) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(24));
+                            x.isnew = reader.GetValue(25) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(25));
+                            x.shortdesc_hr = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
+                            x.longdesc_hr = reader.GetValue(27) == DBNull.Value ? null : reader.GetString(27).Split(';');
+                        }
+                    } 
+                }
+                connection.Close();
+            }
+            return JsonConvert.SerializeObject(x, Formatting.None);
+        } catch (Exception e) { return e.Message; }
+    }
+
+        /*  // OLD
     [WebMethod]
     public string GetProduct(string style, string color) {
         try {
@@ -1260,6 +1705,7 @@ public class Products : System.Web.Services.WebService {
             return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
+    */
 
     [WebMethod]
     public string GetStock(string style, int limit, int offset) {
@@ -1311,22 +1757,7 @@ public class Products : System.Web.Services.WebService {
     [WebMethod]
     public string LoadProductsTranslation() {
         try {
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase));
-            connection.Open();
-            string sql = "select distinct shortdesc_en, shortdesc_hr, longdesc_en, longdesc_hr from translation";
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
-            SQLiteDataReader reader = command.ExecuteReader();
-            List<Translation> xx = new List<Translation>();
-            while (reader.Read()) {
-                Translation x = new Translation();
-                x.shortdesc_en = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-                x.shortdesc_hr = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-                x.longdesc_en = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
-                x.longdesc_hr = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
-                xx.Add(x);
-            }
-            connection.Close();
-            return JsonConvert.SerializeObject(xx, Formatting.None);
+            return JsonConvert.SerializeObject(GetTranslations(), Formatting.None);
         } catch (Exception e) {
             return JsonConvert.SerializeObject(e.Message, Formatting.None);
         }
@@ -1723,11 +2154,13 @@ public class Products : System.Web.Services.WebService {
 
     private int GetCount(string sql, SQLiteConnection connection ) {
         int count = 0;
-        SQLiteCommand command = new SQLiteCommand(sql, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        while (reader.Read()) {
-            count = reader.GetValue(0) == DBNull.Value ? 0 : reader.GetInt32(0);
-        }
+        using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+            using (SQLiteDataReader reader = command.ExecuteReader()) {
+                while (reader.Read()) {
+                    count = reader.GetValue(0) == DBNull.Value ? 0 : reader.GetInt32(0);
+                }
+            };
+        };
         return count;
     }
 
@@ -1755,9 +2188,10 @@ public class Products : System.Web.Services.WebService {
         if (!string.IsNullOrEmpty(sort)) {
             if (sort == "price") {
                 //sql = string.Format(@"ORDER BY p.supplier DESC, CAST(s.{0} AS DOUBLE) {1}", sort, order);
-                sql = string.Format(@"ORDER BY CAST(s.{0} AS DOUBLE) {1}", sort, order);
+                sql = string.Format(@"ORDER BY CAST(price_min AS DOUBLE) {0}", order);
             } else {
-                sql = string.Format(@"ORDER BY p.supplier DESC, p.{0} {1}", sort, order);
+                sql = string.Format(@"ORDER BY supplier DESC, {0} {1}", sort, order);
+                //sql = string.Format(@"ORDER BY p.supplier DESC, p.{0} {1}", sort, order);
             }
         }
         return sql;
@@ -1832,10 +2266,11 @@ public class Products : System.Web.Services.WebService {
             db.CreateDataBase(productDataBase, db.style);
             db.CreateDataBase(productDataBase, db.stock);
             db.CreateDataBase(productDataBase, db.translation);
+            List<Translation> tt = GetTranslations();
             using (var connection = new SQLiteConnection(@"Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
                 using (var command = new SQLiteCommand(connection)) {
-                using (var transaction = connection.BeginTransaction()) {
+                    using (var transaction = connection.BeginTransaction()) {
                         sql_delete = string.Format("DELETE FROM product WHERE supplier = '{0}';", xx[0].supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
@@ -1863,7 +2298,34 @@ public class Products : System.Web.Services.WebService {
                         sql_delete = string.Format("DELETE FROM style WHERE supplier = '{0}';", distinctStyle[0].supplier);
                         command.CommandText = sql_delete;
                         command.ExecuteNonQuery();
+
                         foreach (Style s in distinctStyle) {
+                            var prod = xx.Find(a => a.style == s.style);
+                            double price_min = yy.Where(a => a.style == s.style).Min(a => a.price);
+                            var tran = tt.Find(a => a.style == s.style);
+                            sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
+                                                , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
+                                                , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
+                                                , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, s.supplier
+                                                , prod.brand.Replace("'", ""), prod.shortdesc_en.Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", ""), prod.brand.Replace("&", "And").Replace(" ", "").Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", "")
+                                                , tran != null ? tran.shortdesc_hr : "", price_min);
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+
+                            string sql_tran = string.Format(@"INSERT OR IGNORE INTO translation (style, shortdesc_en, longdesc_en, category_en, supplier)
+                                                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
+                                               , s.style, prod.shortdesc_en.Replace("'", ""), prod.longdesc_en.Replace("'", "")
+                                               , s.category_en.Replace("&", "and"), s.supplier);
+                            command.CommandText = sql_tran;
+                            command.ExecuteNonQuery();
+                        }
+
+
+
+
+                    /*
+                    foreach (Style s in distinctStyle) {
                                 sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
                                                     VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
                                                     , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
@@ -1880,6 +2342,9 @@ public class Products : System.Web.Services.WebService {
                             command.CommandText = sql;
                             command.ExecuteNonQuery();
                         }
+                        */
+
+
                         transaction.Commit();
                     }
                 }
@@ -2127,6 +2592,51 @@ public class Products : System.Web.Services.WebService {
                 x = false;
                 break;
         }
+        return x;
+    }
+
+    private List<Translation> GetTranslations() {
+        List<Translation> xx = new List<Translation>();
+        using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
+            connection.Open();
+            string sql = "select style, shortdesc_en, shortdesc_hr, longdesc_en, longdesc_hr from translation";
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    while (reader.Read()) {
+                        Translation x = new Translation();
+                        x.style = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                        x.shortdesc_en = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                        x.shortdesc_hr = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
+                        x.longdesc_en = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
+                        x.longdesc_hr = reader.GetValue(4) == DBNull.Value ? "" : reader.GetString(4);
+                        xx.Add(x);
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return xx; 
+    }
+
+    private ProductData GetProductData(SQLiteDataReader reader, Price.PriceCoeff priceCoeff) {
+        ProductData x = new ProductData();
+
+        x.supplier = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
+        x.style = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+        x.imageurl = reader.GetValue(1) == DBNull.Value ? "" : GetImgUrl(reader.GetString(1), x.supplier);
+        x.brand = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
+        x.shortdesc_en = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
+        x.gender_en = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
+        x.isnew = reader.GetValue(2) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(2));
+        x.category_code = reader.GetValue(3) == DBNull.Value ? "" : reader.GetString(3);
+        x.brand_code = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
+        x.gender_code = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
+        x.stock = new List<Stock>();
+        x.outlet = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(4));  //  GetOutlet(connection, x.style);
+        x.isnew = reader.GetValue(5) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(5));
+        x.shortdesc_hr = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
+        double price_min = reader.GetValue(13) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(13));
+        x.price_min = pr.GetPrice(priceCoeff, x.category_code, x.brand_code, x.style, price_min);
         return x;
     }
     #endregion Methods
