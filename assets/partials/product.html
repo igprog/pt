@@ -41,6 +41,10 @@
                             </div>
                             <div>
                                 <p>{{'available colors' | translate}}:</p>
+                                <div ng-if="loading" class="text-center text-primary">
+                                    <label class="lead text-primary">{{'loading' | translate}}...</label>
+                                    <div><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>
+                                </div>
                                 <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:20px; width:20px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
                                 <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x)" style="border:1px solid gray; height:20px; width:20px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
                                     <div style="{{multipleColorStyle2(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>

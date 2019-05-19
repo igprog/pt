@@ -262,10 +262,11 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     var load = function (limit, category) {
         $scope.isloading = true;
+       // $scope.group = null;
         $http({
             url: 'Products.asmx/GetProductsByCategory',
             method: 'POST',
-            data: { limit:limit, category: category, sort: $scope.sort, order: $scope.sortOrder }
+            data: { limit: limit, category: category, sort: $scope.sort, order: $scope.sortOrder }
         })
       .then(function (response) {
           $scope.isloading = false;
@@ -277,6 +278,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
               size: '',
               brand: ''
           }
+          //getDistinctFilters(category, null);
       },
       function (response) {
           $scope.isloading = false;
@@ -294,6 +296,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     var loadGroup = function () {
         $scope.isloading = true;
+       // $scope.category = null;
         $http({
             url: 'Products.asmx/GetProductsByGroup',
             method: 'POST',
@@ -309,6 +312,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
               size: '',
               brand: ''
           }
+          //getDistinctFilters(null, $scope.group);
       },
       function (response) {
           $scope.isloading = false;
@@ -336,7 +340,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.category = params[0].substring(10) == '' ? 'T-Shirt' : params[0].substring(10);
         load($scope.show, $scope.category);
     }
-
 
     if ($scope.group != '') {
         loadGroup();
@@ -368,6 +371,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           $scope.filter.price = $scope.d.response.maxPrice;
           if ($scope.searchQuery != '') { $scope.d.distinct = res.distinct; }
           setPages($scope.d.response.count);
+          //getDistinctFilters(category, null);
       },
       function (response) {
           $scope.isloading = false;
@@ -415,12 +419,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.loading_f = false;
-    var getDistinctFilters = function (category) {
+    var getDistinctFilters = function (category, group) {
         $scope.loading_f = true;
         $http({
             url: 'Products.asmx/GetDistinctFilters',
             method: 'POST',
-            data: { category: category }
+            data: { category: category, group: group }
         })
       .then(function (response) {
           $scope.loading_f = false;
@@ -432,11 +436,17 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
     }
 
-    $scope.getDistinctFilters = function (category) {
-        if (functions.isNullOrEmpty($scope.d.distinct)) {
-            return getDistinctFilters(category);
-        } return false;
+    $scope.getDistinctFilters = function () {
+       // if (functions.isNullOrEmpty($scope.d.distinct)) {
+            return getDistinctFilters($scope.category, $scope.group);
+       // } return false;
     }
+
+    //$scope.getDistinctFilters = function (category) {
+    //    if (functions.isNullOrEmpty($scope.d.distinct)) {
+    //        return getDistinctFilters(category);
+    //    } return false;
+    //}
 
 }])
 
@@ -488,12 +498,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             data: { style: style, color: color }
         })
        .then(function (response) {
-           $scope.loading_p = false;
            $scope.p = JSON.parse(response.data.d);
            if ($scope.p.shortdesc_en != null) {
                $window.document.title = 'Promo-Tekstil - ' + $translate.instant($scope.p.shortdesc_en);
                //location.hash = '#/' + unescape($translate.instant($scope.p.shortdesc_en)).replace(/\s/g, "-");
            }
+           $scope.loading_p = false;
 
            getStockGroupedByColor(style);
 
@@ -694,11 +704,28 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         return 'background-color:' + c + '; width:20px; height:' + 20 / length + 'px';
     }
 
+    var getProductColorImg = function (x) {
+        debugger;
+        $http({
+            url: 'Products.asmx/GetProductColorImg',
+            method: 'POST',
+            data: { style: $scope.p.style, color: x.color }
+        })
+       .then(function (response) {
+           debugger;
+           $scope.p.packshotimageurl = JSON.parse(response.data.d).packshotimageurl;
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+
     $scope.filterColors = [];
     $scope.filterColor = function (x) {
         window.scrollTo(0, 0);
         $scope.filterColors.push(x.colorhex);
-        load(style, x.color);
+      //  load(style, x.color);
+        getProductColorImg(x);
     }
 
     $scope.checkColorfilter = function (filterColors, color) {
