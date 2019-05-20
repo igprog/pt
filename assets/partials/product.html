@@ -45,8 +45,8 @@
                                     <label class="lead text-primary">{{'loading' | translate}}...</label>
                                     <div><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>
                                 </div>
-                                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:20px; width:20px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
-                                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x)" style="border:1px solid gray; height:20px; width:20px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
+                                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x, true)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:20px; width:20px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
+                                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x, true)" style="border:1px solid gray; height:20px; width:20px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
                                     <div style="{{multipleColorStyle2(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>
                                 </div>
                             </div>
@@ -112,8 +112,8 @@
         <div>
             <label class="lead"><i class="fa fa-filter"></i> {{'filtering options' | translate}}</label>
             <div>
-                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:30px; width:30px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
-                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x)" style="border:1px solid gray; height:30px; width:30px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
+                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x, false)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:30px; width:30px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
+                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x, false)" style="border:1px solid gray; height:30px; width:30px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
                     <div style="{{multipleColorStyle(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>  
                 </div>
             </div>
@@ -147,12 +147,10 @@
                         <div ng-if="y.quantity>0 && !delivery(y).title" class="text-center">
                             <span>
                                 <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(y.myprice.net * y.quantity * config.currency.course) | number:2}}
-                                <!--<span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{y.myprice.net * y.quantity * config.currency.course}}-->
                             </span>
                         </div>
                         <div ng-if="delivery(y).title">
                             <label ng-class="delivery(y).css">{{delivery(y).title | translate}}</label>
-                            <!--<label>{{'stock' | translate}}: {{totalStock(y)}}</label>-->
                             <label>{{'stock' | translate}}: {{y.uttstock}}</label>
                         </div>
                     </td>
@@ -163,13 +161,8 @@
         <pre ng-if="config.debug">{{priceSum(stockGroupedByColor) | json}}</pre>
 
         <div class="cart-summary-box mt20">
-            <!--<div class="sub-total">{{'total' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceSum(stockGroupedByColor).net * config.currency.course}}</div>
-            <div class="grand-total">{{'total' | translate}} + {{'vat' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceSum(stockGroupedByColor).net * config.vatcoeff * config.currency.course}}</div>-->
             <div class="sub-total">{{'total' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).net) | number:2}}</div>
             <div class="grand-total">{{'total' | translate}} + {{'vat' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).gross) | number:2}}</div>
-
-            <!--<div class="sub-total">{{'total' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).net * config.currency.course) | number:2}}</div>
-            <div class="grand-total">{{'total' | translate}} + {{'vat' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).gross * config.currency.course) | number:2}}</div>-->
         </div>
         <div class="detail-info-entry mt20">
             <a href="" class="button style-10" ng-click="addToCart(stockGroupedByColor)">{{'add to cart' | translate}}</a>

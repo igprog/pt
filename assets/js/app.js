@@ -721,8 +721,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.filterColors = [];
-    $scope.filterColor = function (x) {
-        window.scrollTo(0, 0);
+    $scope.filterColor = function (x, scroll) {
+        if (scroll) {
+            window.scrollTo(0, 0);
+        }
         $scope.filterColors.push(x.colorhex);
       //  load(style, x.color);
         getProductColorImg(x);
