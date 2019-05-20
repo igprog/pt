@@ -232,7 +232,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.category = "";
     }
 
-    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 8;
+    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 12;
     $scope.page = 1;
     $scope.searchQuery = null;
     $scope.filters = false;
