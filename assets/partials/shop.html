@@ -160,8 +160,11 @@
                                 <div class="product-slide-entry shift-image">
                                     <a href="product.html?style={{x.style}}">
                                         <div class="product-image" >
-                                            <div>
+                                            <div ng-if="x.supplier!=='lacuna'">
                                                 <img check-image ng-if="x.imageurl" ng-src="{{x.imageurl}}" alt="" class="img-resize" />
+                                            </div>
+                                            <div ng-if="x.supplier==='lacuna'">
+                                                <img check-image ng-if="x.imageurl" src="{{x.imageurl}}" alt="" class="img-resize" />
                                             </div>
 
                                             <!--OLD-->
