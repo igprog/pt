@@ -285,20 +285,20 @@ public class Products : System.Web.Services.WebService {
             foreach (System.Xml.XmlNode node in products) {
                 x = new Product();
                 x.sku = node.SelectSingleNode("sifraProizvoda").InnerText;
-                x.colorname = "";
+                x.colorname = GetColor(x.sku);
                 x.size = GetSize(x.sku);
-                x.style = x.sku.Split('/')[0];
+                x.style = GetStyle(x.sku); // x.sku.Split('/')[0];
                 x.brand = "";
-                x.modelimageurl = node.SelectSingleNode("slikaProizvoda").InnerText; ;
+                x.modelimageurl = node.SelectSingleNode("slikaProizvoda").InnerText;
                 x.shortdesc_en = node.SelectSingleNode("naziv").InnerText;
-                x.longdesc_en = node.SelectSingleNode("opis").InnerText;
+                x.longdesc_en = node.SelectSingleNode("opis").InnerText.Replace(";&lt;br&gt;", ";").Replace("###&lt", "").Replace("br&gt", "");
                 x.gender_en = GetGender(x.sku);
                 x.category_en = category;
-                x.colorhex = "";
+                x.colorhex = GetColorHex(x.colorname); // "";
                 x.colorgroup_id = 0;
                 x.isnew = 0;
                 x.colorimageurl = "";
-                x.packshotimageurl = "";
+                x.packshotimageurl = node.SelectSingleNode("slikaProizvoda").InnerText;
                 x.weight = "";
                 x.colorswatch = "";
                 x.outlet = 0;
@@ -2484,13 +2484,43 @@ public string GetProduct(string style, string color) {
             }
     }
 
+    private string GetColor(string sku) {
+        string[] x = sku.Split('/');
+        string color = "";
+        if (x.Length > 1) {
+            color = ""; // x[x.Length-1];
+        } else {
+            if (x[0].Length > 7) {
+                color = x[0].Substring(5, 2);
+            }
+        }
+        return color;
+    }
+
     private string GetSize(string sku) {
         string[] x = sku.Split('/');
         string size = "";
         if (x.Length > 1) {
             size = x[x.Length-1];
+        } else {
+            if(sku.Length > 6) {
+                size = sku.Substring(7);
+            }
         }
         return size;
+    }
+
+    private string GetStyle(string sku) {
+        string style = sku;
+        string[] x = sku.Split('/');
+        if (x.Length > 1) {
+            style = x[0];
+        } else {
+            if (x[0].Length > 6) {
+                style = x[0].Substring(0, 5);
+            }
+        }
+        return style;
     }
 
     private string GetGender(string sku) {
@@ -2535,6 +2565,139 @@ public string GetProduct(string style, string color) {
             }
         }
         return colors;
+    }
+
+    private string GetColorHex(string color) {
+
+        string x = "";
+        switch (color) {
+            case "YE": x = "#f4f142"; break;
+            case "OR": x = "#f47742"; break;
+            case "MF": x = "#f47742"; break;
+            case "KG": x = "#17a82a"; break;
+            case "0K": x = "#f47742"; break;
+            case "LB": x = "#69c2db"; break;
+            case "RB": x = "#1f0a7f"; break;
+            case "RD": x = "#f21202"; break;
+            case "HG": x = "#afb5b4"; break;
+            case "NY": x = "#2d2c30"; break;
+            case "BK": x = "#2d2d2d"; break;
+            case "WH": x = "#fff"; break;
+        }
+
+        return x;
+
+        //TODO:
+//        50
+//10
+//MF
+//0K
+//0L
+//YE
+//OR
+//KG
+//LB
+//GX
+//BX
+//XX
+//YX
+//DX
+//RX
+//CX
+//8X
+//TC
+//TS
+//TZ
+//TP
+//BI
+//PI
+//JI
+//RD
+//0H
+//0R
+//0N
+//0B
+//0W
+//RB
+//HG
+//NY
+//BK
+//WH
+//00
+//L4
+//LF
+//LC
+//LT
+//MC
+//MT
+//H4
+//JB
+//JC
+//JN
+//PN
+//PC
+//PB
+//TY
+//PS
+//JS
+//OW
+//JP
+//PP
+//BS
+//BP
+//G4
+//9X
+//3X
+//- O
+//ŽN
+//MN
+//BE
+//PW
+//BC
+//BW
+//JW
+//OG
+//BB
+//IN
+//MM
+//DG
+//FG
+//JG
+//JR
+//BG
+//BR
+//PG
+//PR
+//ŽW
+//ŽO
+//ŽB
+//MW
+//MO
+//MB
+//LS
+//HS
+//HO
+//WP
+//WB
+//WJ
+//UW
+//UB
+//ŽG
+//MG
+//ko
+//7X
+//7 -
+//8 -
+//6 -
+//2X
+//0X
+//GJ
+//GP
+//GB
+//OB
+//OY
+//NB
+//NG
     }
 
     private string[] GetPackshotImageUrl(SQLiteConnection connection, string value, string style) {
