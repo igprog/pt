@@ -688,6 +688,9 @@ public class Products : System.Web.Services.WebService {
                         //    command.ExecuteNonQuery();
                         //}
 
+                        sql_delete = string.Format("DELETE FROM size WHERE supplier = '{0}';", supplier);
+                        command.CommandText = sql_delete;
+                        command.ExecuteNonQuery();
                         foreach (SizeSpecification s in size) {
                             sql = string.Format(@"INSERT INTO size (style, size, name_en, value, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
@@ -1861,6 +1864,9 @@ public string GetProduct(string style, string color) {
                 connection.Open();
                 using (var command = new SQLiteCommand(connection)) {
                     using (var transaction = connection.BeginTransaction()) {
+                        string sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", supplier);
+                        command.CommandText = sql_delete;
+                        command.ExecuteNonQuery();
                         foreach (Stock s in stock) {
                            sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"

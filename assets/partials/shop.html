@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="information-blocks" style="margin:0">
+                            <!--<div class="information-blocks" style="margin:0">
                                 <div class="inline-text accordeon-title" ng-click="getDistinctFilters()">{{'filter by sizes' | translate}}</div>
                                 <div ng-if="loading_f" class="text-center">
                                     <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
@@ -82,19 +82,19 @@
                                         <input ng-model="x.isselected" type="checkbox" ng-click="setFilter(show)" /> <span class="check"></span> {{x.title}}
                                     </label>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="information-blocks" style="margin:0">
                                 <div class="inline-text accordeon-title" ng-click="getDistinctFilters()">{{'filter by brands' | translate}}</div>
                                 <div ng-if="loading_f" class="text-center">
                                     <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
                                 </div>
-                                <div class="row accordeon-entry">
-                                    <label class="checkbox-entry col-xs-6" ng-repeat="x in d.distinct.brand">
+                                <div class="range-wrapper accordeon-entry">
+                                    <label class="checkbox-entry" ng-repeat="x in d.distinct.brand">
                                         <input ng-model="x.isselected" type="checkbox" ng-click="setFilter(show)" /> <span class="check"></span> {{x.title}}
                                     </label>
                                 </div>
                             </div>
-                            <div class="information-blocks" style="margin:0">
+                            <!--<div class="information-blocks" style="margin:0">
                                 <div class="inline-text accordeon-title" ng-click="getDistinctFilters()">{{'filter by colours' | translate}}</div>
                                 <div ng-if="loading_f" class="text-center">
                                     <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
@@ -103,7 +103,7 @@
                                     <div style="background-color: {{x.colorfamily_en}};" class="entry {{x.isselected?'active':''}}" ng-repeat="x in d.distinct.colorGroup" ng-click="colorFilter(x)"></div>
                                     <div class="spacer"></div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                                         <label ng-show="shortdesc(x, config.language.code)" class="title">{{shortdesc(x, config.language.code)}}</label>
                                         <label>{{x.brand}} {{x.style}}</label>
                                     </a>
-                                    <a class="tag" href="shop.html?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
+                                    <a class="tag" href="index.html?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
                                     <a href="product.html?style={{x.style}}">
                                         <div class="article-container style-1">
                                             <label ng-repeat="y in longdesc(x, config.language.code) track by $index">{{y}}</label>

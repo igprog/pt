@@ -514,7 +514,7 @@ public class Orders : System.Web.Services.WebService {
             x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round(x.net * 0.25, 2) : 0) : Math.Round(x.net * 0.25, 2));
             x.netWithDiscount = x.net - x.discount;
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
-            x.delivery = (x.gross * course) < 1000 ? Math.Round((35 / course), 2) : 0;
+            x.delivery = (x.gross * course) < 1000 ? Math.Round((30 / course), 2) : 0;
             x.total = x.netWithDiscountPlusVat + x.delivery;
             return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {
