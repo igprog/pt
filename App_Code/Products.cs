@@ -1185,6 +1185,15 @@ public class Products : System.Web.Services.WebService {
                 groupQuery = string.Format("{0} AND CAST(price_min AS DOUBLE) > 0", groupQuery);
             }
 
+            /*  //TODO
+            if (priceFilter > 0) {
+                groupQuery = string.Format("WHERE CAST(price_min AS DOUBLE) > {0}", priceFilter);
+                isWhere = true;
+            } else {
+                groupQuery = string.Format("{0} AND CAST(price_min AS DOUBLE) > {1}", groupQuery, priceFilter);
+            }
+            */
+
             //TODO
             string sqlCategoryQuery = "";
             if (!string.IsNullOrEmpty(category)) {

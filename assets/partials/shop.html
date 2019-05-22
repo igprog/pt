@@ -57,13 +57,14 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="information-blocks" style="margin:0">
+                            <!--<div class="information-blocks" style="margin:0">
                                 <div class="inline-text accordeon-title" ng-click="getDistinctFilters()">{{'filter by price' | translate}}</div>
                                 <div ng-if="loading_f" class="text-center">
                                     <i class="fa fa-spinner fa-2x fa-spin text-info"></i>
                                 </div>
                                 <div class="range-wrapper accordeon-entry">
                                     <input ng-model="filter.price" type="range" min="0" max="{{d.response.maxPrice}}" value="{{filter.price}}" style="background-color:lightgray">
+                                    <button ng-click="setFilter(show)">x</button>
                                     <div class="range-price">
                                         {{'price' | translate}}:
                                         <div class="min-price"><b><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> <span>0</span></b></div>
@@ -71,7 +72,7 @@
                                         <div class="max-price"><b><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> <span>{{filter.price*config.currency.course | number:2}}</span></b></div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <!--<div class="information-blocks" style="margin:0">
                                 <div class="inline-text accordeon-title" ng-click="getDistinctFilters()">{{'filter by sizes' | translate}}</div>
                                 <div ng-if="loading_f" class="text-center">
@@ -155,12 +156,13 @@
                             <div ng-if="d.products.length==0" class="alert alert-danger">
                                 {{'there are no products available with the selected filetrs' | translate}}
                             </div>
-                            <div ng-if="x.price_min.net <= filter.price && d.products.length>0" class="col-md-3 col-sm-4 shop-grid-item" ng-repeat="x in d.products track by $index">
+                            <!--<div ng-if="x.price_min.net <= filter.price && d.products.length>0" class="col-md-3 col-sm-4 shop-grid-item" ng-repeat="x in d.products track by $index">-->
+                            <div ng-if="d.products.length>0" class="col-md-3 col-sm-4 shop-grid-item" ng-repeat="x in d.products track by $index">
                                 <div ng-if="x.outlet==1" class="product-image-label type-2"><span>{{'outlet' | translate}}</span></div>
                                 <div ng-if="x.isnew==1" class="product-image-label type-1"><span>{{'new' | translate}}</span></div>
                                 <div class="product-slide-entry shift-image">
                                     <a href="product.html?style={{x.style}}">
-                                        <div class="product-image" >
+                                        <div class="product-image">
                                             <div ng-if="x.supplier!=='lacuna'">
                                                 <img check-image ng-if="x.imageurl" ng-src="{{x.imageurl}}" alt="" class="img-resize" />
                                             </div>
@@ -170,12 +172,12 @@
 
                                             <!--OLD-->
                                             <!--<div ng-if="x.supplier!=='lacuna'">
-                                                <img check-image ng-if="x.modelimageurl!=null" ng-src="{{x.modelimageurl}}" alt="" class="img-resize" />
-                                                <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1">
-                                                    <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{x.packshotimageurl[0]}}" alt="" />
-                                                    <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{x.packshotimageurl[0]}}" alt="" />
-                                                    <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{x.packshotimageurl[1]}}" alt="" />
-                                                </div>
+                                            <img check-image ng-if="x.modelimageurl!=null" ng-src="{{x.modelimageurl}}" alt="" class="img-resize" />
+                                            <div ng-if="x.modelimageurl==null && x.packshotimageurl!=null && x.packshotimageurl.length>1">
+                                                <img check-image ng-if="x.packshotimageurl.length>0" ng-src="{{x.packshotimageurl[0]}}" alt="" />
+                                                <img check-image ng-if="x.packshotimageurl.length==1" ng-src="{{x.packshotimageurl[0]}}" alt="" />
+                                                <img check-image ng-if="x.packshotimageurl.length>1" ng-src="{{x.packshotimageurl[1]}}" alt="" />
+                                            </div>
                                             </div>
                                             <div ng-if="x.supplier=='lacuna'">
                                                 <img check-image ng-if="x.modelimageurl!=null" src="{{x.modelimageurl}}" alt="" class="img-resize" />
@@ -185,6 +187,8 @@
                                                     <img check-image ng-if="x.packshotimageurl.length>1" src="{{x.packshotimageurl[1]}}" alt="" />
                                                 </div>
                                             </div>-->
+
+
                                         </div>
                                     </a>
                                     <a href="product.html?style={{x.style}}">
@@ -204,7 +208,7 @@
                                 </div>
                                 <div class="clear"></div>
                             </div>
-                        </div>
+                            </div>
                         <div ng-if="d.products.length>0" class="page-selector">
                             <div class="description"><span class="text-capitalize">{{'showing' | translate}}</span>: {{show*page-show +1}}-{{page*show}} <span>{{'of' | translate}}</span> {{d.response.count}}</div>
                             <div class="pages-box">

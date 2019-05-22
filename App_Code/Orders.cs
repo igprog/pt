@@ -92,6 +92,7 @@ public class Orders : System.Web.Services.WebService {
     }
 
     public class OrderOption {
+        public double deliveryprice;
         public List<CodeTitle> deliverytype = new List<CodeTitle>();
         public List<CodeTitle> paymentmethod = new List<CodeTitle>();
         public List<CodeTitle> orderstatus = new List<CodeTitle>();
@@ -505,16 +506,21 @@ public class Orders : System.Web.Services.WebService {
     [WebMethod]
     public string GetTotalPrice(List<Cart.NewCart> groupingCart, Users.NewUser user, double course) {
         try {
+            OrderOption orderOptions = GetOrderOptions();
+            Price p = new Price();
+            Price.PriceCoeff priceCoeff = p.GetCoeff();
             PriceTotal x = new PriceTotal();
             foreach (Cart.NewCart c in groupingCart) {
                 x.net += Math.Round(c.data.Sum(a => a.myprice.net * a.quantity), 2);
                 x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * a.quantity), 2);
             }
             x.discount = Math.Round(x.net * (user != null ? user.discount.coeff : 0), 2);
-            x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round(x.net * 0.25, 2) : 0) : Math.Round(x.net * 0.25, 2));
+            //x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round(x.net * 0.25, 2) : 0) : Math.Round(x.net * 0.25, 2));
+            x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round(x.net * (1 - priceCoeff.vat), 2) : 0) : Math.Round(x.net * (1 - priceCoeff.vat), 2));
             x.netWithDiscount = x.net - x.discount;
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
-            x.delivery = (x.gross * course) < 1000 ? Math.Round((30 / course), 2) : 0;
+            // x.delivery = (x.gross * course) < 1000 ? Math.Round((30 / course), 2) : 0;
+            x.delivery = (x.gross * course) < 1000 ? Math.Round((orderOptions.deliveryprice / course), 2) : 0;
             x.total = x.netWithDiscountPlusVat + x.delivery;
             return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {

@@ -56,7 +56,7 @@
             </div>
     </nav>
 
-    <div ng-include="tpl" style="padding-top:20px"></div>
+    <div ng-include="tpl" style="padding:20px 0px 20px 0px"></div>
 
     <script type="text/ng-template" id="login">
         <div class="container" style="padding-bottom:20px">
@@ -738,6 +738,15 @@
 
     <script type="text/ng-template" id="orderoptions">
         <div ng-controller="orderOptionsCtrl" class="container">
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-sm-3">
+                    <h4>Delivery price</h4>
+                    <div class="input-group">
+                        <input ng-model="d.deliveryprice" class="form-control" />
+                        <span class="input-group-addon">HRK</span>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <h4>Delivery type</h4>
