@@ -52,18 +52,33 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     };
     getConfig();
 
+    var getUserData = function () {
+        $http({
+            url: 'Admin.asmx/GetUserData',
+            method: 'POST',
+            data: {}
+        })
+         .then(function (response) {
+             $scope.userData = JSON.parse(response.data.d);
+         },
+         function (response) {
+             alert(JSON.parse(response.data.d));
+         });
+    }
+    getUserData();
+
     var loadCategories = function () {
         $http({
             url: 'Products.asmx/GetCategories',
             method: 'POST',
             data: { }
         })
-      .then(function (response) {
-         $scope.categories = JSON.parse(response.data.d);
-      },
-      function (response) {
-          alert(JSON.parse(response.data.d));
-      });
+          .then(function (response) {
+             $scope.categories = JSON.parse(response.data.d);
+          },
+          function (response) {
+              alert(JSON.parse(response.data.d));
+          });
     }
     loadCategories();
 
@@ -191,7 +206,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 //}])
 
-.controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
+.controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout) {
     $scope.isloading = false;
     $scope.group = "";
     $scope.displayFilters = false;
@@ -288,14 +303,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.getProductsByCategory = function (category) {
         $scope.searchQuery = '';
-        $scope.category = category;
         $scope.page = 1;
+        $scope.category = category;
         load($scope.show, category);
     }
     
-
     var loadGroup = function () {
         $scope.isloading = true;
+        $scope.searchQuery = '';
+        $scope.page = 1;
        // $scope.category = null;
         $http({
             url: 'Products.asmx/GetProductsByGroup',
@@ -322,13 +338,13 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     if ($sessionStorage.d !== undefined) {
         $scope.d = JSON.parse($sessionStorage.d);
-        setPages($scope.d.response.count);
         if ($sessionStorage.page !== undefined) {
             $scope.page = $sessionStorage.page;
         }
         if ($sessionStorage.search !== undefined) {
             $scope.searchQuery = $sessionStorage.search;
         }
+        setPages($scope.d.response.count);
         $scope.filter = {
             price: $scope.d.response.maxPrice,
             size: '',
@@ -350,8 +366,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.changeCategory = function (x) {
+        $sessionStorage.page = 1;
+        $sessionStorage.search = '';
+        $scope.searchQuery = '';
+        $scope.page = 1;
         $scope.filters = false;
-        $scope.href(x);
+        $timeout(function () {
+            $scope.href(x);
+        }, 200);
     }
 
     var searchProducts = function (limit, category) {
@@ -381,8 +403,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.setFilter = function (show) {
         $sessionStorage.config.prodctstoshow = show;
-        $scope.page = 1;
         $scope.searchQuery = '';
+        $scope.page = 1;
         searchProducts($scope.show, $scope.category);
         $scope.filters = true;
     }
@@ -404,8 +426,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.search = function () {
-        $scope.page = 1;
         $scope.category = '';
+        $scope.page = 1;
         searchProducts($scope.show, $scope.category);
     }
 
@@ -787,6 +809,22 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
     getCountries();
 
+    var getUserData = function () {
+        $http({
+            url: 'Admin.asmx/GetUserData',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $scope.userData = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    getUserData();
+
+
     $scope.setCountry = function (x) {
         $rootScope.u.country = x;
     }
@@ -965,8 +1003,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          .then(function (response) {
              $scope.alertmsg = $translate.instant(response.data.d);
              var sendto = u.email;
-             var subject = $translate.instant('registration') + ' - Promo-Tekstil.com';
-             var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+             var subject = $translate.instant('registration') + ' ' + $rootScope.config.appname;
+             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
              '<br/>' +
              '<hr/>' +
              '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
@@ -976,14 +1014,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('user name') + ': ' + u.email + '</p>' + 
              '<p>' + $translate.instant('password') + Lozinka + ': ' + u.password + '</p>' +
              '<br/>' +
-             '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://promo-tekstil.com/login.html">https://promo-tekstil.com/login.html</a></p>' +
-             '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://promo-tekstil.com/user.html">https://promo-tekstil.com/user.html</a></p>' +
+             '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/login.html">https://www.' + $rootScope.config.appname + '/login.html</a></p>' +
+             '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/user.html">https://www.' + $rootScope.config.appname + '/user.html</a></p>' +
              '<br/>' +
-             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:info@promo-tekstil.com?Subject=Upit" target="_top">info@promo-tekstil.com</a>.</p>' +
+             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:' + $scope.userData.email + '?Subject=Upit" target="_top">' + $scope.userData.email + '</a>.</p>' +
              '<br/>' +
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
-             '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
+             '<p>' + $translate.instant('your') + ' <a href="https://wwww.' + $rootScope.config.appname + '">' + $rootScope.config.name + ' Tim</a></p>';
              sendMail(sendto, subject, body, []);
              if (isCheckout == true) {
                  $scope.nextStep('shippingMethodTpl', 3);
@@ -1073,7 +1111,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
              var sendto = u.email;
              var subject = $translate.instant('new order') + ' - Promo-Tekstil.com';
-             var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
              '<br/>' +
              '<hr/>' +
              '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
@@ -1092,9 +1130,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<label>' + $translate.instant('payment details') + '</label>' +
                 '<hr />' +
                 '<ul>' +
-                    '<li>IBAN: HR4424020061100647760</li>' +
-                    '<li>Erste&Steiermärkische Bank d.d.</li>' +
-                    '<li>Lateralus j.d.o.o.</li>' +
+                    '<li>IBAN: ' + $scope.userData.iban + '</li>' +
+                    '<li>' + $translate.instant('bank') + ': ' + $scope.userData.bank + '</li>' +
+                    '<li>' + $translate.instant('company') + ': ' + $scope.userData.company + '</li>' +
                     '<li>' + $translate.instant('payment model') + ': HR99</li>' +
                     '<li>' + $translate.instant('amount') + ': <strong>' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' </strong>' + $rootScope.config.currency.symbol + '</li>' +
                     '<li>' + $translate.instant('description of payment') + ': ' + $scope.order.number + '</li>' +
@@ -1106,7 +1144,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<br/>' +
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
-             '<p>' + $translate.instant('your') + ' <a href="https://promo-tekstil.com">Promo-Tekstil.com ' + $translate.instant('team') + '</a></p>';
+             '<p>' + $translate.instant('your') + ' <a href="' + $rootScope.config.appname + '">' + $rootScope.config.appname + ' ' + $translate.instant('team') + '</a></p>';
              sendMail(sendto, subject, body, []);
 
             var bodyToMe =
@@ -1143,7 +1181,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          var user = JSON.parse(response.data.d);
          var sendto = user.email;
          var subject = $translate.instant('account information') + ' - Promo-Tekstil.com';
-         var body = '<img src="https://promo-tekstil.com/assets/img/promo-tekstil-logo.svg">' +
+         var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
          '<br/>' +
          '<hr/>' +
          '<p>' + $translate.instant('dear') + ', ' + user.firstName + ' ' + user.lastName + ', ' + user.companyName + '</p>' +
@@ -1152,15 +1190,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          '<p>Korisničko ime: ' + user.userName + '</p>' +
          '<p>Lozinka: ' + user.password + '</p>' +
          '<br/>' +
-         '<p>Prijavite se klikom na poveznicu: <a href="https://promo-tekstil.com/login.html">https://promo-tekstil.com/login.html</a></p>' +
-         '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://promo-tekstil.com/signup.html">https://promo-tekstil.com/signup.html</a></p>' +
+         '<p>Prijavite se klikom na poveznicu: <a href="https://www.' + $rootScope.config.appname + '/login.html">https://www.' + $rootScope.config.appname + '/login.html</a></p>' +
+         '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://www.' + $rootScope.config.appname + '/signup.html">https://www.' + $rootScope.config.appname + '/signup.html</a></p>' +
          '<br/>' +
          '<p>Želimo vam ugodnu kupovinu.</p>' +
-         '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:info@promo-tekstil.com?Subject=Upit" target="_top">info@promo-tekstil.com</a>.</p>' +
+         '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:' + $scope.userData.email + '?Subject=Upit" target="_top">' + $scope.userData.email + '</a>.</p>' +
          '<br/>' +
          '<p>Srdačno,</p>' +
          '<br/>' +
-         '<p>Vaš <a href="https://promo-tekstil.com">Promo-Tekstil.com Tim</a></p>';
+         '<p>Vaš <a href="https://www.' + $rootScope.config.appname + '">' + $rootScope.config.name + ' Tim</a></p>';
 
          sendMail(sendto, subject, body, []);
 
@@ -1308,6 +1346,22 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.alertmsg = null;
     $scope.issent = false;
     $scope.isrequired = false;
+
+    var getUserData = function () {
+        $http({
+            url: 'Admin.asmx/GetUserData',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $scope.userData = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    getUserData();
+
     $scope.send = function (d) {
         if (functions.isNullOrEmpty(d.firstName)) {
             $scope.alertmsg = $translate.instant('first name is required');
@@ -1323,7 +1377,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         }
 
         $scope.issent = false;
-        var subject = $translate.instant('inquiry') + ' - Promo-Tekstil.com';
+        var subject = $translate.instant('inquiry') + ' - ' + config.appname; // ' - Promo-Tekstil.com';
         var body = '<p>' + $translate.instant('inquiry') + ':</p>' +
         '<p>' + $translate.instant('first name') + ': ' + d.firstName + '</p>' +
         '<p>' + $translate.instant('last name') + ': ' + d.lastName + '</p>' +

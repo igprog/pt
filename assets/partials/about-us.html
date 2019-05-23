@@ -44,14 +44,14 @@
                     <img src="/assets/img/test_image_placeholder.png" class="img-responsive m10" alt="Promo Tekstil" />
                     <h5>Company info</h5>
                     <p>
-                        Company name: Promo Tekstil (Lateralus j.d.o.o.)<br />
-                        Address: Žegoti 27, Kastav, 51215 Hrvatska<br />
-                        VAT: HR90780660216<br />
+                        Company name: {{config.name}} {{userData.company}}<br />
+                        Address: {{userData.address}}, {{userData.city}}, {{userData.zipCode}} {{userData.country}}<br />
+                        VAT: HR{{userData.pin}}<br />
                     </p>
                     <h5>Contact</h5>
                     <p>
-                        Email: info@promo-tekstil.com<br />
-                        Telefon: +385 91 644 02 01
+                        Email: {{userData.email}}<br />
+                        Telefon: {{userData.phone}}
                     </p>
                 </div>
             </div>
@@ -97,14 +97,14 @@
                     <img src="/assets/img/test_image_placeholder.png" class="img-responsive m10" alt="Promo Tekstil" />
                     <h5>Informacije o tvrtci</h5>
                     <p>
-                        Naziv tvrtke: Promo Tekstil (Lateralus j.d.o.o.)<br />
-                        Adresa: Žegoti 27, Kastav, 51215 Hrvatska<br />
-                        OIB: 90780660216<br />
+                        Naziv tvrtke: {{config.name}} {{userData.company}}<br />
+                        Adresa: {{userData.address}}, {{userData.city}}, {{userData.zipCode}} {{userData.country}}<br />
+                        OIB: {{userData.pin}}<br />
                     </p>
                     <h5>Kontakt</h5>
                     <p>
-                        Email: info@promo-tekstil.com<br />
-                        Telefon: +385 91 644 02 01
+                        Email: {{userData.email}}<br />
+                        Telefon: {{userData.phone}}
                     </p>
                 </div>
             </div>

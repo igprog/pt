@@ -301,5 +301,7 @@
   "filters": "Filters",
   "Workwear": "Workwear",
   "all brands": "All Brands",
-  "message sent successfully": "Message sent successfully"
+  "message sent successfully": "Message sent successfully",
+  "send password": "send password",
+  "bank": "Bank"
 }

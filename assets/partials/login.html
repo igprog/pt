@@ -57,11 +57,11 @@
         <div ng-if="forgotPass">
             <label>{{'email' | translate}}</label>
             <input ng-model="u.email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
-            <a class="button style-10" href="#" ng-click="forgotPassword(u)">Send Pasword</a>
+            <a class="button style-10 text-capitalize" href="#" ng-click="forgotPassword(u)">{{'send password' | translate}}</a>
         </div>
     </form>
     <div ng-if="showLoginMsg" class="alert alert-{{loginMsgClass}}">
-        <div class="message-icon"><i class="fa fa-times"></i></div>
+        <!--<div class="message-icon"><i class="fa fa-times"></i></div>-->
         <div class="message-text">{{loginMsg}}</div>
     </div>
 </script>

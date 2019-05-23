@@ -6,11 +6,11 @@
                     <img class="footer-logo" src="assets/img/promo-tekstil-lower-logo-svg.svg" alt="Najpovoljnije cijene tekstilnih proizvoda na hrvatkom tržištu. Opširan katalog najpoznatijih svjetskih brendova" />
                     <div class="footer-description">Najpovoljnije cijene tekstilnih proizvoda na hrvatkom tržištu. Opširan katalog najpoznatijih svjetskih brendova</div>
                     <div class="footer-address">
-                        Promo Tekstil<br />
-                        Lateralus j.d.o.o.<br />
-                        Email: <a href="mailto:info@promo-tekstil.com">info@promo-tekstil.com</a><br />
-                        <a href="www.promo-tekstil.com"><b>www.promo-tekstil.com</b></a><br />
-                        OIB: 90780660216
+                        {{config.name}}<br />
+                        {{userData.company}}<br />
+                        Email: <a href="mailto:{{userData.email}}">{{userData.email}}</a><br />
+                        <a href="https://www.{{config.appname}}"><b>www.{{config.appname}}</b></a><br />
+                        OIB: {{userData.pin}}
                     </div>
                     <div class="clear"></div>
                 </div>

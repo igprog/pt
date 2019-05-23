@@ -296,7 +296,7 @@
   "Bosnia and Herzegovina": "Bosna i Hercegovina",
   "payment details": "Podaci za uplatu",
   "payment model": "Model plaćanja",
-  "amount": "iznos",
+  "amount": "Iznos",
   "description of payment": "Opis plaćanja",
   "your account information has been sent to the email address": "Podaci za prijavu su poslani na Vašu e-mail adresu",
 
@@ -1125,5 +1125,7 @@
   "filters": "Filteri",
   "Workwear": "Radna odjeća i obuća",
   "all brands": "Svi brendovi",
-  "message sent successfully": "Poruka uspješno poslana"
+  "message sent successfully": "Poruka uspješno poslana",
+  "send password": "pošalji lozinku",
+  "bank":  "Banka"
 }

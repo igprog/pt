@@ -697,4 +697,37 @@ angular.module('app', [])
 
 }])
 
+.controller('userDataCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+
+    var load = function () {
+        $http({
+            url: 'Admin.asmx/GetUserData',
+            method: 'POST',
+            data: {}
+        })
+     .then(function (response) {
+         $scope.d = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(JSON.parse(response.data.d));
+     });
+    }
+    load();
+
+    $scope.save = function (x) {
+        $http({
+            url: 'Admin.asmx/SaveUserData',
+            method: 'POST',
+            data: { x: x }
+        })
+     .then(function (response) {
+         $scope.d = JSON.parse(response.data.d);
+     },
+     function (response) {
+         alert(response.data.d);
+     });
+    }
+
+}])
+
 ;

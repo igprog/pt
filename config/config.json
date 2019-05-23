@@ -1,7 +1,8 @@
 ﻿{
-  "version": "13",
+  "version": "15",
   "backend": "",
   "appname": "promo-tekstil.com",
+  "name":  "Promo Tekstil",
   "debug": true,
   "iban": "",
   "swift": "",
