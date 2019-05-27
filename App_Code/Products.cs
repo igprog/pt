@@ -376,6 +376,7 @@ public class Products : System.Web.Services.WebService {
             Style z = new Style();
             string path = Server.MapPath(string.Format("~/upload/{0}.csv", file));
             List<ColorCC> colors = JsonConvert.DeserializeObject<List<ColorCC>>(GetJsonFile("json", "colors_cc"));
+            List<string> colornames = new List<string>();
 
             using (var reader = new StreamReader(path, Encoding.ASCII)) {
                 while (!reader.EndOfStream) {
@@ -393,7 +394,22 @@ public class Products : System.Web.Services.WebService {
                         x.longdesc_en = values[7];
                         x.gender_en = values[8];
                         x.category_en = values[9];
-                        x.colorhex = colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname).rgb) : ""; //   values[10];
+                        colornames = x.colorname.Split('/').ToList();
+                        if (colornames.Count == 1) {
+                            x.colorhex = colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]).rgb) : "";
+                        } else if (colornames.Count == 2) {
+                            x.colorhex = string.Format("{0}/{1}"
+                                        , colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]).rgb) : ""
+                                        , colors.Find(a => a.manufName == x.brand && a.colorName == colornames[1]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[1]).rgb) : "");
+
+                        } else if (colornames.Count == 3) {
+                            x.colorhex = string.Format("{0}/{1}/{2}"
+                                        , colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[0]).rgb) : ""
+                                        , colors.Find(a => a.manufName == x.brand && a.colorName == colornames[1]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[1]).rgb) : ""
+                                        , colors.Find(a => a.manufName == x.brand && a.colorName == colornames[2]) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == colornames[2]).rgb) : "");
+                        } else {
+                            x.colorhex = colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname) != null ? string.Format("#{0}", colors.Find(a => a.manufName == x.brand && a.colorName == x.colorname).rgb) : "";
+                        }
                         x.colorgroup_id = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[11]) : 0;
                         x.isnew = !string.IsNullOrEmpty(values[11]) ? Convert.ToInt32(values[12]): 0;
                         x.colorimageurl = values[13];
