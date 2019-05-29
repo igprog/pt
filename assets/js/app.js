@@ -218,29 +218,29 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     //    $scope.page = params[1].substring(5, 6);
     //}
 
-    if (params[0].substring(1, 6) == 'brand') {
+    if (params[0].substring(1, 6) === 'brand') {
         $scope.group = params[0].substring(7);
         type = "brand";
         $scope.current = params[0].substring(7);
     }
-    if (params[0].substring(1, 7) == 'gender') {
+    if (params[0].substring(1, 7) === 'gender') {
         $scope.group = params[0].substring(8);
         type = "gender";
         $scope.current = params[0].substring(8);
     }
-    if (params[0].substring(1, 6) == 'isnew') {
+    if (params[0].substring(1, 6) === 'isnew') {
         $scope.group = params[0].substring(7);
         type = "isnew";
         $scope.current = "new models";
     }
-    if (params[0].substring(1, 7) == 'outlet') {
+    if (params[0].substring(1, 7) === 'outlet') {
         $scope.group = params[0].substring(8);
         type = "outlet";
         $scope.current = "outlet";
     }
 
 
-    if (params[0].substring(1, 9) == 'category') {
+    if (params[0].substring(1, 9) === 'category') {
         $scope.category = params[0].substring(10);
         $scope.current = params[0].substring(10);
     } else {
@@ -336,7 +336,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
    } 
 
-    if ($sessionStorage.d !== undefined) {
+    if ($sessionStorage.d !== undefined && $sessionStorage.d !== 'Sequence contains no elements') {
         $scope.d = JSON.parse($sessionStorage.d);
         if ($sessionStorage.page !== undefined) {
             $scope.page = $sessionStorage.page;
@@ -350,10 +350,17 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             size: '',
             brand: ''
         }
+    } else {
+        $scope.d = null;
     }
 
     if (!angular.isDefined($scope.d) || $scope.group == '') {
-        $scope.category = params[0].substring(10) == '' ? 'T-Shirt' : params[0].substring(10);
+        if (params[0].substring(1, 9) === 'category') {
+            $scope.category = params[0].substring(10);
+            $scope.current = params[0].substring(10);
+        } else {
+            $scope.category = 'T-Shirt';
+        }
         load($scope.show, $scope.category);
     }
 
@@ -473,8 +480,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 }])
 
 .controller('productCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$window', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $window, $localStorage) {
-    var querystring = location.search.substring(7);
-    var style = querystring;
+    var style = '';
+    var queryString = location.search;
+    var params = queryString.split('&');
+    if (params[0].substring(1, 6) === 'style') {
+        style = params[0].substring(7);
+    }
+
+    //var querystring = location.search.substring(7);
+    //var style = querystring;
     var color = null;
 
     $scope.limit = 50;
@@ -727,14 +741,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     var getProductColorImg = function (x) {
-        debugger;
         $http({
             url: 'Products.asmx/GetProductColorImg',
             method: 'POST',
             data: { style: $scope.p.style, color: x.color }
         })
        .then(function (response) {
-           debugger;
            $scope.p.packshotimageurl = JSON.parse(response.data.d).packshotimageurl;
        },
        function (response) {
