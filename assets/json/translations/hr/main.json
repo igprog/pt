@@ -1127,5 +1127,8 @@
   "all brands": "Svi brendovi",
   "message sent successfully": "Poruka uspješno poslana",
   "send password": "pošalji lozinku",
-  "bank":  "Banka"
+  "bank": "Banka",
+  "natural person": "Fizička osoba",
+  "legal person": "Pravna osoba",
+  "different from the billing address": "Različita od adrese za naplatu"
 }

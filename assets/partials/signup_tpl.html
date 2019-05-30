@@ -2,8 +2,27 @@
     <div class="accordeon-entry" style="display: block;">
         <div class="row">
             <div class="col-md-6 information-entry">
+                <div class="row text-center">
+                    <div class="col-xs-6">
+                        <label class="checkbox-entry btn btn-default" style="cursor:pointer">
+                            <input ng-model="personType" type="radio" value="0" name="person" /> <span class="check"></span>
+                            <img src="../assets/img/privatna_osoba.png" class="img-response" value="0" checked style="max-height:50px" />
+                            {{'natural person' | translate}}
+                        </label>
+                    </div>
+                    <div class="col-xs-6">
+                        <label class="checkbox-entry btn btn-default" style="cursor:pointer">
+                            <input ng-model="personType" type="radio" value="1" name="person" /> <span class="check"></span>
+                            <img src="../assets/img/tvrtka.png" class="img-response" value="1" style="max-height:50px" />
+                            {{'legal person' | translate}}
+                        </label>
+                    </div>
+                </div>
                 <div class="article-container style-1">
-                    <div style="height: 80px">
+                    <!--<div style="height: 80px">
+                    <label class="lead">{{'billing address' | translate}}</label>
+                </div>-->
+                    <div>
                         <label class="lead">{{'billing address' | translate}}</label>
                     </div>
                     <form>
@@ -11,10 +30,12 @@
                         <input ng-model="u.firstName" type="text" value="" placeholder="{{'enter first name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
                         <label>{{'last name' | translate}}</label>
                         <input ng-model="u.lastName" type="text" value="" placeholder="{{'enter last name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
-                        <label>{{'company name' | translate}}</label>
-                        <input ng-model="u.companyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
-                        <label>{{'pin' | translate}}</label>
-                        <input ng-model="u.pin" type="text" value="" placeholder="{{'enter pin' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        <div ng-if="personType==1">
+                            <label>{{'company name' | translate}}</label>
+                            <input ng-model="u.companyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                            <label>{{'pin' | translate}}</label>
+                            <input ng-model="u.pin" type="text" value="" placeholder="{{'enter pin' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
+                        </div>
                         <label>{{'street and number' | translate}}</label>
                         <input ng-model="u.address" type="text" value="" placeholder="{{'enter street and number' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
                         <label>{{'postal code' | translate}}</label>
@@ -22,41 +43,10 @@
                         <label>{{'city' | translate}}</label>
                         <input ng-model="u.city" type="text" value="" placeholder="{{'enter city' | translate}}" class="simple-field" ng-change="setDeliveryAddress(sameDeliveryAddress)" required>
                         <label>{{'country' | translate}}</label>
-                        <div class="dropdown" >
-                            <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.country.Name | translate}}</button>
-                            <ul class="dropdown-menu" >
-                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><span><a href="#">{{x.Name | translate}}</a></span></li>
-                            </ul>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-6 information-entry">
-                <div class="article-container style-1">
-                    <div style="height: 80px">
-                        <label class="lead">{{'delivery address' | translate}}</label>
-                        <label class="checkbox-entry">
-                            <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
-                        </label>
-                    </div>
-                    <form>
-                        <label>{{'first name' | translate}}</label>
-                        <input ng-model="u.deliveryFirstName" type="text" value="" placeholder="{{'enter first name' | translate}}" class="simple-field" required>
-                        <label>{{'last name' | translate}}</label>
-                        <input ng-model="u.deliveryLastName" type="text" value="" placeholder="{{'enter last name' | translate}}" class="simple-field" required>
-                        <label>{{'company name' | translate}}</label>
-                        <input ng-model="u.deliveryCompanyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" required>
-                        <label>{{'address' | translate}}</label>
-                        <input ng-model="u.deliveryAddress" type="text" value="" placeholder="{{'enter street and number' | translate}}" class="simple-field" required>
-                        <label>{{'postal code' | translate}}</label>
-                        <input ng-model="u.deliveryPostalCode" type="text" value="" placeholder="{{'enter postal code' | translate}}" class="simple-field" required>
-                        <label>{{'city' | translate}}</label>
-                        <input ng-model="u.deliveryCity" type="text" value="" placeholder="{{'enter city' | translate}}" class="simple-field" required>
-                        <label>{{'country' | translate}}</label>
                         <div class="dropdown">
-                            <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.deliveryCountry.Name | translate}}</button>
+                            <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.country.Name | translate}}</button>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><span><a href="#">{{x.Name | translate}}</a></span></li>
                             </ul>
                         </div>
                     </form>
@@ -64,15 +54,62 @@
             </div>
         </div>
         <div class="row">
-            <hr />
+            <div class="col-md-6 information-entry">
+                <div class="article-container style-1">
+                    <!--<div style="height: 80px">
+                <label class="lead">{{'delivery address' | translate}}</label>
+                <label class="checkbox-entry">
+                    <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                </label>
+            </div>-->
+                    <div>
+                        <label class="lead">{{'delivery address' | translate}}</label>
+                        <label class="checkbox-entry">
+                            <input ng-model="sameDeliveryAddress" type="radio" name="deliveryaddress" ng-value="true" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                        </label>
+                        <label class="checkbox-entry">
+                            <input ng-model="sameDeliveryAddress" type="radio" name="deliveryaddress" ng-value="false" /> <span class="check"></span> {{'different from the billing address' | translate}}
+                        </label>
+                    </div>
+                    <div ng-if="sameDeliveryAddress==false">
+                        <form>
+                            <label>{{'first name' | translate}}</label>
+                            <input ng-model="u.deliveryFirstName" type="text" value="" placeholder="{{'enter first name' | translate}}" class="simple-field" required>
+                            <label>{{'last name' | translate}}</label>
+                            <input ng-model="u.deliveryLastName" type="text" value="" placeholder="{{'enter last name' | translate}}" class="simple-field" required>
+                            <label>{{'company name' | translate}}</label>
+                            <input ng-model="u.deliveryCompanyName" type="text" value="" placeholder="{{'enter company name' | translate}}" class="simple-field" required>
+                            <label>{{'address' | translate}}</label>
+                            <input ng-model="u.deliveryAddress" type="text" value="" placeholder="{{'enter street and number' | translate}}" class="simple-field" required>
+                            <label>{{'postal code' | translate}}</label>
+                            <input ng-model="u.deliveryPostalCode" type="text" value="" placeholder="{{'enter postal code' | translate}}" class="simple-field" required>
+                            <label>{{'city' | translate}}</label>
+                            <input ng-model="u.deliveryCity" type="text" value="" placeholder="{{'enter city' | translate}}" class="simple-field" required>
+                            <label>{{'country' | translate}}</label>
+                            <div class="dropdown">
+                                <button class="simple-field dropdown-toggle text-left" type="button" data-toggle="dropdown" style="background-color:white; margin-bottom:0px">{{u.deliveryCountry.Name | translate}}</button>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><span><a href="#">{{x.Name | translate}}</a></span></li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-6">
+                <hr />
                 <label class="lead">{{'contact' | translate}}</label>
                 <form>
                     <label>{{'phone' | translate}}</label>
                     <input ng-model="u.phone" type="text" value="" placeholder="{{'enter phone' | translate}}" class="simple-field">
                 </form>
             </div>
+        </div>
+        <div class="row">
             <div ng-if="!isGuest" class="col-sm-6">
+                <hr />
                 <label class="lead">{{'login data' | translate}}</label>
                 <form>
                     <label>{{'email' | translate}}</label>
@@ -90,12 +127,16 @@
                         <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
                     </div>
                 </form>
+                <div class="m10">
+                    <hr />
+                    <a href="" class="btn btn-primary pull-right" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
+                </div>
             </div>
         </div>
-        <div class="row m10">
+        <!--<div class="row m10">
             <hr />
             <a href="" class="btn btn-primary pull-right" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
-        </div>
+        </div>-->
         <div ng-if="alertmsg" class="alert alert-{{alertclass}} m10 text-right">
             {{alertmsg | translate}}
         </div>

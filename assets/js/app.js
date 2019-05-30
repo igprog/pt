@@ -798,13 +798,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.currentStep = 1;
     $scope.cart = !angular.isDefined(localStorage.cart) || localStorage.cart == '' ? [] : JSON.parse(localStorage.cart);
     $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
-
     $scope.userType = 'register';
     $scope.email = null;
     $scope.password = null;
-
     $scope.alertmsg = null;
     $scope.alertclass = 'info';
+    $scope.personType = 0;
 
     var getCountries = function () {
         $http({
@@ -1301,7 +1300,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
     if (angular.isDefined($rootScope.u) && $rootScope.u != null) { get(); };
 
-    $scope.sameDeliveryAddress = true;
+    //$scope.sameDeliveryAddress = true;
     $scope.setDeliveryAddress = function (isTheSame) {
         if (isTheSame == true) {
             $rootScope.u.deliveryFirstName = $rootScope.u.firstName;

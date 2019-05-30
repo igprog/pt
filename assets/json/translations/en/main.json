@@ -303,5 +303,8 @@
   "all brands": "All Brands",
   "message sent successfully": "Message sent successfully",
   "send password": "send password",
-  "bank": "Bank"
+  "bank": "Bank",
+  "natural person": "Natural person",
+  "legal person": "Legal person",
+  "different from the billing address": "Different from the billing address"
 }
