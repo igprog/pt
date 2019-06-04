@@ -1,19 +1,19 @@
 ﻿<div class="accordeon-entry" style="display: block;">
     <div class="accordeon-entry" style="display: block;">
         <div class="row">
-            <div class="col-md-6 information-entry">
+            <div class="col-md-6 col-sm-offset-2 information-entry">
                 <div class="row text-center">
                     <div class="col-xs-6">
                         <label class="checkbox-entry btn btn-default" style="cursor:pointer">
+                            <img src="../assets/img/privatna_osoba.png" class="img-response" value="0" checked style="max-height:50px" /><br />
                             <input ng-model="personType" type="radio" value="0" name="person" /> <span class="check"></span>
-                            <img src="../assets/img/privatna_osoba.png" class="img-response" value="0" checked style="max-height:50px" />
                             {{'natural person' | translate}}
                         </label>
                     </div>
                     <div class="col-xs-6">
                         <label class="checkbox-entry btn btn-default" style="cursor:pointer">
+                            <img src="../assets/img/tvrtka.png" class="img-response" value="1" style="max-height:50px" /><br />
                             <input ng-model="personType" type="radio" value="1" name="person" /> <span class="check"></span>
-                            <img src="../assets/img/tvrtka.png" class="img-response" value="1" style="max-height:50px" />
                             {{'legal person' | translate}}
                         </label>
                     </div>
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 information-entry">
+            <div class="col-md-6 col-sm-offset-2 information-entry">
                 <div class="article-container style-1">
                     <!--<div style="height: 80px">
                 <label class="lead">{{'delivery address' | translate}}</label>
@@ -98,7 +98,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-6 col-sm-offset-2">
                 <hr />
                 <label class="lead">{{'contact' | translate}}</label>
                 <form>
@@ -108,7 +108,7 @@
             </div>
         </div>
         <div class="row">
-            <div ng-if="!isGuest" class="col-sm-6">
+            <div ng-if="!isGuest" class="col-sm-6 col-sm-offset-2">
                 <hr />
                 <label class="lead">{{'login data' | translate}}</label>
                 <form>
