@@ -197,9 +197,19 @@
 
             <div ng-if="isdetails" style="border: solid 1px lightgray; padding: 20px">
                 <div class="text-right">
+                    <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create PDF</button>
+                    <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
                     <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to orders</a>
                 </div>
                 <label class="m10 lead">Order number: <span class="badge">{{o.number}}</span> <span class="badge">{{o.status.title}}</span></label>
+                <!--<div class="row m10">
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create PDF</button>
+                        <a ng-if="pdfLink" href="{{pdfLink}}" download><i class="fa fa-file-pdf-o"></i> {{pdfLink}}</a>
+                    </div>
+                </div>-->
                 <div class="row">
                     <div class="col-sm-6">
                         <label>Billing address</label>

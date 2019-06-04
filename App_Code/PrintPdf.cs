@@ -20,267 +20,252 @@ using Igprog;
 public class PrintPdf : System.Web.Services.WebService {
     string dataBase = ConfigurationManager.AppSettings["UserDataBase"];
     DataBase db = new DataBase();
+    Files f = new Files();
+    string logoPath = HttpContext.Current.Server.MapPath(string.Format("~/assets/img/promo-tekstil-logo-200px.png"));
+    iTextSharp.text.pdf.draw.LineSeparator line = new iTextSharp.text.pdf.draw.LineSeparator(0f, 100f, Color.BLACK, Element.ALIGN_LEFT, 1);
+    Translate t = new Translate();
 
     public PrintPdf() {
     }
 
-    protected void CreateFolder(string path) {
-        if (!Directory.Exists(Server.MapPath(path))) {
-            Directory.CreateDirectory(Server.MapPath(path));
+
+    [WebMethod]
+    public string InvoicePdf(Orders.NewOrder order, bool isForeign) {
+        try {
+            GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
+            Paragraph p = new Paragraph();
+            var doc = new Document();
+            string path = Server.MapPath("~/upload/invoice/temp/");
+            f.DeleteFolder(path);
+            f.CreateFolder(path);
+            string fileName = Guid.NewGuid().ToString();
+            string filePath = Path.Combine(path, string.Format("{0}.pdf", fileName));
+            PdfWriter.GetInstance(doc, new FileStream(filePath, FileMode.Create));
+
+            doc.Open();
+
+            Image logo = Image.GetInstance(logoPath);
+            logo.ScalePercent(9f);
+            string info = string.Format(@"
+Info...
+");
+
+            PdfPTable header_table = new PdfPTable(2);
+            header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
+            header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            header_table.WidthPercentage = 100f;
+            float[] header_widths = new float[] { 2f, 1f };
+            header_table.SetWidths(header_widths);
+            doc.Add(header_table);
+
+            doc.Add(new Chunk(line));
+
+            string client = string.Format(@"
+{0}
+{1}
+{2} {3}
+{4}
+
+{5}",
+          !string.IsNullOrWhiteSpace(order.companyName) ? order.companyName : string.Format("{0} {1}", order.firstName, order.lastName),
+            order.address,
+            order.postalCode,
+            order.city,
+            order.country,
+            !string.IsNullOrWhiteSpace(order.pin) ? string.Format("OIB{0}: {1}", isForeign ? string.Format(" / {0}", t.Tran("pin", "en").ToUpper()) : "", order.pin) : "");
+
+            Paragraph client_paragrapf = new Paragraph();
+            //float clientLeftSpacing_float = Convert.ToSingle(clientLeftSpacing);
+            //client_paragrapf.SpacingBefore = 20f;
+            //client_paragrapf.SpacingAfter = 20f;
+            //client_paragrapf.IndentationLeft = clientLeftSpacing_float;
+            //client_paragrapf.Font = GetFont(10);
+            //client_paragrapf.Add(client);
+            //doc.Add(client_paragrapf);
+
+
+            p = new Paragraph();
+            p.Add(new Chunk("RAČUN R2", GetFont(12)));
+            if (isForeign) { p.Add(new Chunk(" / INVOICE", GetFont(8, Font.ITALIC))); }
+            doc.Add(p);
+
+            p = new Paragraph();
+            p.Add(new Chunk("Obračun prema naplaćenoj naknadi", GetFont(9, Font.ITALIC)));
+            if (isForeign) { p.Add(new Chunk(" / calculation according to a paid compensation", GetFont(8, Font.ITALIC))); }
+            doc.Add(p);
+
+            p = new Paragraph();
+            p.Add(new Chunk("Broj računa", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / invoice number", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            p.Add(new Chunk(string.Format(" {0}/1/1", order.number), GetFont(10)));
+            doc.Add(p);
+
+            PdfPTable table = new PdfPTable(5);
+
+            p = new Paragraph();
+            p.Add(new Paragraph("Redni broj", GetFont()));
+            if (isForeign) { p.Add(new Chunk("number", GetFont(8, Font.ITALIC))); }
+            table.AddCell(new PdfPCell(p) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 15, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+
+            p = new Paragraph();
+            p.Add(new Paragraph("Naziv proizvoda / usluge", GetFont()));
+            if (isForeign) { p.Add(new Chunk("description", GetFont(8, Font.ITALIC))); }
+            table.AddCell(new PdfPCell(p) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 15, });
+
+            p = new Paragraph();
+            p.Add(new Paragraph("Količina", GetFont()));
+            if (isForeign) { p.Add(new Chunk("quantity", GetFont(8, Font.ITALIC))); }
+            table.AddCell(new PdfPCell(p) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 15, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+
+            p = new Paragraph();
+            p.Add(new Paragraph("Jedinična cijena", GetFont()));
+            if (isForeign) { p.Add(new Chunk("unit price", GetFont(8, Font.ITALIC))); }
+            table.AddCell(new PdfPCell(p) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 15, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+
+            p = new Paragraph();
+            p.Add(new Paragraph("Ukupno", GetFont()));
+            if (isForeign) { p.Add(new Chunk("total", GetFont(8, Font.ITALIC))); }
+            table.AddCell(new PdfPCell(p) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 15, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+
+            int row = 0;
+            double totPrice = 0;
+            foreach (Orders.Item item in order.items) {
+                row++;
+                totPrice = totPrice + (item.quantity);
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+                table.AddCell(new PdfPCell(new Phrase(item.style, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
+                table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", 0)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", 0 * item.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            }
+
+            table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
+            table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
+            table.AddCell(new PdfPCell(new Phrase("Ukupan iznos računa: ", GetFont(10))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", totPrice)), GetFont(10, Font.BOLD))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+
+            if (isForeign)
+            {
+                table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+                table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+                table.AddCell(new PdfPCell(new Phrase("Total: ", GetFont(8, Font.ITALIC))) { Border = PdfPCell.NO_BORDER, Padding = 2, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0} €", string.Format("{0:N}", 0)), GetFont(10, Font.BOLD))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            }
+
+
+            table.WidthPercentage = 100f;
+            float[] widths = new float[] { 1f, 3f, 1f, 1f, 1f };
+            table.SetWidths(widths);
+            doc.Add(table);
+
+            p = new Paragraph();
+            p.Add(new Chunk("PDV nije obračunat jer obveznik IG PROG nije u sustavu PDV - a po čl. 90, st. 1.Zakona o porezu na dodanu vrijednost.", GetFont(9, Font.ITALIC)));
+            if (isForeign) { p.Add(new Chunk(" / VAT is not charged because taxpayer IG PROG is not registerd for VAT under Art 90, para 1 of the Law om VAT.", GetFont(8, Font.ITALIC))); }
+            doc.Add(p);
+
+            PdfPTable invoiceInfo_table = new PdfPTable(2);
+
+            p = new Paragraph();
+            p.Add(new Chunk("Datum i vrijeme", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / date and time", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20 });
+            invoiceInfo_table.AddCell(new PdfPCell(new Phrase(order.orderDate, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20, });
+
+            p = new Paragraph();
+            p.Add(new Chunk("Oznaka operatera", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / operator", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            invoiceInfo_table.AddCell(new PdfPCell(new Phrase("IG", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            p = new Paragraph();
+            p.Add(new Chunk("Način plaćanja", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / payment method", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            p = new Paragraph();
+            p.Add(new Chunk("Transakcijski račun", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / transaction occount", GetFont(8, Font.ITALIC))); }
+            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            p = new Paragraph();
+            p.Add(new Chunk("Mjesto isporuke", GetFont()));
+            if (isForeign) { p.Add(new Chunk(" / place of issue", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            invoiceInfo_table.AddCell(new PdfPCell(new Phrase("Rijeka", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            invoiceInfo_table.WidthPercentage = 100f;
+            float[] invoiceInfo_widths = new float[] { 1f, 4f };
+            if (isForeign) { invoiceInfo_widths = new float[] { 2f, 4f }; }
+            invoiceInfo_table.SetWidths(invoiceInfo_widths);
+            doc.Add(invoiceInfo_table);
+
+            float spacing = 140f;
+            if (row == 1) { spacing = 160f; }
+            if (row == 2) { spacing = 140f; }
+            if (row == 3) { spacing = 100f; }
+            if (row == 4) { spacing = 60f; }
+            if (row == 5) { spacing = 20f; }
+
+            if (!string.IsNullOrWhiteSpace(order.note))
+            {
+                Paragraph title = new Paragraph();
+                title.SpacingBefore = 20f;
+                title.Font = GetFont();
+                title.Add(order.note);
+                doc.Add(title);
+                spacing = spacing - 40f;
+            }
+            if (isForeign) { spacing = spacing - 40f; }
+
+            PdfPTable sign_table = new PdfPTable(2);
+            sign_table.SpacingBefore = spacing;
+            sign_table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            sign_table.AddCell(new PdfPCell(new Phrase("Odgovorna osoba:", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+            sign_table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            sign_table.AddCell(new PdfPCell(new Phrase("Igor Gašparović", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+
+            sign_table.WidthPercentage = 100f;
+            float[] sign_widths = new float[] { 4f, 1f };
+            sign_table.SetWidths(sign_widths);
+            doc.Add(sign_table);
+
+            PdfPTable footer_table = new PdfPTable(1);
+            footer_table.AddCell(new PdfPCell(new Phrase("mob: +385 98 330 966   |   email: igprog@yahoo.com   |   web: www.igprog.hr", GetFont(8))) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 80, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+            doc.Add(footer_table);
+
+            doc.Close();
+
+            return fileName;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
         }
     }
 
-    //[WebMethod]
-    //public string MenuPdf(string userId, string fileName, Menues.NewMenu currentMenu, ClientsData.NewClientData clientData) {
-    //    var doc = new Document();
-    //    //List<Menues.JsonFile> xx = new List<Menues.JsonFile>();
-    //    //xx = JsonConvert.DeserializeObject<List<Menues.JsonFile>>(json);
 
-    //    //  string path = "~/UsersFiles/" + foldername + "/pdf/";
-    //    string path = "~/upload/users/" + userId + "/pdf/";
-    //    CreateFolder(path);
-    //    PdfWriter.GetInstance(doc, new FileStream(Server.MapPath(path + fileName + ".pdf"), FileMode.Create));
+    private Font GetFont(int size, int style) {
+       return FontFactory.GetFont(HttpContext.Current.Server.MapPath("~/app/assets/fonts/ARIALUNI.TTF"), BaseFont.IDENTITY_H, false, size, style);
+    }
 
-    //    doc.Open();
+    private Font GetFont() {
+        return GetFont(9, 0); // Normal font
+    }
 
-    //    Font arial = FontFactory.GetFont("Arial", 8, Color.BLACK);
-    //    Font arial16 = FontFactory.GetFont("Arial", 16, Color.CYAN);
-    //    Font courier = new Font(Font.COURIER, 9f);
-    //    Font brown = new Font(Font.COURIER, 9f, Font.NORMAL, new Color(163, 21, 21));
-    //    Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(255, 255, 255));
+    private Font GetFont(int size) {
+        return GetFont(size, 0);
+    }
 
-    //    PdfPTable table = new PdfPTable(6);
-
-    //    PdfPCell cell = new PdfPCell(new Phrase("Jelovnik", verdana));
-    //    cell.Colspan = 6;
-    //    cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-    //    cell.BackgroundColor = new Color(0, 179, 179);
-    //    table.AddCell(cell);
-
-    //    table.AddCell("Id");
-    //    table.AddCell("Namirnica");
-    //    table.AddCell("Količina");
-    //    table.AddCell("Mjera");
-    //    table.AddCell("Masa");
-    //    table.AddCell("Energija");
-
-    //    foreach (var x in currentMenu.data.selectedFoods) {
-    //        PdfPCell cell1 = new PdfPCell(new Phrase(x.id.ToString(), courier));
-    //        cell1.Border = 0;
-    //        table.AddCell(cell1);
-    //        PdfPCell cell2 = new PdfPCell(new Phrase(x.food.ToString(), courier));
-    //        cell2.Border = 0;
-    //        table.AddCell(cell2);
-    //        PdfPCell cell3 = new PdfPCell(new Phrase(x.quantity.ToString(), courier));
-    //        cell3.Border = 0;
-    //        table.AddCell(cell3);
-    //        PdfPCell cell4 = new PdfPCell(new Phrase(x.unit.ToString(), courier));
-    //        cell4.Border = 0;
-    //        table.AddCell(cell4);
-    //        PdfPCell cell5 = new PdfPCell(new Phrase(x.mass.ToString(), courier));
-    //        cell5.Border = 0;
-    //        table.AddCell(cell5);
-    //        PdfPCell cell6 = new PdfPCell(new Phrase(x.energy.ToString(), courier));
-    //        cell6.Border = 0;
-    //        table.AddCell(cell6);
-    //    }
-    //    doc.Add(table);
-
-    //    string text = @"Lorem ipsum dolor sit amet, civibus epicurei pericula cum te, cu eos audire denique. Ei electram voluptaria usu. Tale saperet te vim, sea meliore quaerendum scribentur ne, ad ridens corpora pro. Eam id purto cibo timeam, sale dissentias cu duo. Ex scaevola electram has, ei eius mazim nominati pri. Dolor expetendis est at. ";
-
-    //    doc.Add(new Paragraph(text, brown));
-    //    doc.Close();   
-
-    //    return "OK.";
-    //}
+    private Font GetFont(bool x) {
+        return GetFont(9, x == true ? Font.BOLD: Font.NORMAL);
+    }
 
 
 
-    //[WebMethod]
-    //public string RealizationsPdf(string foldername, string filename, string json) {
-    //    var doc = new Document();
-    //    List<Realizations.NewRealization> xx = new List<Realizations.NewRealization>();
-    //    xx = JsonConvert.DeserializeObject<List<Realizations.NewRealization>>(json);
-
-    //    string path = "~/UsersFiles/" + foldername + "/pdf/";
-    //    CreateFolder(path);
-    //    PdfWriter.GetInstance(doc, new FileStream(Server.MapPath(path + filename + ".pdf"), FileMode.Create));
-
-    //    doc.Open();
-
-    //    Font arial = FontFactory.GetFont("Arial", 8, Color.BLACK);
-    //    Font arial16 = FontFactory.GetFont("Arial", 16, Color.CYAN);
-    //    Font courier = new Font(Font.COURIER, 9f);
-    //    Font brown = new Font(Font.COURIER, 9f, Font.NORMAL, new Color(163, 21, 21));
-    //    Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(255, 255, 255));
-
-    //    PdfPTable table = new PdfPTable(6);
-
-    //    PdfPCell cell = new PdfPCell(new Phrase("Realizacija", verdana));
-    //    cell.Colspan = 6;
-    //    cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-    //    cell.BackgroundColor = new Color(0, 179, 179);
-    //    table.AddCell(cell);
-
-    //    table.AddCell("Id");
-    //    table.AddCell("GIR");
-    //    table.AddCell("Škola");
-    //    table.AddCell("Odjeljenje");
-    //    table.AddCell("Trajanje");
-    //    table.AddCell("Datum");
-    //    foreach (var x in xx) {
-    //        PdfPCell cell1 = new PdfPCell(new Phrase(x.id.ToString(), courier));
-    //        cell1.Border = 0;
-    //        table.AddCell(cell1);
-    //        PdfPCell cell2 = new PdfPCell(new Phrase(x.type.ToString(), courier));
-    //        cell2.Border = 0;
-    //        table.AddCell(cell2);
-    //        PdfPCell cell3 = new PdfPCell(new Phrase(x.school.ToString(), courier));
-    //        cell3.Border = 0;
-    //        table.AddCell(cell3);
-    //        PdfPCell cell4 = new PdfPCell(new Phrase(x.schoolClass.ToString(), courier));
-    //        cell4.Border = 0;
-    //        table.AddCell(cell4);
-    //        PdfPCell cell5 = new PdfPCell(new Phrase(x.duration.ToString(), courier));
-    //        cell5.Border = 0;
-    //        table.AddCell(cell5);
-    //        PdfPCell cell6 = new PdfPCell(new Phrase(x.date.ToString(), courier));
-    //        cell6.Border = 0;
-    //        table.AddCell(cell6);
-    //    }
-    //    doc.Add(table);
-
-    //    string text = @"Lorem ipsum dolor sit amet, civibus epicurei pericula cum te, cu eos audire denique. Ei electram voluptaria usu. Tale saperet te vim, sea meliore quaerendum scribentur ne, ad ridens corpora pro. Eam id purto cibo timeam, sale dissentias cu duo. Ex scaevola electram has, ei eius mazim nominati pri. Dolor expetendis est at. ";
-
-    //    doc.Add(new Paragraph(text, brown));
-    //    doc.Close();   
-
-    //    return "OK.";
-    //}
-
-    //[WebMethod]
-    //public string RealizationsPdf(string foldername, string filename, string json) {
-    //    var doc = new Document();
-    //    List<Realizations.NewRealization> xx = new List<Realizations.NewRealization>();
-    //    xx = JsonConvert.DeserializeObject<List<Realizations.NewRealization>>(json);
-
-    //    string path = "~/UsersFiles/" + foldername + "/pdf/";
-    //    CreateFolder(path);
-    //    PdfWriter.GetInstance(doc, new FileStream(Server.MapPath(path + filename + ".pdf"), FileMode.Create));
-
-    //    doc.Open();
-
-    //    Font arial = FontFactory.GetFont("Arial", 8, Color.BLACK);
-    //    Font arial16 = FontFactory.GetFont("Arial", 16, Color.CYAN);
-    //    Font courier = new Font(Font.COURIER, 9f);
-    //    Font brown = new Font(Font.COURIER, 9f, Font.NORMAL, new Color(163, 21, 21));
-    //    Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(255, 255, 255));
-
-    //    PdfPTable table = new PdfPTable(6);
-
-    //    PdfPCell cell = new PdfPCell(new Phrase("Realizacija", verdana));
-    //    cell.Colspan = 6;
-    //    cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-    //    cell.BackgroundColor = new Color(0, 179, 179);
-    //    table.AddCell(cell);
-
-    //    table.AddCell("Id");
-    //    table.AddCell("GIR");
-    //    table.AddCell("Škola");
-    //    table.AddCell("Odjeljenje");
-    //    table.AddCell("Trajanje");
-    //    table.AddCell("Datum");
-    //    foreach (var x in xx) {
-    //        PdfPCell cell1 = new PdfPCell(new Phrase(x.id.ToString(), courier));
-    //        cell1.Border = 0;
-    //        table.AddCell(cell1);
-    //        PdfPCell cell2 = new PdfPCell(new Phrase(x.type.ToString(), courier));
-    //        cell2.Border = 0;
-    //        table.AddCell(cell2);
-    //        PdfPCell cell3 = new PdfPCell(new Phrase(x.school.ToString(), courier));
-    //        cell3.Border = 0;
-    //        table.AddCell(cell3);
-    //        PdfPCell cell4 = new PdfPCell(new Phrase(x.schoolClass.ToString(), courier));
-    //        cell4.Border = 0;
-    //        table.AddCell(cell4);
-    //        PdfPCell cell5 = new PdfPCell(new Phrase(x.duration.ToString(), courier));
-    //        cell5.Border = 0;
-    //        table.AddCell(cell5);
-    //        PdfPCell cell6 = new PdfPCell(new Phrase(x.date.ToString(), courier));
-    //        cell6.Border = 0;
-    //        table.AddCell(cell6);
-    //    }
-    //    doc.Add(table);
-
-    //    string text = @"Lorem ipsum dolor sit amet, civibus epicurei pericula cum te, cu eos audire denique. Ei electram voluptaria usu. Tale saperet te vim, sea meliore quaerendum scribentur ne, ad ridens corpora pro. Eam id purto cibo timeam, sale dissentias cu duo. Ex scaevola electram has, ei eius mazim nominati pri. Dolor expetendis est at. ";
-
-    //    doc.Add(new Paragraph(text, brown));
-    //    doc.Close();   
-
-    //    return "OK.";
-    //}
-
-    //[WebMethod]
-    //public string RealizationsPdf(string foldername, string filename, string json) {
-    //    var doc = new Document();
-    //    List<Realizations.NewRealization> xx = new List<Realizations.NewRealization>();
-    //    xx = JsonConvert.DeserializeObject<List<Realizations.NewRealization>>(json);
-
-    //    string path = "~/UsersFiles/" + foldername + "/pdf/";
-    //    CreateFolder(path);
-    //    PdfWriter.GetInstance(doc, new FileStream(Server.MapPath(path + filename + ".pdf"), FileMode.Create));
-
-    //    doc.Open();
-
-    //    Font arial = FontFactory.GetFont("Arial", 8, Color.BLACK);
-    //    Font arial16 = FontFactory.GetFont("Arial", 16, Color.CYAN);
-    //    Font courier = new Font(Font.COURIER, 9f);
-    //    Font brown = new Font(Font.COURIER, 9f, Font.NORMAL, new Color(163, 21, 21));
-    //    Font verdana = FontFactory.GetFont("Verdana", 16, Font.BOLDITALIC, new Color(255, 255, 255));
-
-    //    PdfPTable table = new PdfPTable(6);
-
-    //    PdfPCell cell = new PdfPCell(new Phrase("Realizacija", verdana));
-    //    cell.Colspan = 6;
-    //    cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-    //    cell.BackgroundColor = new Color(0, 179, 179);
-    //    table.AddCell(cell);
-
-    //    table.AddCell("Id");
-    //    table.AddCell("GIR");
-    //    table.AddCell("Škola");
-    //    table.AddCell("Odjeljenje");
-    //    table.AddCell("Trajanje");
-    //    table.AddCell("Datum");
-    //    foreach (var x in xx) {
-    //        PdfPCell cell1 = new PdfPCell(new Phrase(x.id.ToString(), courier));
-    //        cell1.Border = 0;
-    //        table.AddCell(cell1);
-    //        PdfPCell cell2 = new PdfPCell(new Phrase(x.type.ToString(), courier));
-    //        cell2.Border = 0;
-    //        table.AddCell(cell2);
-    //        PdfPCell cell3 = new PdfPCell(new Phrase(x.school.ToString(), courier));
-    //        cell3.Border = 0;
-    //        table.AddCell(cell3);
-    //        PdfPCell cell4 = new PdfPCell(new Phrase(x.schoolClass.ToString(), courier));
-    //        cell4.Border = 0;
-    //        table.AddCell(cell4);
-    //        PdfPCell cell5 = new PdfPCell(new Phrase(x.duration.ToString(), courier));
-    //        cell5.Border = 0;
-    //        table.AddCell(cell5);
-    //        PdfPCell cell6 = new PdfPCell(new Phrase(x.date.ToString(), courier));
-    //        cell6.Border = 0;
-    //        table.AddCell(cell6);
-    //    }
-    //    doc.Add(table);
-
-    //    string text = @"Lorem ipsum dolor sit amet, civibus epicurei pericula cum te, cu eos audire denique. Ei electram voluptaria usu. Tale saperet te vim, sea meliore quaerendum scribentur ne, ad ridens corpora pro. Eam id purto cibo timeam, sale dissentias cu duo. Ex scaevola electram has, ei eius mazim nominati pri. Dolor expetendis est at. ";
-
-    //    doc.Add(new Paragraph(text, brown));
-    //    doc.Close();   
-
-    //    return "OK.";
-    //}
 
 
 }

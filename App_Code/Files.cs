@@ -22,7 +22,7 @@ public class Files : System.Web.Services.WebService {
         try {
             string path = "~/App_Data/" + foldername;
             string filepath = path + "/" +  filename + ".json";
-            CreateFolder(path);
+            CreateFolder(Server.MapPath(path));
             WriteFile(filepath, json);
             return GetFile(foldername, filename);
         } catch(Exception e) { return ("Error: " + e); }
@@ -43,14 +43,20 @@ public class Files : System.Web.Services.WebService {
     #endregion WebMethods
 
     #region Methods
-    protected void CreateFolder(string path) {
-        if (!Directory.Exists(Server.MapPath(path))) {
-            Directory.CreateDirectory(Server.MapPath(path));
+    public void CreateFolder(string path) {
+        if (!Directory.Exists(path)) {
+            Directory.CreateDirectory(path);
         }
     }
 
     protected void WriteFile(string path, string value) {
         File.WriteAllText(Server.MapPath(path), value);
+    }
+
+     public void DeleteFolder(string path) {
+        if (Directory.Exists(path)) {
+            Directory.Delete(path, true);
+        }
     }
     #endregion Methods
 
