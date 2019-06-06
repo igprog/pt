@@ -272,7 +272,7 @@ angular.module('app', [])
         $http({
             url: 'PrintPdf.asmx/InvoicePdf',
             method: 'POST',
-            data: { order: o, isForeign: isForeign }
+            data: { order:o, isForeign:isForeign, lang:'hr' }
         })
      .then(function (response) {
          $scope.loading = false;
@@ -723,11 +723,11 @@ angular.module('app', [])
 
 }])
 
-.controller('userDataCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
+.controller('companyInfoCtrl', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 
     var load = function () {
         $http({
-            url: 'Admin.asmx/GetUserData',
+            url: 'Admin.asmx/GetCompanyInfo',
             method: 'POST',
             data: {}
         })
@@ -742,7 +742,7 @@ angular.module('app', [])
 
     $scope.save = function (x) {
         $http({
-            url: 'Admin.asmx/SaveUserData',
+            url: 'Admin.asmx/SaveCompanyInfo',
             method: 'POST',
             data: { x: x }
         })

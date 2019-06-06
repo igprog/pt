@@ -48,7 +48,7 @@
                     <li ng-if="islogin" ng-click="toggleTpl('orderoptions')"><a href="#">Order Options</a></li>
                     <li ng-if="islogin" ng-click="toggleTpl('categories')"><a href="#">Categories</a></li>
                     <li ng-if="islogin" ng-click="toggleTpl('countries')"><a href="#">Countries</a></li>
-                    <li ng-if="islogin" ng-click="toggleTpl('userdata')"><a href="#">User Data</a></li>-->
+                    <li ng-if="islogin" ng-click="toggleTpl('companyinfo')"><a href="#">User Data</a></li>-->
                 </ul>
                 <ul ng-if="islogin" class="nav navbar-nav navbar-right">
                     <li ng-click="logout()"><a href="#"><span class="fa fa-sign-in"></span> Logout</a></li>
@@ -69,7 +69,7 @@
                 <div ng-if="islogin" ng-click="toggleTpl('orderoptions')"><a href="#">Order Options</a></div>
                 <div ng-if="islogin" ng-click="toggleTpl('categories')"><a href="#">Categories</a></div>
                 <div ng-if="islogin" ng-click="toggleTpl('countries')"><a href="#">Countries</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('userdata')"><a href="#">User Data</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('companyinfo')"><a href="#">Company Info</a></div>
             </form>
         </div>
     </div>
@@ -963,17 +963,21 @@
         </div>
     </script>
 
-    <script type="text/ng-template" id="userdata">
-        <div ng-controller="userDataCtrl" class="container">
+    <script type="text/ng-template" id="companyinfo">
+        <div ng-controller="companyInfoCtrl" class="container">
             <div class="row">
                 <div class="col-sm-6">
                     <fieldset class="fieldset-border">
-                        <legend class="fieldset-border">User Data</legend>
+                        <legend class="fieldset-border">Company Info</legend>
                         <div class="table-responsive">
                             <table class="table table-condensed">
                                 <tr>
-                                    <td>Company</td>
+                                    <td>Company (short)</td>
                                     <td><input ng-model="d.company" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company (long)</td>
+                                    <td><input ng-model="d.companylong" type="text" class="form-control" /></td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
@@ -998,6 +1002,10 @@
                                 <tr>
                                     <td>IBAN</td>
                                     <td><input ng-model="d.iban" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>IBAN (additional)</td>
+                                    <td><input ng-model="d.iban1" type="text" class="form-control" /></td>
                                 </tr>
                                 <tr>
                                     <td>SWIFT</td>

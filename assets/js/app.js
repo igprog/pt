@@ -52,20 +52,20 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     };
     getConfig();
 
-    var getUserData = function () {
+    var getCompanyInfo = function () {
         $http({
-            url: 'Admin.asmx/GetUserData',
+            url: 'Admin.asmx/GetCompanyInfo',
             method: 'POST',
             data: {}
         })
          .then(function (response) {
-             $scope.userData = JSON.parse(response.data.d);
+             $scope.companyInfo = JSON.parse(response.data.d);
          },
          function (response) {
              alert(JSON.parse(response.data.d));
          });
     }
-    getUserData();
+    getCompanyInfo();
 
     var loadCategories = function () {
         $http({
@@ -820,20 +820,20 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
     getCountries();
 
-    var getUserData = function () {
+    var getCompanyInfo = function () {
         $http({
-            url: 'Admin.asmx/GetUserData',
+            url: 'Admin.asmx/GetCompanyInfo',
             method: 'POST',
             data: {}
         })
      .then(function (response) {
-         $scope.userData = JSON.parse(response.data.d);
+         $scope.companyInfo = JSON.parse(response.data.d);
      },
      function (response) {
          alert(JSON.parse(response.data.d));
      });
     }
-    getUserData();
+    getCompanyInfo();
 
 
     $scope.setCountry = function (x) {
@@ -1028,7 +1028,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/login.html">https://www.' + $rootScope.config.appname + '/login.html</a></p>' +
              '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/user.html">https://www.' + $rootScope.config.appname + '/user.html</a></p>' +
              '<br/>' +
-             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:' + $scope.userData.email + '?Subject=Upit" target="_top">' + $scope.userData.email + '</a>.</p>' +
+             '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:' + $scope.companyInfo.email + '?Subject=Upit" target="_top">' + $scope.companyInfo.email + '</a>.</p>' +
              '<br/>' +
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
@@ -1141,9 +1141,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<label>' + $translate.instant('payment details') + '</label>' +
                 '<hr />' +
                 '<ul>' +
-                    '<li>IBAN: ' + $scope.userData.iban + '</li>' +
-                    '<li>' + $translate.instant('bank') + ': ' + $scope.userData.bank + '</li>' +
-                    '<li>' + $translate.instant('company') + ': ' + $scope.userData.company + '</li>' +
+                    '<li>IBAN: ' + $scope.companyInfo.iban + '</li>' +
+                    '<li>' + $translate.instant('bank') + ': ' + $scope.companyInfo.bank + '</li>' +
+                    '<li>' + $translate.instant('company') + ': ' + $scope.companyInfo.company + '</li>' +
                     '<li>' + $translate.instant('payment model') + ': HR99</li>' +
                     '<li>' + $translate.instant('amount') + ': <strong>' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' </strong>' + $rootScope.config.currency.symbol + '</li>' +
                     '<li>' + $translate.instant('description of payment') + ': ' + $scope.order.number + '</li>' +
@@ -1205,7 +1205,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://www.' + $rootScope.config.appname + '/signup.html">https://www.' + $rootScope.config.appname + '/signup.html</a></p>' +
          '<br/>' +
          '<p>Želimo vam ugodnu kupovinu.</p>' +
-         '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:' + $scope.userData.email + '?Subject=Upit" target="_top">' + $scope.userData.email + '</a>.</p>' +
+         '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:' + $scope.companyInfo.email + '?Subject=Upit" target="_top">' + $scope.companyInfo.email + '</a>.</p>' +
          '<br/>' +
          '<p>Srdačno,</p>' +
          '<br/>' +
@@ -1358,20 +1358,20 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     $scope.issent = false;
     $scope.isrequired = false;
 
-    var getUserData = function () {
+    var getCompanyInfo = function () {
         $http({
-            url: 'Admin.asmx/GetUserData',
+            url: 'Admin.asmx/getCompanyInfo',
             method: 'POST',
             data: {}
         })
      .then(function (response) {
-         $scope.userData = JSON.parse(response.data.d);
+         $scope.companyInfo = JSON.parse(response.data.d);
      },
      function (response) {
          alert(JSON.parse(response.data.d));
      });
     }
-    getUserData();
+    getCompanyInfo();
 
     $scope.send = function (d) {
         if (functions.isNullOrEmpty(d.firstName)) {

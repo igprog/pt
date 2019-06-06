@@ -341,9 +341,9 @@
                         <label>Podaci s uplatnice</label>
                         <hr />
                         <ul>
-                            <li>IBAN: {{userData.iban}}</li>
-                            <li>{{'bank' | translate}}: {{userData.bank}}</li>
-                            <li>{{'company' | translate}}: {{userData.company}}</li>
+                            <li>IBAN: {{companyInfo.iban}}</li>
+                            <li>{{'bank' | translate}}: {{companyInfo.bank}}</li>
+                            <li>{{'company' | translate}}: {{companyInfo.company}}</li>
                             <li>{{'payment model' | translate}}: HR99</li>
                             <li>{{'amount' | translate}}: <strong>{{(price.total * config.currency.course) | number:2}} <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></strong></li>
                             <li>{{'description of payment' | translate}}: {{order.number}}</li>

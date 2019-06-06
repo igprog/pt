@@ -30,7 +30,7 @@ public class PrintPdf : System.Web.Services.WebService {
 
 
     [WebMethod]
-    public string InvoicePdf(Orders.NewOrder order, bool isForeign) {
+    public string InvoicePdf(Orders.NewOrder order, bool isForeign, string lang) {
         try {
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();
@@ -46,15 +46,33 @@ public class PrintPdf : System.Web.Services.WebService {
 
             Image logo = Image.GetInstance(logoPath);
             logo.ScalePercent(9f);
+
+            Admin.CompanyInfo ci = JsonConvert.DeserializeObject<Admin.CompanyInfo>(f.GetFile("json", "companyinfo"));
+
+            p = new Paragraph();
+            p.Add(new Chunk(ci.company, GetFont(12, Font.BOLD)));
+            p.Alignment = Element.ALIGN_RIGHT;
+            doc.Add(p);
+
             string info = string.Format(@"
-Info...
-");
+{0}
+{1} {2}, {3} {4}: {5}
+IBAN: {6}
+IBAN: {7}
+TEL: {8}
+MAIL: {9}"
+, ci.companylong
+, ci.zipCode, ci.city, ci.address, t.Tran("pin", lang).ToUpper(), ci.pin
+, ci.iban, ci.iban1
+, ci.phone
+, ci.email
+);
 
             PdfPTable header_table = new PdfPTable(2);
             header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
             header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             header_table.WidthPercentage = 100f;
-            float[] header_widths = new float[] { 2f, 1f };
+            float[] header_widths = new float[] { 1f, 1f };
             header_table.SetWidths(header_widths);
             doc.Add(header_table);
 
@@ -249,7 +267,7 @@ Info...
 
 
     private Font GetFont(int size, int style) {
-       return FontFactory.GetFont(HttpContext.Current.Server.MapPath("~/app/assets/fonts/ARIALUNI.TTF"), BaseFont.IDENTITY_H, false, size, style);
+       return FontFactory.GetFont(HttpContext.Current.Server.MapPath("~/assets/fonts/ARIALUNI.TTF"), BaseFont.IDENTITY_H, false, size, style);
     }
 
     private Font GetFont() {

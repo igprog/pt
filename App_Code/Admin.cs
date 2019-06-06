@@ -16,19 +16,21 @@ public class Admin : System.Web.Services.WebService {
     string supervisorUserName = ConfigurationManager.AppSettings["AdminUserName"];
     string supervisorPassword = ConfigurationManager.AppSettings["AdminPassword"];
     Files f = new Files();
-    string userdata = "userdata";
+    string companyinfo = "companyinfo";
     public Admin() {
     }
 
 
-    public class UserData {
+    public class CompanyInfo {
         public string company;
+        public string companylong;
         public string address;
         public string zipCode;
         public string city;
         public string country;
         public string pin;
         public string iban;
+        public string iban1;
         public string swift;
         public string bank;
         public string email;
@@ -45,32 +47,34 @@ public class Admin : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string GetUserData() { 
-        UserData x = new UserData();
-        string json = f.GetFile("json", userdata);
+    public string GetCompanyInfo() {
+        CompanyInfo x = new CompanyInfo();
+        string json = f.GetFile("json", companyinfo);
         if (json != null) {
-            x = JsonConvert.DeserializeObject<UserData>(json);
+            x = JsonConvert.DeserializeObject<CompanyInfo>(json);
         } else {
-            x = InitUserData();
-            f.SaveJsonToFile("json", userdata, JsonConvert.SerializeObject(x, Formatting.None));
+            x = InitCompanyInfo();
+            f.SaveJsonToFile("json", companyinfo, JsonConvert.SerializeObject(x, Formatting.None));
         }
         return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
     [WebMethod]
-    public string SaveUserData(UserData x) {
-        return f.SaveJsonToFile("json", userdata, JsonConvert.SerializeObject(x, Formatting.None));
+    public string SaveCompanyInfo(CompanyInfo x) {
+        return f.SaveJsonToFile("json", companyinfo, JsonConvert.SerializeObject(x, Formatting.None));
     }
 
-    private UserData InitUserData() {
-        UserData x = new UserData();
+    private CompanyInfo InitCompanyInfo() {
+        CompanyInfo x = new CompanyInfo();
         x.company = null;
+        x.companylong = null;
         x.address = null;
         x.zipCode = null;
         x.city = null;
         x.country = null;
         x.pin = null;
         x.iban = null;
+        x.iban1 = null;
         x.swift = null;
         x.bank = null;
         x.email = null;
