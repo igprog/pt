@@ -14,7 +14,7 @@ using Igprog;
 /// <summary>
 /// PrintPdf
 /// </summary>
-[WebService(Namespace = "http://programprehrane.com/app/")]
+[WebService(Namespace = "https://promo-tekstil.com/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [System.Web.Script.Services.ScriptService]
 public class PrintPdf : System.Web.Services.WebService {
@@ -45,7 +45,11 @@ public class PrintPdf : System.Web.Services.WebService {
             doc.Open();
 
             Image logo = Image.GetInstance(logoPath);
-            logo.ScalePercent(9f);
+            logo.Alignment = Image.ALIGN_RIGHT;
+            //logo.ScaleToFit(160f, 30f);
+            logo.ScaleToFit(280f, 70f);
+            logo.SpacingAfter = 15f;
+            //logo.ScalePercent(9f);
 
             Admin.CompanyInfo ci = JsonConvert.DeserializeObject<Admin.CompanyInfo>(f.GetFile("json", "companyinfo"));
 
@@ -69,8 +73,8 @@ MAIL: {9}"
 );
 
             PdfPTable header_table = new PdfPTable(2);
-            header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
-            header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 10, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 0, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
+            header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             header_table.WidthPercentage = 100f;
             float[] header_widths = new float[] { 1f, 1f };
             header_table.SetWidths(header_widths);

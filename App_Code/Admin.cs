@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// Admin
 /// </summary>
-[WebService(Namespace = "http://programprehrane.com/")]
+[WebService(Namespace = "https://promo-tekstil.com/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [System.Web.Script.Services.ScriptService]
 public class Admin : System.Web.Services.WebService {
