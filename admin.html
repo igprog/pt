@@ -197,7 +197,7 @@
 
             <div ng-if="isdetails" style="border: solid 1px lightgray; padding: 20px">
                 <div class="text-right">
-                    <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create PDF</button>
+                    <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create Offer (PDF)</button>
                     <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
                     <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to orders</a>
                 </div>

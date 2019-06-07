@@ -264,7 +264,6 @@ angular.module('app', [])
         uttPost(request);  //<<TODO;
     }
 
-
     $scope.createPdf = function (o, isForeign) {
         $scope.loading = true;
         $scope.pdfLink = null;
@@ -272,7 +271,7 @@ angular.module('app', [])
         $http({
             url: 'PrintPdf.asmx/InvoicePdf',
             method: 'POST',
-            data: { order:o, isForeign:isForeign, lang:'hr' }
+            data: { order: o, isForeign: isForeign, lang: 'hr' }
         })
      .then(function (response) {
          $scope.loading = false;
