@@ -81,13 +81,14 @@ MAIL: {9}"
             header_table.SetWidths(header_widths);
             doc.Add(header_table);
 
-            doc.Add(new Chunk(line));
+           // doc.Add(new Chunk(line));
             #endregion Header
 
             #region Body
 
             PdfPTable table0 = new PdfPTable(1);
             table0.WidthPercentage = 100f;
+            table0.SpacingBefore = 40f;
             p = new Paragraph();
             p.Add(new Paragraph(string.Format("Predračun broj: {0}", order.number), GetFont(12, Font.BOLD)));
             table0.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, BackgroundColor=Color.LIGHT_GRAY });
@@ -96,24 +97,81 @@ MAIL: {9}"
 
             PdfPTable table1 = new PdfPTable(2);
             table1.WidthPercentage = 100f;
-            string client = string.Format(@"
-Naziv kupca:   {0}
-OIB:           {1}
-Adresa:        {2}
-Mjesto:        {3} {4}
-Telefon:       {5}
-E-mail:        {6}"
-, order.companyName
-, order.pin
-, order.address
-, order.postalCode
-, order.city
-, order.phone
-, order.email);
+            table1.SpacingBefore = 40f;
 
-            p = new Paragraph();
-            p.Add(new Paragraph(client, GetFont()));
-            table1.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER });
+
+            PdfPTable table1_l1 = new PdfPTable(2);
+            table1_l1.WidthPercentage = 100f;
+            table1_l1.SpacingBefore = 10f;
+            table1_l1.AddCell(new PdfPCell(new Paragraph("Naziv kupca:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l1.AddCell(new PdfPCell(new Paragraph(order.companyName, GetFont())) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l1);
+
+            PdfPTable table1_l2 = new PdfPTable(2);
+            table1_l2.WidthPercentage = 100f;
+            table1_l2.AddCell(new PdfPCell(new Paragraph("OIB:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l2.AddCell(new PdfPCell(new Paragraph(order.pin, GetFont())) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l2);
+
+            PdfPTable table1_l3 = new PdfPTable(2);
+            table1_l3.WidthPercentage = 100f;
+            table1_l3.AddCell(new PdfPCell(new Paragraph("Adresa:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l3.AddCell(new PdfPCell(new Paragraph(order.address, GetFont())) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l3);
+
+            PdfPTable table1_l4 = new PdfPTable(2);
+            table1_l4.WidthPercentage = 100f;
+            table1_l4.AddCell(new PdfPCell(new Paragraph("Mjesto:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l4.AddCell(new PdfPCell(new Paragraph(string.Format("{0} {1}", order.postalCode, order.city, GetFont()))) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l4);
+
+            PdfPTable table1_l5 = new PdfPTable(2);
+            table1_l5.WidthPercentage = 100f;
+            table1_l5.AddCell(new PdfPCell(new Paragraph("Telefon:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l5.AddCell(new PdfPCell(new Paragraph(order.phone, GetFont())) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l5);
+
+            PdfPTable table1_l6 = new PdfPTable(2);
+            table1_l6.WidthPercentage = 100f;
+            table1_l6.AddCell(new PdfPCell(new Paragraph("E-mail:", GetFont())) { Border = PdfPCell.NO_BORDER });
+            table1_l6.AddCell(new PdfPCell(new Paragraph(order.email, GetFont())) { Border = PdfPCell.NO_BORDER });
+
+
+            doc.Add(table1_l6);
+
+
+
+
+
+
+            //            string client = string.Format(@"
+            //Naziv kupca:   {0}
+            //OIB:           {1}
+            //Adresa:        {2}
+            //Mjesto:        {3} {4}
+            //Telefon:       {5}
+            //E-mail:        {6}"
+            //, order.companyName
+            //, order.pin
+            //, order.address
+            //, order.postalCode
+            //, order.city
+            //, order.phone
+            //, order.email);
+
+            //            p = new Paragraph();
+            //            p.Add(new Paragraph(client, GetFont()));
+            //            table1.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER });
 
             string offerInfo = string.Format(@"
 Datum izdavanja:   {0}
