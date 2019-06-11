@@ -18,6 +18,7 @@ using Igprog;
 [System.Web.Script.Services.ScriptService]
 public class Orders : System.Web.Services.WebService {
     string dataBase = ConfigurationManager.AppSettings["AppDataBase"];
+    string productDataBase = ConfigurationManager.AppSettings["ProductDataBase"];
     DataBase db = new DataBase();
     string orderOptionsFile = "orderoptions";
     Translate T = new Translate();
@@ -70,7 +71,9 @@ public class Orders : System.Web.Services.WebService {
 
     public class Item {
         public string style { get; set; }
+        public string brand { get; set; }
         public string shortdesc_en { get; set; }
+        public string shortdesc_hr { get; set; }
         public string sku { get; set; }
         public int quantity { get; set; }
         public string color { get; set; }
@@ -165,9 +168,7 @@ public class Orders : System.Web.Services.WebService {
     public string Load() {
         try {
             OrderOption orderOptions = GetOrderOptions();
-          //  OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase));
-            connection.Open();
+            //  OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
             string sql = @"SELECT o.orderId, o.userId, o.items, o.netPrice, o.grossPrice, o.currency, o.orderDate, o.deliveryFirstName, o.deliveryLastName, o.deliveryCompanyName, o.deliveryAddress, o.deliveryPostalCode, o.deliveryCity, o.deliveryCountry, o.deliveryType, o.paymentMethod,
                         u.firstName, u.lastName, u.companyName, u.address, u.postalCode, u.city, u.country, u.pin, u.phone, u.email,
                         o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total                        
@@ -175,50 +176,59 @@ public class Orders : System.Web.Services.WebService {
                         LEFT OUTER JOIN users u
                         ON o.userId = u.userId
                         ORDER BY o.rowid DESC";
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
             List<NewOrder> xx = new List<NewOrder>();
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read()) {
-                NewOrder x = new NewOrder();
-                x.orderId = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-                x.userId = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-                x.items = GetItems(reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2));
-                x.netPrice = reader.GetValue(3) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(3));
-                x.grossPrice = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(4));
-                x.currency = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
-                x.orderDate = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
-                x.deliveryFirstName = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
-                x.deliveryLastName = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
-                x.deliveryCompanyName = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
-                x.deliveryAddress = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
-                x.deliveryPostalCode = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
-                x.deliveryCity = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
-                x.deliveryCountry = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
-                x.deliveryType.code = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
-                x.deliveryType.title = !string.IsNullOrEmpty(x.deliveryType.code) && orderOptions.deliverytype.Any(a => a.code == x.deliveryType.code) ? orderOptions.deliverytype.Find(a => a.code == x.deliveryType.code).title : "";
-                x.paymentMethod.code = reader.GetValue(15) == DBNull.Value ? "" : reader.GetString(15);
-                x.paymentMethod.title = !string.IsNullOrEmpty(x.paymentMethod.code) && orderOptions.paymentmethod.Any(a => a.code == x.paymentMethod.code) ? orderOptions.paymentmethod.Find(a => a.code == x.paymentMethod.code).title : "";
-                x.firstName = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.lastName = reader.GetValue(17) == DBNull.Value ? "" : reader.GetString(17);
-                x.companyName = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
-                x.address = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
-                x.postalCode = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
-                x.city = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
-                x.country = reader.GetValue(22) == DBNull.Value ? "" : reader.GetString(22);
-                x.pin = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
-                x.phone = reader.GetValue(24) == DBNull.Value ? "" : reader.GetString(24);
-                x.email = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
-                x.note = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
-                x.number = reader.GetValue(27) == DBNull.Value ? "" : reader.GetString(27);
-                x.status.code = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
-                x.status.title = !string.IsNullOrEmpty(x.status.code) && orderOptions.orderstatus.Any(a => a.code == x.status.code) ? orderOptions.orderstatus.Find(a => a.code == x.status.code).title : "";
-                x.countryCode = reader.GetValue(29) == DBNull.Value ? "" : reader.GetString(29);
-                x.sendToPrint = reader.GetValue(30) == DBNull.Value ? false : Convert.ToBoolean(Convert.ToInt32(reader.GetString(30)));
-                x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
-                x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
-                x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
-                xx.Add(x);
-            } connection.Close();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase))) {
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            NewOrder x = new NewOrder();
+                            x.orderId = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                            x.userId = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                            x.items = GetItems(reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2));
+                            x.netPrice = reader.GetValue(3) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(3));
+                            x.grossPrice = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(4));
+                            x.currency = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                            x.orderDate = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
+                            x.deliveryFirstName = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
+                            x.deliveryLastName = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
+                            x.deliveryCompanyName = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
+                            x.deliveryAddress = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
+                            x.deliveryPostalCode = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
+                            x.deliveryCity = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
+                            x.deliveryCountry = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
+                            x.deliveryType.code = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
+                            x.deliveryType.title = !string.IsNullOrEmpty(x.deliveryType.code) && orderOptions.deliverytype.Any(a => a.code == x.deliveryType.code) ? orderOptions.deliverytype.Find(a => a.code == x.deliveryType.code).title : "";
+                            x.paymentMethod.code = reader.GetValue(15) == DBNull.Value ? "" : reader.GetString(15);
+                            x.paymentMethod.title = !string.IsNullOrEmpty(x.paymentMethod.code) && orderOptions.paymentmethod.Any(a => a.code == x.paymentMethod.code) ? orderOptions.paymentmethod.Find(a => a.code == x.paymentMethod.code).title : "";
+                            x.firstName = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
+                            x.lastName = reader.GetValue(17) == DBNull.Value ? "" : reader.GetString(17);
+                            x.companyName = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
+                            x.address = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
+                            x.postalCode = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
+                            x.city = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
+                            x.country = reader.GetValue(22) == DBNull.Value ? "" : reader.GetString(22);
+                            x.pin = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
+                            x.phone = reader.GetValue(24) == DBNull.Value ? "" : reader.GetString(24);
+                            x.email = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
+                            x.note = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
+                            x.number = reader.GetValue(27) == DBNull.Value ? "" : reader.GetString(27);
+                            x.status.code = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
+                            x.status.title = !string.IsNullOrEmpty(x.status.code) && orderOptions.orderstatus.Any(a => a.code == x.status.code) ? orderOptions.orderstatus.Find(a => a.code == x.status.code).title : "";
+                            x.countryCode = reader.GetValue(29) == DBNull.Value ? "" : reader.GetString(29);
+                            x.sendToPrint = reader.GetValue(30) == DBNull.Value ? false : Convert.ToBoolean(Convert.ToInt32(reader.GetString(30)));
+                            x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
+                            x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
+                            x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
+                            xx.Add(x);
+                        }
+                    }
+                }
+                connection.Close();
+
+                xx = GetItemsData(xx);
+
+            }
             return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
@@ -227,9 +237,7 @@ public class Orders : System.Web.Services.WebService {
     public string Get(string userId) {
         try {
             OrderOption orderOptions = GetOrderOptions();
-           // OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase));
-            connection.Open();
+            // OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
             string sql = string.Format(@"SELECT o.orderId, o.userId, o.items, o.netPrice, o.grossPrice, o.currency, o.orderDate, o.deliveryFirstName, o.deliveryLastName, o.deliveryCompanyName, o.deliveryAddress, o.deliveryPostalCode, o.deliveryCity, o.deliveryCountry, o.deliveryType, o.paymentMethod,
                         u.firstName, u.lastName, u.companyName, u.address, u.postalCode, u.city, u.country, u.pin, u.phone, u.email,
                         o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total     
@@ -238,51 +246,57 @@ public class Orders : System.Web.Services.WebService {
                         ON o.userId = u.userId
                         WHERE o.userId = '{0}'
                         ORDER BY o.rowid DESC", userId);
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
             List<NewOrder> xx = new List<NewOrder>();
-            SQLiteDataReader reader = command.ExecuteReader();
-            while (reader.Read()) {
-                NewOrder x = new NewOrder();
-                x.orderId = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
-                x.userId = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
-                x.items = GetItems(reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2));
-                x.netPrice = reader.GetValue(3) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(3));
-                x.grossPrice = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(4));
-                x.currency = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
-                x.orderDate = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
-                x.deliveryFirstName = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
-                x.deliveryLastName = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
-                x.deliveryCompanyName = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
-                x.deliveryAddress = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
-                x.deliveryPostalCode = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
-                x.deliveryCity = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
-                x.deliveryCountry = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
-                x.deliveryType.code = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
-                x.deliveryType.title = !string.IsNullOrEmpty(x.deliveryType.code) && orderOptions.deliverytype.Any(a => a.code == x.deliveryType.code) ? orderOptions.deliverytype.Find(a => a.code == x.deliveryType.code).title : "";
-                x.paymentMethod.code = reader.GetValue(15) == DBNull.Value ? "" : reader.GetString(15);
-                x.paymentMethod.title = !string.IsNullOrEmpty(x.paymentMethod.code) && orderOptions.paymentmethod.Any(a => a.code == x.paymentMethod.code) ? orderOptions.paymentmethod.Find(a => a.code == x.paymentMethod.code).title : "";
-                x.firstName = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
-                x.lastName = reader.GetValue(17) == DBNull.Value ? "" : reader.GetString(17);
-                x.companyName = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
-                x.address = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
-                x.postalCode = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
-                x.city = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
-                x.country = reader.GetValue(22) == DBNull.Value ? "" : reader.GetString(22);
-                x.pin = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
-                x.phone = reader.GetValue(24) == DBNull.Value ? "" : reader.GetString(24);
-                x.email = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
-                x.note = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
-                x.number = reader.GetValue(27) == DBNull.Value ? "" : reader.GetString(27);
-                x.status.code = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
-                x.status.title = !string.IsNullOrEmpty(x.status.code) && orderOptions.orderstatus.Any(a => a.code == x.status.code) ? orderOptions.orderstatus.Find(a => a.code == x.status.code).title : "";
-                x.countryCode = reader.GetValue(29) == DBNull.Value ? "" : reader.GetString(29);
-                x.sendToPrint = reader.GetValue(30) == DBNull.Value ? false : Convert.ToBoolean(Convert.ToInt32(reader.GetString(30)));
-                x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
-                x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
-                x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
-               // x.total = x.totalWithDiscount + x.deliveryPrice;
-                xx.Add(x);
-            } connection.Close();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase))) {
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    using (SQLiteDataReader reader = command.ExecuteReader()) {
+                        while (reader.Read()) {
+                            NewOrder x = new NewOrder();
+                            x.orderId = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                            x.userId = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                            x.items = GetItems(reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2));
+                            x.netPrice = reader.GetValue(3) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(3));
+                            x.grossPrice = reader.GetValue(4) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(4));
+                            x.currency = reader.GetValue(5) == DBNull.Value ? "" : reader.GetString(5);
+                            x.orderDate = reader.GetValue(6) == DBNull.Value ? "" : reader.GetString(6);
+                            x.deliveryFirstName = reader.GetValue(7) == DBNull.Value ? "" : reader.GetString(7);
+                            x.deliveryLastName = reader.GetValue(8) == DBNull.Value ? "" : reader.GetString(8);
+                            x.deliveryCompanyName = reader.GetValue(9) == DBNull.Value ? "" : reader.GetString(9);
+                            x.deliveryAddress = reader.GetValue(10) == DBNull.Value ? "" : reader.GetString(10);
+                            x.deliveryPostalCode = reader.GetValue(11) == DBNull.Value ? "" : reader.GetString(11);
+                            x.deliveryCity = reader.GetValue(12) == DBNull.Value ? "" : reader.GetString(12);
+                            x.deliveryCountry = reader.GetValue(13) == DBNull.Value ? "" : reader.GetString(13);
+                            x.deliveryType.code = reader.GetValue(14) == DBNull.Value ? "" : reader.GetString(14);
+                            x.deliveryType.title = !string.IsNullOrEmpty(x.deliveryType.code) && orderOptions.deliverytype.Any(a => a.code == x.deliveryType.code) ? orderOptions.deliverytype.Find(a => a.code == x.deliveryType.code).title : "";
+                            x.paymentMethod.code = reader.GetValue(15) == DBNull.Value ? "" : reader.GetString(15);
+                            x.paymentMethod.title = !string.IsNullOrEmpty(x.paymentMethod.code) && orderOptions.paymentmethod.Any(a => a.code == x.paymentMethod.code) ? orderOptions.paymentmethod.Find(a => a.code == x.paymentMethod.code).title : "";
+                            x.firstName = reader.GetValue(16) == DBNull.Value ? "" : reader.GetString(16);
+                            x.lastName = reader.GetValue(17) == DBNull.Value ? "" : reader.GetString(17);
+                            x.companyName = reader.GetValue(18) == DBNull.Value ? "" : reader.GetString(18);
+                            x.address = reader.GetValue(19) == DBNull.Value ? "" : reader.GetString(19);
+                            x.postalCode = reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20);
+                            x.city = reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21);
+                            x.country = reader.GetValue(22) == DBNull.Value ? "" : reader.GetString(22);
+                            x.pin = reader.GetValue(23) == DBNull.Value ? "" : reader.GetString(23);
+                            x.phone = reader.GetValue(24) == DBNull.Value ? "" : reader.GetString(24);
+                            x.email = reader.GetValue(25) == DBNull.Value ? "" : reader.GetString(25);
+                            x.note = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
+                            x.number = reader.GetValue(27) == DBNull.Value ? "" : reader.GetString(27);
+                            x.status.code = reader.GetValue(28) == DBNull.Value ? "" : reader.GetString(28);
+                            x.status.title = !string.IsNullOrEmpty(x.status.code) && orderOptions.orderstatus.Any(a => a.code == x.status.code) ? orderOptions.orderstatus.Find(a => a.code == x.status.code).title : "";
+                            x.countryCode = reader.GetValue(29) == DBNull.Value ? "" : reader.GetString(29);
+                            x.sendToPrint = reader.GetValue(30) == DBNull.Value ? false : Convert.ToBoolean(Convert.ToInt32(reader.GetString(30)));
+                            x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
+                            x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
+                            x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
+                            // x.total = x.totalWithDiscount + x.deliveryPrice;
+                            xx.Add(x);
+                        }
+                    }  
+                } 
+                connection.Close();
+            }
             return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
@@ -400,8 +414,6 @@ public class Orders : System.Web.Services.WebService {
     public string Update(NewOrder order) {
             try {
             db.CreateDataBase(dataBase, db.orders);
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase));
-            connection.Open();
             string sql = @"UPDATE orders
                         SET userId = @userId , items = @items, netPrice = @netPrice, grossPrice = @grossPrice, currency = @currency, orderDate = @orderDate,
                         deliveryFirstName = @deliveryFirstName, deliveryLastName = @deliveryLastName, deliveryCompanyName = @deliveryCompanyName, deliveryAddress = @deliveryAddress,
@@ -409,33 +421,36 @@ public class Orders : System.Web.Services.WebService {
                         deliveryType = @deliveryType, paymentMethod = @paymentMethod, note = @note, number = @number, status = @status,
                         countryCode = @countryCode, sendToPrint = @sendToPrint, deliveryPrice = @deliveryPrice, discount = @discount, @totalWithDiscount = totalWithDiscount
                         WHERE orderId = @orderId";
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
-            command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
-            command.Parameters.Add(new SQLiteParameter("userId", order.userId));
-            command.Parameters.Add(new SQLiteParameter("items", SetItems(order.items)));
-            command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
-            command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
-            command.Parameters.Add(new SQLiteParameter("currency", order.currency));
-            command.Parameters.Add(new SQLiteParameter("orderDate", order.orderDate));
-            command.Parameters.Add(new SQLiteParameter("deliveryFirstName", order.deliveryFirstName));
-            command.Parameters.Add(new SQLiteParameter("deliveryLastName", order.deliveryLastName));
-            command.Parameters.Add(new SQLiteParameter("deliveryCompanyName", order.deliveryCompanyName));
-            command.Parameters.Add(new SQLiteParameter("deliveryAddress", order.deliveryAddress));
-            command.Parameters.Add(new SQLiteParameter("deliveryPostalCode", order.deliveryPostalCode));
-            command.Parameters.Add(new SQLiteParameter("deliveryCity", order.deliveryCity));
-            command.Parameters.Add(new SQLiteParameter("deliveryCountry", order.deliveryCountry));
-            command.Parameters.Add(new SQLiteParameter("deliveryType", order.deliveryType.code));
-            command.Parameters.Add(new SQLiteParameter("paymentMethod", order.paymentMethod.code));
-            command.Parameters.Add(new SQLiteParameter("note", order.note));
-            command.Parameters.Add(new SQLiteParameter("number", order.number));
-            command.Parameters.Add(new SQLiteParameter("status", order.status.code));
-            command.Parameters.Add(new SQLiteParameter("countryCode", order.countryCode));
-            command.Parameters.Add(new SQLiteParameter("sendToPrint", order.sendToPrint));
-            command.Parameters.Add(new SQLiteParameter("deliveryPrice", order.price.delivery));
-            command.Parameters.Add(new SQLiteParameter("discount", order.price.discount));
-            command.Parameters.Add(new SQLiteParameter("totalWithDiscount", order.price.total));
-            command.ExecuteNonQuery();
-            connection.Close();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase))) {
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(sql, connection);
+                command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
+                command.Parameters.Add(new SQLiteParameter("userId", order.userId));
+                command.Parameters.Add(new SQLiteParameter("items", SetItems(order.items)));
+                command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
+                command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
+                command.Parameters.Add(new SQLiteParameter("currency", order.currency));
+                command.Parameters.Add(new SQLiteParameter("orderDate", order.orderDate));
+                command.Parameters.Add(new SQLiteParameter("deliveryFirstName", order.deliveryFirstName));
+                command.Parameters.Add(new SQLiteParameter("deliveryLastName", order.deliveryLastName));
+                command.Parameters.Add(new SQLiteParameter("deliveryCompanyName", order.deliveryCompanyName));
+                command.Parameters.Add(new SQLiteParameter("deliveryAddress", order.deliveryAddress));
+                command.Parameters.Add(new SQLiteParameter("deliveryPostalCode", order.deliveryPostalCode));
+                command.Parameters.Add(new SQLiteParameter("deliveryCity", order.deliveryCity));
+                command.Parameters.Add(new SQLiteParameter("deliveryCountry", order.deliveryCountry));
+                command.Parameters.Add(new SQLiteParameter("deliveryType", order.deliveryType.code));
+                command.Parameters.Add(new SQLiteParameter("paymentMethod", order.paymentMethod.code));
+                command.Parameters.Add(new SQLiteParameter("note", order.note));
+                command.Parameters.Add(new SQLiteParameter("number", order.number));
+                command.Parameters.Add(new SQLiteParameter("status", order.status.code));
+                command.Parameters.Add(new SQLiteParameter("countryCode", order.countryCode));
+                command.Parameters.Add(new SQLiteParameter("sendToPrint", order.sendToPrint));
+                command.Parameters.Add(new SQLiteParameter("deliveryPrice", order.price.delivery));
+                command.Parameters.Add(new SQLiteParameter("discount", order.price.discount));
+                command.Parameters.Add(new SQLiteParameter("totalWithDiscount", order.price.total));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
             return JsonConvert.SerializeObject(order, Formatting.None);
         } catch (Exception e) { return e.Message; }
     }
@@ -545,6 +560,9 @@ public class Orders : System.Web.Services.WebService {
                     x.size = str_[3];
                     if (str_.Length > 4) {
                         x.supplier = str_[4];
+                        if (str_.Length > 5) {
+                            x.style = str_[5];
+                        }
                     }
                 }
                 xx.Add(x);
@@ -555,7 +573,8 @@ public class Orders : System.Web.Services.WebService {
     private string SetItems(List<Item> items) {
         string str = "";
         foreach (Item item in items) {
-            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ";";
+            //str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ";";
+            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ":" + item.style + ";";
         }
         return str;
     }
@@ -602,6 +621,42 @@ public class Orders : System.Web.Services.WebService {
         } catch (Exception e) {
             return new OrderOption();
         }
+    }
+
+    private List<NewOrder> GetItemsData(List<NewOrder> xx) {
+        int idx = 0;
+        foreach (NewOrder x in xx) {
+            if(x.items.Any(a => a.style == null) == false) {
+                List<Item> ii = new List<Item>();
+                int idx1 = 0;
+                foreach (Item i in x.items) {
+                    Item i_ = i.style == null ? i : FillData(i);
+                    idx1++;
+                    ii.Add(i_);
+                }
+                xx[idx].items = ii;
+            }
+            idx++;
+        }
+        return xx;
+    }
+
+    private Item FillData(Item x) {
+        string sql = string.Format("SELECT brand, shortdesc_en, shortdesc_hr from style WHERE style = '{0}'", x.style);
+        using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath(string.Format("~/App_Data/{0}", productDataBase)))) {
+            connection.Open();
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                using (SQLiteDataReader reader = command.ExecuteReader()) {
+                    while (reader.Read()) {
+                        x.brand = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
+                        x.shortdesc_en = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+                        x.shortdesc_hr = reader.GetValue(2) == DBNull.Value ? "" : reader.GetString(2);
+                    }
+                }
+                connection.Close();
+            }
+        }
+        return x;
     }
     #endregion Methods
 

@@ -160,7 +160,7 @@ MAIL: {9}"
                 row++;
                 totPrice = totPrice + (item.quantity);
                 table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-                table.AddCell(new PdfPCell(new Phrase(item.shortdesc_en, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
+                table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
                 table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
                 table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
                 table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", 0)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
@@ -268,7 +268,6 @@ MAIL: {9}"
             #endregion Footer
 
 
-
             doc.Close();
 
             return fileName;
@@ -296,8 +295,9 @@ MAIL: {9}"
         return GetFont(9, x == true ? Font.BOLD: Font.NORMAL);
     }
 
-
-
+    private string ItemDes(Orders.Item item,  string lang) {
+        return string.Format("{0} {1} {2} {3}", item.brand, item.style, lang == "hr" ? item.shortdesc_hr : item.shortdesc_en, t.Tran(item.color, lang).ToUpper());
+    }
 
 
 }
