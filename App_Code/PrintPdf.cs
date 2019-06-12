@@ -159,14 +159,14 @@ MAIL: {9}"
             foreach (Orders.Item item in order.items) {
                 row++;
                 totPrice = totPrice + (item.quantity);
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-                table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
-                table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", 0)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", Math.Round(order.price.discount*100,0)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", vat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", 0)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+                table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
+                table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", item.price)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", Math.Round(order.discount.coeff*100,2)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", Math.Round(vat, 2)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * (order.discount.coeff)))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             }
 
             table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
@@ -296,7 +296,7 @@ MAIL: {9}"
     }
 
     private string ItemDes(Orders.Item item,  string lang) {
-        return string.Format("{0} {1} {2} {3}", item.brand, item.style, lang == "hr" ? item.shortdesc_hr : item.shortdesc_en, t.Tran(item.color, lang).ToUpper());
+        return string.Format("{0} {1} {2} {3}", item.brand.ToUpper(), item.style.ToUpper(), lang == "hr" ? item.shortdesc_hr.ToUpper() : item.shortdesc_en.ToUpper(), t.Tran(item.color, lang).ToUpper());
     }
 
 

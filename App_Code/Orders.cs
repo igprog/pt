@@ -67,6 +67,8 @@ public class Orders : System.Web.Services.WebService {
         //  public double total { get; set; }
         public PriceTotal price = new PriceTotal();
 
+        public DiscountCoeff discount = new DiscountCoeff(); //TOOD
+
     }
 
     public class Item {
@@ -75,11 +77,11 @@ public class Orders : System.Web.Services.WebService {
         public string shortdesc_en { get; set; }
         public string shortdesc_hr { get; set; }
         public string sku { get; set; }
+        public double price { get; set; }
         public int quantity { get; set; }
         public string color { get; set; }
         public string size { get; set; }
         public string supplier { get; set; }
-
     }
 
       public class PriceTotal {
@@ -161,6 +163,7 @@ public class Orders : System.Web.Services.WebService {
         //x.discount = 0;
         //x.totalWithDiscount = 0;
         x.price = new PriceTotal(); // 0;
+        x.discount = new DiscountCoeff();
         return JsonConvert.SerializeObject(x, Formatting.None);
     }
 
@@ -171,7 +174,7 @@ public class Orders : System.Web.Services.WebService {
             //  OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
             string sql = @"SELECT o.orderId, o.userId, o.items, o.netPrice, o.grossPrice, o.currency, o.orderDate, o.deliveryFirstName, o.deliveryLastName, o.deliveryCompanyName, o.deliveryAddress, o.deliveryPostalCode, o.deliveryCity, o.deliveryCountry, o.deliveryType, o.paymentMethod,
                         u.firstName, u.lastName, u.companyName, u.address, u.postalCode, u.city, u.country, u.pin, u.phone, u.email,
-                        o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total                        
+                        o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total, u.discountCoeff                       
                         FROM orders o
                         LEFT OUTER JOIN users u
                         ON o.userId = u.userId
@@ -220,6 +223,7 @@ public class Orders : System.Web.Services.WebService {
                             x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
                             x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
                             x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
+                            x.discount.coeff = reader.GetValue(34) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(34));
                             xx.Add(x);
                         }
                     }
@@ -240,7 +244,7 @@ public class Orders : System.Web.Services.WebService {
             // OrderOption orderOptions = JsonConvert.DeserializeObject<OrderOption>(GetOrderOptions());
             string sql = string.Format(@"SELECT o.orderId, o.userId, o.items, o.netPrice, o.grossPrice, o.currency, o.orderDate, o.deliveryFirstName, o.deliveryLastName, o.deliveryCompanyName, o.deliveryAddress, o.deliveryPostalCode, o.deliveryCity, o.deliveryCountry, o.deliveryType, o.paymentMethod,
                         u.firstName, u.lastName, u.companyName, u.address, u.postalCode, u.city, u.country, u.pin, u.phone, u.email,
-                        o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total     
+                        o.note, o.number, o.status, o.countryCode, o.sendToPrint, o.deliveryPrice, o.discount, o.total, u.discountCoeff       
                         FROM orders o
                         LEFT OUTER JOIN users u
                         ON o.userId = u.userId
@@ -290,12 +294,15 @@ public class Orders : System.Web.Services.WebService {
                             x.price.delivery = reader.GetValue(31) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(31));
                             x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
                             x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
+                            x.discount.coeff = reader.GetValue(34) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(34));
                             // x.total = x.totalWithDiscount + x.deliveryPrice;
                             xx.Add(x);
                         }
                     }  
                 } 
                 connection.Close();
+
+                xx = GetItemsData(xx);
             }
             return JsonConvert.SerializeObject(xx, Formatting.None);
         } catch (Exception e) { return e.Message; }
@@ -325,6 +332,7 @@ public class Orders : System.Web.Services.WebService {
                      ***************************************/
                     Item i = new Item();
                     i.sku = variant.sku;
+                    i.price = Math.Round(variant.myprice.net * pr.GetCoeff().eurorate, 2);
                     i.quantity = variant.quantity;
                     i.color = variant.color;
                     i.size = variant.size;
@@ -562,6 +570,9 @@ public class Orders : System.Web.Services.WebService {
                         x.supplier = str_[4];
                         if (str_.Length > 5) {
                             x.style = str_[5];
+                            if (str_.Length > 6) {
+                                x.price = Convert.ToDouble(str_[6]);
+                            }
                         }
                     }
                 }
@@ -574,7 +585,7 @@ public class Orders : System.Web.Services.WebService {
         string str = "";
         foreach (Item item in items) {
             //str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ";";
-            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ":" + item.style + ";";
+            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ":" + item.style + ":" + item.price + ";";
         }
         return str;
     }
