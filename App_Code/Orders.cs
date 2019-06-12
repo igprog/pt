@@ -82,6 +82,7 @@ public class Orders : System.Web.Services.WebService {
         public string color { get; set; }
         public string size { get; set; }
         public string supplier { get; set; }
+        public double discount { get; set; }
     }
 
       public class PriceTotal {

@@ -195,145 +195,190 @@
                 <!--<pre>{{d | json}}</pre>-->
             </div>
 
-            <div ng-if="isdetails" style="border: solid 1px lightgray; padding: 20px">
-                <div class="text-right">
-                    <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create Offer (PDF)</button>
-                    <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
-                    <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to orders</a>
+
+            <div ng-if="isdetails">
+                <div style="border: solid 1px lightgray; padding:20px; margin:10px">
+                    <div class="text-right">
+                        <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create Offer (PDF)</button>
+                        <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
+                        <a href="" class="btn btn-primary" ng-click="showDetails(null, false)"><i class="fa fa-angle-left"></i> Back to orders</a>
+                    </div>
+                    <label class="m10 lead">Order number: <span class="badge">{{o.number}}</span> <span class="badge">{{o.status.title}}</span></label>
+                    <!--<div class="row m10">
+                        <div class="col-sm-6">
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create PDF</button>
+                            <a ng-if="pdfLink" href="{{pdfLink}}" download><i class="fa fa-file-pdf-o"></i> {{pdfLink}}</a>
+                        </div>
+                    </div>-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Billing address</label>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td>First Name</td>
+                                        <td><input ng-model="o.firstName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Name</td>
+                                        <td><input ng-model="o.lastName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Company Name</td>
+                                        <td><input ng-model="o.companyName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Address</td>
+                                        <td><input ng-model="o.address" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Postal code</td>
+                                        <td><input ng-model="o.postalCode" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Country</td>
+                                        <td><input ng-model="o.country" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pin</td>
+                                        <td><input ng-model="o.pin" type="text" class="form-control" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Delivery address</label>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td>First Name</td>
+                                        <td><input ng-model="o.deliveryFirstName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Name</td>
+                                        <td><input ng-model="o.deliveryLastName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Company Name</td>
+                                        <td><input ng-model="o.deliveryCompanyName" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Address</td>
+                                        <td><input ng-model="o.deliveryAddress" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Postal code</td>
+                                        <td><input ng-model="o.deliveryPostalCode" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Country</td>
+                                        <td><input ng-model="o.deliveryCountry" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Country code</td>
+                                        <td><input ng-model="o.countryCode" type="text" class="form-control" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Contact</label>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td>Phone</td>
+                                        <td><input ng-model="o.phone" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td><input ng-model="o.email" type="text" class="form-control" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            Note
+                            <textarea ng-model="o.note" type="text" class="form-control" rows="4" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <tr>
+                                        <td></td>
+                                        <td>code</td>
+                                        <td>title</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Delivery type</td>
+                                        <td><input ng-model="o.deliveryType.code" type="text" class="form-control" /></td>
+                                        <td><input ng-model="o.deliveryType.title" type="text" class="form-control" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Payment method</td>
+                                        <td><input ng-model="o.paymentMethod.code" type="text" class="form-control" /></td>
+                                        <td><input ng-model="o.paymentMethod.title" type="text" class="form-control" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="checkbox-entry">
+                                <input ng-model="o.sendToPrint" type="checkbox" /> <span class="check"></span>Send to print
+                            </label>
+                            <div class="lead text-center well">
+                                <div class="large">Gross price: {{o.grossPrice}} kn</div>
+                                <div class="small">Net price: {{o.netPrice}} kn</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label>Discount: <span class="badge">{{o.discount.coeff * 100}} %</span></label>
+
+                    <label>Items</label>
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th>style</th>
+                                    <th>shortdesc_hr</th>
+                                    <th>color</th>
+                                    <th>size</th>
+                                    <th>quantity</th>
+                                    <th>price</th>
+                                    <th>discount (%)</th>
+                                    <th>supplier</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="x in o.items track by $index">
+                                    <td class="nowrap">{{x.style}}</td>
+                                    <td>{{x.shortdesc_hr}}</td>
+                                    <td>{{x.color}}</td>
+                                    <td>{{x.size}}</td>
+                                    <td>{{x.quantity}}</td>
+                                    <td>{{x.price}}</td>
+                                    <td style="width:100px"><input ng-model="x.discount" type="number" class="form-control" /></td>
+                                    <td class="text-uppercase"><label>{{x.supplier}}</label></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div ng-if="config.debug">
+                        <pre>{{o.items | json}}</pre>
+                    </div>
+
                 </div>
-                <label class="m10 lead">Order number: <span class="badge">{{o.number}}</span> <span class="badge">{{o.status.title}}</span></label>
-                <!--<div class="row m10">
-                    <div class="col-sm-6">
-                    </div>
-                    <div class="col-sm-6">
-                        <button class="btn btn-danger" ng-disabled="loading" ng-click="createPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create PDF</button>
-                        <a ng-if="pdfLink" href="{{pdfLink}}" download><i class="fa fa-file-pdf-o"></i> {{pdfLink}}</a>
-                    </div>
-                </div>-->
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label>Billing address</label>
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td>First Name</td>
-                                    <td><input ng-model="o.firstName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Last Name</td>
-                                    <td><input ng-model="o.lastName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Company Name</td>
-                                    <td><input ng-model="o.companyName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Address</td>
-                                    <td><input ng-model="o.address" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Postal code</td>
-                                    <td><input ng-model="o.postalCode" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Country</td>
-                                    <td><input ng-model="o.country" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Pin</td>
-                                    <td><input ng-model="o.pin" type="text" class="form-control" /></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>Delivery address</label>
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td>First Name</td>
-                                    <td><input ng-model="o.deliveryFirstName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Last Name</td>
-                                    <td><input ng-model="o.deliveryLastName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Company Name</td>
-                                    <td><input ng-model="o.deliveryCompanyName" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Address</td>
-                                    <td><input ng-model="o.deliveryAddress" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Postal code</td>
-                                    <td><input ng-model="o.deliveryPostalCode" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Country</td>
-                                    <td><input ng-model="o.deliveryCountry" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Country code</td>
-                                    <td><input ng-model="o.countryCode" type="text" class="form-control" /></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label>Contact</label>
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td>Phone</td>
-                                    <td><input ng-model="o.phone" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Email</td>
-                                    <td><input ng-model="o.email" type="text" class="form-control" /></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        Note
-                        <textarea ng-model="o.note" type="text" class="form-control" rows="4" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="table-responsive">
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td></td>
-                                    <td>code</td>
-                                    <td>title</td>
-                                </tr>
-                                <tr>
-                                    <td>Delivery type</td>
-                                    <td><input ng-model="o.deliveryType.code" type="text" class="form-control" /></td>
-                                    <td><input ng-model="o.deliveryType.title" type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>Payment method</td>
-                                    <td><input ng-model="o.paymentMethod.code" type="text" class="form-control" /></td>
-                                    <td><input ng-model="o.paymentMethod.title" type="text" class="form-control" /></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label class="checkbox-entry">
-                            <input ng-model="o.sendToPrint" type="checkbox" /> <span class="check"></span>Send to print
-                        </label>
-                        <div class="lead text-center well">
-                            <div class="large">Gross price: {{o.grossPrice}} kn</div>
-                            <div class="small">Net price: {{o.netPrice}} kn</div>
-                        </div>
-                    </div>
+               
+
+                <div style="border: solid 1px lightgray; padding:20px; margin:10px">
+                    <label>UTT</label>
                     <div class="row">
                         <div class="col-sm-9">
                             <div class="well">
@@ -388,6 +433,10 @@
                         </div>
                     </div>
                 </div>
+
+
+
+
             </div>
         </div>
     </script>
