@@ -158,77 +158,117 @@ MAIL: {9}"
             double totPrice = 0;
             foreach (Orders.Item item in order.items) {
                 row++;
-                totPrice = totPrice + (item.quantity);
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-                table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5 });
-                table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", item.price)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", order.discount.coeff * 100)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", vat)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * (order.discount.coeff)))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                totPrice = totPrice + (item.price * item.quantity);
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
+                table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2 });
+                table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", item.price)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", order.discount.coeff * 100)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", vat)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+                table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * (order.discount.coeff)))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             }
 
-            table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
-            table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
-            table.AddCell(new PdfPCell(new Phrase("Ukupan iznos računa: ", GetFont(10))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", totPrice)), GetFont(10, Font.BOLD))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
+            //table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
+            //table.AddCell(new PdfPCell(new Phrase("Ukupan iznos računa: ", GetFont(10))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", totPrice)), GetFont(10, Font.BOLD))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
-            if (isForeign)
-            {
-                table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-                table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-                table.AddCell(new PdfPCell(new Phrase("Total: ", GetFont(8, Font.ITALIC))) { Border = PdfPCell.NO_BORDER, Padding = 2, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                table.AddCell(new PdfPCell(new Phrase(string.Format("{0} €", string.Format("{0:N}", 0)), GetFont(10, Font.BOLD))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            }
+            //if (isForeign)
+            //{
+            //    table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //    table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //    table.AddCell(new PdfPCell(new Phrase("Total: ", GetFont(8, Font.ITALIC))) { Border = PdfPCell.NO_BORDER, Padding = 2, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //    table.AddCell(new PdfPCell(new Phrase(string.Format("{0} €", string.Format("{0:N}", 0)), GetFont(10, Font.BOLD))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //}
 
 
            
             doc.Add(table);
 
+
+            PdfPTable table2 = new PdfPTable(2);
+            table2.WidthPercentage = 100f;
+            table2.SpacingBefore = 10f;
+            widths = new float[] { 6f, 1f };
+            table2.SetWidths(widths);
+
+            table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a i rabata):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", totPrice), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            table2.AddCell(new PdfPCell(new Phrase("Ukupno rabat:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", totPrice * order.discount.coeff), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+
+            doc.Add(table2);
+
+
             p = new Paragraph();
-            p.Add(new Chunk("PDV nije obračunat jer obveznik IG PROG nije u sustavu PDV - a po čl. 90, st. 1.Zakona o porezu na dodanu vrijednost.", GetFont(9, Font.ITALIC)));
-            if (isForeign) { p.Add(new Chunk(" / VAT is not charged because taxpayer IG PROG is not registerd for VAT under Art 90, para 1 of the Law om VAT.", GetFont(8, Font.ITALIC))); }
+            p.Add(new Chunk(string.Format("UKUPNO KOMADA: {0}", order.items.Count), GetFont(true)));
             doc.Add(p);
 
-            PdfPTable invoiceInfo_table = new PdfPTable(2);
+            p = new Paragraph();
+            p.Add(new Chunk("OVO NIJE FISKALIZIRANI RAČUN.", GetFont(true)));
+            doc.Add(p);
+
+            string note = @"
+Vaš predračun/ponuda vrijedi do datuma roka plaćanja istaknutog na vrhu dokumenta.
+Plaćanje je 100% avans ukoliko nije drugačije navedeno.
+Uplatu predračuna ili ponude možete izvršiti na naše sljedeće račune pri Erste & Steiermärkische Bank d.d.
+IBAN: HR4424020061100647760 ili
+IBAN: HR3024020061500057346
+Model plaćanja: HR99 / HR00
+Poziv na broj možete pustiti prazan, Vaše uplate vodimo pod vašim imenom.
+Dostavu vršimo dostavnim službama: Overseas Express / GLS i dostavu naplaćujemo po trenutno važećim cjenicima
+navedenih dostavnih službi, ukoliko nije drugačije navedeno.
+Ukoliko imate bilo kakvih pitanja slobodno nam se obratite putem maila: info@megamajice.com, info@studio-lateralus.hr,
+putem naših web stranica: www.megamajice.com ili pozivom na broj: +385 91 460 70 10 (Poziv, SMS, Viber ili Whatsapp)
+VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             p = new Paragraph();
-            p.Add(new Chunk("Datum i vrijeme", GetFont()));
-            if (isForeign) { p.Add(new Chunk(" / date and time", GetFont(8, Font.ITALIC))); }
-            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20 });
-            invoiceInfo_table.AddCell(new PdfPCell(new Phrase(order.orderDate, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20, });
+            p.Add(new Chunk(note, GetFont(true)));
 
-            p = new Paragraph();
-            p.Add(new Chunk("Oznaka operatera", GetFont()));
-            if (isForeign) { p.Add(new Chunk(" / operator", GetFont(8, Font.ITALIC))); }
-            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            invoiceInfo_table.AddCell(new PdfPCell(new Phrase("IG", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+            //p = new Paragraph();
+            //p.Add(new Chunk("PDV nije obračunat jer obveznik IG PROG nije u sustavu PDV - a po čl. 90, st. 1.Zakona o porezu na dodanu vrijednost.", GetFont(9, Font.ITALIC)));
+            //if (isForeign) { p.Add(new Chunk(" / VAT is not charged because taxpayer IG PROG is not registerd for VAT under Art 90, para 1 of the Law om VAT.", GetFont(8, Font.ITALIC))); }
+            doc.Add(p);
 
-            p = new Paragraph();
-            p.Add(new Chunk("Način plaćanja", GetFont()));
-            if (isForeign) { p.Add(new Chunk(" / payment method", GetFont(8, Font.ITALIC))); }
-            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            p = new Paragraph();
-            p.Add(new Chunk("Transakcijski račun", GetFont()));
-            if (isForeign) { p.Add(new Chunk(" / transaction occount", GetFont(8, Font.ITALIC))); }
-            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+            //PdfPTable invoiceInfo_table = new PdfPTable(2);
 
-            p = new Paragraph();
-            p.Add(new Chunk("Mjesto isporuke", GetFont()));
-            if (isForeign) { p.Add(new Chunk(" / place of issue", GetFont(8, Font.ITALIC))); }
-            p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            invoiceInfo_table.AddCell(new PdfPCell(new Phrase("Rijeka", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+            //p = new Paragraph();
+            //p.Add(new Chunk("Datum i vrijeme", GetFont()));
+            //if (isForeign) { p.Add(new Chunk(" / date and time", GetFont(8, Font.ITALIC))); }
+            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20 });
+            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase(order.orderDate, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20, });
 
-            invoiceInfo_table.WidthPercentage = 100f;
-            float[] invoiceInfo_widths = new float[] { 1f, 4f };
-            if (isForeign) { invoiceInfo_widths = new float[] { 2f, 4f }; }
-            invoiceInfo_table.SetWidths(invoiceInfo_widths);
-            doc.Add(invoiceInfo_table);
+            //p = new Paragraph();
+            //p.Add(new Chunk("Oznaka operatera", GetFont()));
+            //if (isForeign) { p.Add(new Chunk(" / operator", GetFont(8, Font.ITALIC))); }
+            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase("IG", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            //p = new Paragraph();
+            //p.Add(new Chunk("Način plaćanja", GetFont()));
+            //if (isForeign) { p.Add(new Chunk(" / payment method", GetFont(8, Font.ITALIC))); }
+            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            //p = new Paragraph();
+            //p.Add(new Chunk("Transakcijski račun", GetFont()));
+            //if (isForeign) { p.Add(new Chunk(" / transaction occount", GetFont(8, Font.ITALIC))); }
+            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            //p = new Paragraph();
+            //p.Add(new Chunk("Mjesto isporuke", GetFont()));
+            //if (isForeign) { p.Add(new Chunk(" / place of issue", GetFont(8, Font.ITALIC))); }
+            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
+            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
+            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase("Rijeka", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
+
+            //invoiceInfo_table.WidthPercentage = 100f;
+            //float[] invoiceInfo_widths = new float[] { 1f, 4f };
+            //if (isForeign) { invoiceInfo_widths = new float[] { 2f, 4f }; }
+            //invoiceInfo_table.SetWidths(invoiceInfo_widths);
+            //doc.Add(invoiceInfo_table);
 
             float spacing = 140f;
             if (row == 1) { spacing = 160f; }
@@ -237,16 +277,16 @@ MAIL: {9}"
             if (row == 4) { spacing = 60f; }
             if (row == 5) { spacing = 20f; }
 
-            if (!string.IsNullOrWhiteSpace(order.note))
-            {
-                Paragraph title = new Paragraph();
-                title.SpacingBefore = 20f;
-                title.Font = GetFont();
-                title.Add(order.note);
-                doc.Add(title);
-                spacing = spacing - 40f;
-            }
-            if (isForeign) { spacing = spacing - 40f; }
+            //if (!string.IsNullOrWhiteSpace(order.note))
+            //{
+            //    Paragraph title = new Paragraph();
+            //    title.SpacingBefore = 20f;
+            //    title.Font = GetFont();
+            //    title.Add(order.note);
+            //    doc.Add(title);
+            //    spacing = spacing - 40f;
+            //}
+            //if (isForeign) { spacing = spacing - 40f; }
             #endregion Body
 
             #region Footer
