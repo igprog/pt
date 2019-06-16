@@ -377,6 +377,7 @@ public class Orders : System.Web.Services.WebService {
             //order.totalWithDiscount = order.grossPrice - order.discount;
            // order.total = order.totalWithDiscount + order.discount;
             order.sendToPrint = sendToPrint;
+            order.discount.coeff = user.discount.coeff;
             SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase));
             connection.Open();
             order.number = !string.IsNullOrEmpty(order.number) ? order.number : getNewOrderNumber(connection);
@@ -385,7 +386,7 @@ public class Orders : System.Web.Services.WebService {
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
             command.Parameters.Add(new SQLiteParameter("userId", order.userId));
-            command.Parameters.Add(new SQLiteParameter("items", SetItems(order.items)));
+            command.Parameters.Add(new SQLiteParameter("items", SetItems(order)));
             command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
             command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
             command.Parameters.Add(new SQLiteParameter("currency", order.currency));
@@ -435,7 +436,7 @@ public class Orders : System.Web.Services.WebService {
                 SQLiteCommand command = new SQLiteCommand(sql, connection);
                 command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
                 command.Parameters.Add(new SQLiteParameter("userId", order.userId));
-                command.Parameters.Add(new SQLiteParameter("items", SetItems(order.items)));
+                command.Parameters.Add(new SQLiteParameter("items", SetItems(order)));
                 command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
                 command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
                 command.Parameters.Add(new SQLiteParameter("currency", order.currency));
@@ -573,6 +574,9 @@ public class Orders : System.Web.Services.WebService {
                             x.style = str_[5];
                             if (str_.Length > 6) {
                                 x.price = Convert.ToDouble(str_[6]);
+                                if (str_.Length > 7) {
+                                    x.discount = Convert.ToDouble(str_[7]);
+                                }
                             }
                         }
                     }
@@ -582,11 +586,12 @@ public class Orders : System.Web.Services.WebService {
         }
         return xx;
     }
-    private string SetItems(List<Item> items) {
+
+    private string SetItems(NewOrder  order) {
         string str = "";
-        foreach (Item item in items) {
+        foreach (Item item in order.items) {
             //str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ";";
-            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ":" + item.style + ":" + item.price + ";";
+            str = str + item.sku + ":" + item.quantity + ":" + item.color + ":" + item.size + ":" + item.supplier + ":" + item.style + ":" + item.price + ":" + order.discount.coeff + ";";
         }
         return str;
     }
