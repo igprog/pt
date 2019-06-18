@@ -264,19 +264,19 @@ angular.module('app', [])
         uttPost(request);  //<<TODO;
     }
 
-    $scope.createPdf = function (o, isForeign) {
+    $scope.createOfferPdf = function (o, isForeign) {
         $scope.loading = true;
         $scope.pdfLink = null;
         var tempFileName = null;
         $http({
-            url: 'PrintPdf.asmx/InvoicePdf',
+            url: 'PrintPdf.asmx/OfferPdf',
             method: 'POST',
             data: { order: o, isForeign: isForeign, lang: 'hr' }
         })
      .then(function (response) {
          $scope.loading = false;
          var tempFileName = response.data.d;
-         $scope.pdfLink = 'upload/invoice/temp/' + tempFileName + '.pdf';
+         $scope.pdfLink = 'upload/offer/temp/' + tempFileName + '.pdf';
      },
      function (response) {
          $scope.loading = false;

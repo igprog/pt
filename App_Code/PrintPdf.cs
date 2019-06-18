@@ -30,12 +30,12 @@ public class PrintPdf : System.Web.Services.WebService {
 
 
     [WebMethod]
-    public string InvoicePdf(Orders.NewOrder order, bool isForeign, string lang) {
+    public string OfferPdf(Orders.NewOrder order, bool isForeign, string lang) {
         try {
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();
             var doc = new Document();
-            string path = Server.MapPath("~/upload/invoice/temp/");
+            string path = Server.MapPath("~/upload/offer/temp/");
             f.DeleteFolder(path);
             f.CreateFolder(path);
             string fileName = Guid.NewGuid().ToString();
@@ -44,45 +44,8 @@ public class PrintPdf : System.Web.Services.WebService {
 
             doc.Open();
 
-            #region Header
-            Image logo = Image.GetInstance(logoPath);
-            logo.Alignment = Image.ALIGN_RIGHT;
-            //logo.ScaleToFit(160f, 30f);
-            logo.ScaleToFit(280f, 70f);
-            logo.SpacingAfter = 15f;
-            //logo.ScalePercent(9f);
+            AppendHeader(doc, lang);
 
-            Admin.CompanyInfo ci = JsonConvert.DeserializeObject<Admin.CompanyInfo>(f.GetFile("json", "companyinfo"));
-
-            p = new Paragraph();
-            p.Add(new Chunk(ci.company, GetFont(12, Font.BOLD)));
-            p.Alignment = Element.ALIGN_RIGHT;
-            doc.Add(p);
-
-            string info = string.Format(@"
-{0}
-{1} {2}, {3} {4}: {5}
-IBAN: {6}
-IBAN: {7}
-TEL: {8}
-MAIL: {9}"
-, ci.companylong
-, ci.zipCode, ci.city, ci.address, t.Tran("pin", lang).ToUpper(), ci.pin
-, ci.iban, ci.iban1
-, ci.phone
-, ci.email
-);
-
-            PdfPTable header_table = new PdfPTable(2);
-            header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 0, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
-            header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            header_table.WidthPercentage = 100f;
-            float[] header_widths = new float[] { 1f, 1f };
-            header_table.SetWidths(header_widths);
-            doc.Add(header_table);
-
-           // doc.Add(new Chunk(line));
-            #endregion Header
 
             #region Body
 
@@ -155,10 +118,8 @@ MAIL: {9}"
             double vat = Math.Round((pr.GetCoeff().vat-1)*100, 2);
 
             int row = 0;
-           // double totPrice = 0;
             foreach (Orders.Item item in order.items) {
                 row++;
-               // totPrice = totPrice + (item.price * item.quantity);
                 table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
                 table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2 });
                 table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
@@ -169,23 +130,7 @@ MAIL: {9}"
                 table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * item.discount))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             }
 
-            //table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
-            //table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingTop = 5 });
-            //table.AddCell(new PdfPCell(new Phrase("Ukupan iznos računa: ", GetFont(10))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //table.AddCell(new PdfPCell(new Phrase(string.Format("{0} kn", string.Format("{0:N}", totPrice)), GetFont(10, Font.BOLD))) { Border = PdfPCell.TOP_BORDER, Padding = 2, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-
-            //if (isForeign)
-            //{
-            //    table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-            //    table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-            //    table.AddCell(new PdfPCell(new Phrase("Total: ", GetFont(8, Font.ITALIC))) { Border = PdfPCell.NO_BORDER, Padding = 2, Colspan = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //    table.AddCell(new PdfPCell(new Phrase(string.Format("{0} €", string.Format("{0:N}", 0)), GetFont(10, Font.BOLD))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //}
-
-
-           
             doc.Add(table);
-
 
             PdfPTable table2 = new PdfPTable(3);
             table2.WidthPercentage = 100f;
@@ -241,95 +186,34 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             p = new Paragraph();
             p.Add(new Chunk(note, GetFont(true)));
-
-            //p = new Paragraph();
-            //p.Add(new Chunk("PDV nije obračunat jer obveznik IG PROG nije u sustavu PDV - a po čl. 90, st. 1.Zakona o porezu na dodanu vrijednost.", GetFont(9, Font.ITALIC)));
-            //if (isForeign) { p.Add(new Chunk(" / VAT is not charged because taxpayer IG PROG is not registerd for VAT under Art 90, para 1 of the Law om VAT.", GetFont(8, Font.ITALIC))); }
             doc.Add(p);
 
-            //PdfPTable invoiceInfo_table = new PdfPTable(2);
+            float spacing = 20f;
+            //if (row == 1) { spacing = 160f; }
+            //if (row == 2) { spacing = 140f; }
+            //if (row == 3) { spacing = 100f; }
+            //if (row == 4) { spacing = 60f; }
+            //if (row == 5) { spacing = 20f; }
 
-            //p = new Paragraph();
-            //p.Add(new Chunk("Datum i vrijeme", GetFont()));
-            //if (isForeign) { p.Add(new Chunk(" / date and time", GetFont(8, Font.ITALIC))); }
-            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20 });
-            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase(order.orderDate, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 20, });
-
-            //p = new Paragraph();
-            //p.Add(new Chunk("Oznaka operatera", GetFont()));
-            //if (isForeign) { p.Add(new Chunk(" / operator", GetFont(8, Font.ITALIC))); }
-            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase("IG", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
-
-            //p = new Paragraph();
-            //p.Add(new Chunk("Način plaćanja", GetFont()));
-            //if (isForeign) { p.Add(new Chunk(" / payment method", GetFont(8, Font.ITALIC))); }
-            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            //p = new Paragraph();
-            //p.Add(new Chunk("Transakcijski račun", GetFont()));
-            //if (isForeign) { p.Add(new Chunk(" / transaction occount", GetFont(8, Font.ITALIC))); }
-            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
-
-            //p = new Paragraph();
-            //p.Add(new Chunk("Mjesto isporuke", GetFont()));
-            //if (isForeign) { p.Add(new Chunk(" / place of issue", GetFont(8, Font.ITALIC))); }
-            //p.Add(new Chunk(":", isForeign ? GetFont(8, Font.ITALIC) : GetFont(10)));
-            //invoiceInfo_table.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5 });
-            //invoiceInfo_table.AddCell(new PdfPCell(new Phrase("Rijeka", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, });
-
-            //invoiceInfo_table.WidthPercentage = 100f;
-            //float[] invoiceInfo_widths = new float[] { 1f, 4f };
-            //if (isForeign) { invoiceInfo_widths = new float[] { 2f, 4f }; }
-            //invoiceInfo_table.SetWidths(invoiceInfo_widths);
-            //doc.Add(invoiceInfo_table);
-
-            float spacing = 140f;
-            if (row == 1) { spacing = 160f; }
-            if (row == 2) { spacing = 140f; }
-            if (row == 3) { spacing = 100f; }
-            if (row == 4) { spacing = 60f; }
-            if (row == 5) { spacing = 20f; }
-
-            //if (!string.IsNullOrWhiteSpace(order.note))
-            //{
-            //    Paragraph title = new Paragraph();
-            //    title.SpacingBefore = 20f;
-            //    title.Font = GetFont();
-            //    title.Add(order.note);
-            //    doc.Add(title);
-            //    spacing = spacing - 40f;
-            //}
-            //if (isForeign) { spacing = spacing - 40f; }
             #endregion Body
 
             #region Footer
-            PdfPTable sign_table = new PdfPTable(2);
-            sign_table.SpacingBefore = spacing;
-            sign_table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            sign_table.AddCell(new PdfPCell(new Phrase("Odgovorna osoba:", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-            sign_table.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            sign_table.AddCell(new PdfPCell(new Phrase("Igor Gašparović", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
 
-            sign_table.WidthPercentage = 100f;
-            float[] sign_widths = new float[] { 4f, 1f };
-            sign_table.SetWidths(sign_widths);
-            doc.Add(sign_table);
+            if (row > 3) {
+                doc.NewPage();
+                AppendHeader(doc, lang);
+                AppendFooter(doc, spacing);
+            } else {
+                AppendFooter(doc, spacing);
+            }
 
-            PdfPTable footer_table = new PdfPTable(1);
-            footer_table.AddCell(new PdfPCell(new Phrase("mob: +385 98 330 966   |   email: igprog@yahoo.com   |   web: www.igprog.hr", GetFont(8))) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 80, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-            doc.Add(footer_table);
             #endregion Footer
 
 
             doc.Close();
 
             return fileName;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return e.Message;
         }
     }
@@ -356,6 +240,66 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
     private string ItemDes(Orders.Item item,  string lang) {
         return string.Format("{0} {1} {2} {3}", item.brand.ToUpper(), item.style.ToUpper(), lang == "hr" ? item.shortdesc_hr.ToUpper() : item.shortdesc_en.ToUpper(), t.Tran(item.color, lang).ToUpper());
+    }
+
+    private void AppendFooter(Document doc, float spacing) {
+
+        PdfPTable table = new PdfPTable(2);
+        table.SpacingBefore = spacing;
+        table.WidthPercentage = 100f;
+        //  float[] sign_widths = new float[] { 4f, 1f };
+        // table3.SetWidths(sign_widths);
+        table.AddCell(new PdfPCell(new Phrase("Zahvaljujemo na Vašem povjerenju.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_LEFT });
+        table.AddCell(new PdfPCell(new Phrase("Obračunao(la): Mirza Hodžić", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+
+        doc.Add(table);
+
+        string footer = @"
+Lateralus j.d.o.o. jednostavno društvo sa ograničenom odgovornošću sa sjedištem u Kastvu, registrirano na Trgovačkom sudu u Rijeci sa temeljnim kapitalom: 200,00kn, uplaćenim u cijelosti. Osnivač društva: Mirza Hodžić. Društvo zastupa: Azra Hodžić, zastupa samostalno i neograničeno.
+Matični broj društva: 040297018, OIB: 90780660216
+Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 2402006 15 00 05 73 46 (SWIFT/BIC: ESBCHR22 / BANK: Erste & Steiermärkische Bank d.d.)";
+
+        Paragraph p = new Paragraph();
+        p.Add(new Chunk(footer, GetFont()));
+        doc.Add(p);
+    }
+
+    private void AppendHeader(Document doc, string lang) {
+        Image logo = Image.GetInstance(logoPath);
+        logo.Alignment = Image.ALIGN_RIGHT;
+        //logo.ScaleToFit(160f, 30f);
+        logo.ScaleToFit(280f, 70f);
+        logo.SpacingAfter = 15f;
+        //logo.ScalePercent(9f);
+
+        Admin.CompanyInfo ci = JsonConvert.DeserializeObject<Admin.CompanyInfo>(f.GetFile("json", "companyinfo"));
+
+        Paragraph p = new Paragraph();
+        p.Add(new Chunk(ci.company, GetFont(12, Font.BOLD)));
+        p.Alignment = Element.ALIGN_RIGHT;
+        doc.Add(p);
+
+        string info = string.Format(@"
+        {0}
+        {1} {2}, {3} {4}: {5}
+        IBAN: {6}
+        IBAN: {7}
+        TEL: {8}
+        MAIL: {9}"
+, ci.companylong
+, ci.zipCode, ci.city, ci.address, t.Tran("pin", lang).ToUpper(), ci.pin
+, ci.iban, ci.iban1
+, ci.phone
+, ci.email
+);
+
+        PdfPTable header_table = new PdfPTable(2);
+        header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 0, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
+        header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+        header_table.WidthPercentage = 100f;
+        float[] header_widths = new float[] { 1f, 1f };
+        header_table.SetWidths(header_widths);
+        doc.Add(header_table);
     }
 
 
