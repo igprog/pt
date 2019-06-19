@@ -239,7 +239,11 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
     }
 
     private string ItemDes(Orders.Item item,  string lang) {
-        return string.Format("{0} {1} {2} {3}", item.brand.ToUpper(), item.style.ToUpper(), lang == "hr" ? item.shortdesc_hr.ToUpper() : item.shortdesc_en.ToUpper(), t.Tran(item.color, lang).ToUpper());
+        return string.Format("{0} {1} {2} {3}"
+            , item.brand != null ? item.brand.ToUpper() : ""
+            , item.style != null ? item.style.ToUpper() : ""
+            , lang == "hr" ? item.shortdesc_hr != null ? item.shortdesc_hr.ToUpper() : "" : item.shortdesc_en != null ? item.shortdesc_en.ToUpper() : ""
+            , t.Tran(item.color, lang).ToUpper());
     }
 
     private void AppendFooter(Document doc, float spacing) {
