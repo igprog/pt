@@ -214,7 +214,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     var queryString = location.search;
     var params = queryString.split('&');
-    debugger;
+
     if (params.length > 1) {
         $scope.page = parseInt(params[1].substring(5, 6));
     } else {
@@ -273,19 +273,30 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.setPage = function (x) {
-        window.scrollTo(0, 150);
-        $scope.page = x;
-        $sessionStorage.page = x;
-        //location.search
-        debugger;
-      //  window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
+        //window.scrollTo(0, 150);
+        //$scope.page = x;
+        //$sessionStorage.page = x;
+
 
         //TODO:
         $timeout(function () {
-            window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
+            //window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
+            //window.location.href = window.location.origin + window.location.pathname + params[0].length == 0 ? '?category=' + $scope.category : params[0] + '&page=' + x;
+            window.location.href = window.location.origin +
+                (window.location.pathname === '/' ? '/index.html' : window.location.pathname) +
+                (params[0].length <= 1 ? '?category=' + $scope.category : params[0]) +
+                '&page=' + x;
+
+            window.scrollTo(0, 150);
+            $scope.page = x;
+            $sessionStorage.page = x;
+
+          //  searchProducts($scope.show, $scope.category);
+
+
         }, 200);
 
-        searchProducts($scope.show, $scope.category);
+        //searchProducts($scope.show, $scope.category);
     }
 
     var load = function (limit, category) {
@@ -316,7 +327,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.getProductsByCategory = function (category) {
         $scope.searchQuery = '';
-        $scope.page = 1;
+       // $scope.page = 1;
         $scope.category = category;
         load($scope.show, category);
     }
@@ -324,7 +335,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     var loadGroup = function () {
         $scope.isloading = true;
         $scope.searchQuery = '';
-        $scope.page = 1;
+        //$scope.page = 1;
        // $scope.category = null;
         $http({
             url: 'Products.asmx/GetProductsByGroup',
@@ -422,7 +433,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.clearFilters = function () {
         $scope.filters = false;
-        $scope.href('index.html?category=' + $scope.category);
+        //$scope.href('index.html?category=' + $scope.category);
+        $scope.href('index.html?category=' + $scope.category + '&page=1');
     }
 
     $scope.showFilters = function () {
@@ -453,7 +465,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        // } return false;
     }
 
-
     if ($sessionStorage.d !== undefined && $sessionStorage.d !== 'Sequence contains no elements') {
         $scope.d = JSON.parse($sessionStorage.d);
         if ($sessionStorage.page !== undefined) {
@@ -469,9 +480,20 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             brand: ''
         }
     } else {
-        $scope.d = null;
+        //$scope.d = null;
+        $scope.d = {
+            products: null,
+            distinct: null,
+            response: null
+        }
+        $scope.filter = {
+            price: 0,
+            size: '',
+            brand: ''
+        }
     }
 
+    debugger;
     if (!angular.isDefined($scope.d) || $scope.group == '') {
         if (params[0].substring(1, 9) === 'category') {
             $scope.category = params[0].substring(10);
@@ -479,6 +501,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         } else {
             $scope.category = 'T-Shirt';
         }
+        
         if (params[0].length > 1) {
             searchProducts($scope.show, $scope.category);
         } else {
@@ -487,8 +510,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         //load($scope.show, $scope.category);
     }
 
+    //if (params[0].length > 1) {
+    //    debugger;
+    //    searchProducts($scope.show, $scope.category);
+    //}
+
     if ($scope.group != '') {
-        loadGroup();
+        searchProducts($scope.show, $scope.category);
+        //loadGroup();
     }
 
 
