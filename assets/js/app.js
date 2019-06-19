@@ -214,9 +214,14 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     var queryString = location.search;
     var params = queryString.split('&');
-    //if (params.length > 1) {
-    //    $scope.page = params[1].substring(5, 6);
-    //}
+    debugger;
+    if (params.length > 1) {
+        $scope.page = parseInt(params[1].substring(5, 6));
+    } else {
+        $scope.page = 1;
+    }
+    //$scope.page = 1;
+    window.scrollTo(0, 150);
 
     if (params[0].substring(1, 6) === 'brand') {
         $scope.group = params[0].substring(7);
@@ -248,7 +253,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 12;
-    $scope.page = 1;
     $scope.searchQuery = null;
     $scope.filters = false;
 
@@ -272,6 +276,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         window.scrollTo(0, 150);
         $scope.page = x;
         $sessionStorage.page = x;
+        //location.search
+        debugger;
+      //  window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
+
+        //TODO:
+        $timeout(function () {
+            window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
+        }, 200);
+
         searchProducts($scope.show, $scope.category);
     }
 
@@ -336,38 +349,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
    } 
 
-    if ($sessionStorage.d !== undefined && $sessionStorage.d !== 'Sequence contains no elements') {
-        $scope.d = JSON.parse($sessionStorage.d);
-        if ($sessionStorage.page !== undefined) {
-            $scope.page = $sessionStorage.page;
-        }
-        if ($sessionStorage.search !== undefined) {
-            $scope.searchQuery = $sessionStorage.search;
-        }
-        setPages($scope.d.response.count);
-        $scope.filter = {
-            price: $scope.d.response.maxPrice,
-            size: '',
-            brand: ''
-        }
-    } else {
-        $scope.d = null;
-    }
-
-    if (!angular.isDefined($scope.d) || $scope.group == '') {
-        if (params[0].substring(1, 9) === 'category') {
-            $scope.category = params[0].substring(10);
-            $scope.current = params[0].substring(10);
-        } else {
-            $scope.category = 'T-Shirt';
-        }
-        load($scope.show, $scope.category);
-    }
-
-    if ($scope.group != '') {
-        loadGroup();
-    }
-
     $scope.href = function (x) {
         $window.location.href = x;
     }
@@ -384,6 +365,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     var searchProducts = function (limit, category) {
+        debugger;
         $sessionStorage.search = $scope.searchQuery;
         $scope.isloading = true;
         $http({
@@ -470,6 +452,45 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             return getDistinctFilters($scope.category, $scope.group);
        // } return false;
     }
+
+
+    if ($sessionStorage.d !== undefined && $sessionStorage.d !== 'Sequence contains no elements') {
+        $scope.d = JSON.parse($sessionStorage.d);
+        if ($sessionStorage.page !== undefined) {
+           // $scope.page = $sessionStorage.page;
+        }
+        if ($sessionStorage.search !== undefined) {
+            $scope.searchQuery = $sessionStorage.search;
+        }
+        setPages($scope.d.response.count);
+        $scope.filter = {
+            price: $scope.d.response.maxPrice,
+            size: '',
+            brand: ''
+        }
+    } else {
+        $scope.d = null;
+    }
+
+    if (!angular.isDefined($scope.d) || $scope.group == '') {
+        if (params[0].substring(1, 9) === 'category') {
+            $scope.category = params[0].substring(10);
+            $scope.current = params[0].substring(10);
+        } else {
+            $scope.category = 'T-Shirt';
+        }
+        if (params[0].length > 1) {
+            searchProducts($scope.show, $scope.category);
+        } else {
+            load($scope.show, $scope.category);
+        }
+        //load($scope.show, $scope.category);
+    }
+
+    if ($scope.group != '') {
+        loadGroup();
+    }
+
 
     //$scope.getDistinctFilters = function (category) {
     //    if (functions.isNullOrEmpty($scope.d.distinct)) {
