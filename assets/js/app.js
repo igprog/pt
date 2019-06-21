@@ -1395,6 +1395,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        });
     }
 
+    $scope.getPdfLink = function (x, type) {
+        return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
+    }
+
 }])
 
 .controller('contactCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
@@ -1496,6 +1500,24 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             });
         }
     };
-});
+})
+.directive('checkLink', function ($http) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            attrs.$observe('href', function (href) {
+                $http.get(href).success(function () {
+                }).error(function () {
+                    element.attr('class', 'btn btn-default');
+                    element.attr('disabled', 'disabled');
+                });
+            });
+        }
+    };
+})
+;
+
+
+
 
 ;

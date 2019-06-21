@@ -21,7 +21,7 @@ public class PrintPdf : System.Web.Services.WebService {
     string dataBase = ConfigurationManager.AppSettings["UserDataBase"];
     DataBase db = new DataBase();
     Files f = new Files();
-    string logoPath = HttpContext.Current.Server.MapPath(string.Format("~/assets/img/lateralus_logo_2019_450px.png"));
+    string logoPath = HttpContext.Current.Server.MapPath(string.Format("~/assets/img/{0}", ConfigurationManager.AppSettings["logo"]));
     iTextSharp.text.pdf.draw.LineSeparator line = new iTextSharp.text.pdf.draw.LineSeparator(0f, 100f, Color.BLACK, Element.ALIGN_LEFT, 1);
     Translate t = new Translate();
 
@@ -41,6 +41,7 @@ public class PrintPdf : System.Web.Services.WebService {
             string fileName = Guid.NewGuid().ToString();
             string filePath = Path.Combine(path, string.Format("{0}.pdf", fileName));
             PdfWriter.GetInstance(doc, new FileStream(filePath, FileMode.Create));
+
 
             doc.Open();
 
@@ -209,8 +210,9 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             #endregion Footer
 
-
             doc.Close();
+
+            SavePdf(order, filePath, "offer");
 
             return fileName;
         } catch (Exception e) {
@@ -247,7 +249,6 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
     }
 
     private void AppendFooter(Document doc, float spacing) {
-
         PdfPTable table = new PdfPTable(2);
         table.SpacingBefore = spacing;
         table.WidthPercentage = 100f;
@@ -306,5 +307,21 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         doc.Add(header_table);
     }
 
+
+    private void SavePdf(Orders.NewOrder x, string pdfTempPath, string type) {
+        try {
+           // string pdfTempPath = Server.MapPath(string.Format("~/upload/invoice/temp/{0}.pdf", pdf));
+            int year = DateTime.Now.Year; // x.year;
+            //string fileName = string.Format("{0}_{1}", x.number, year);
+            string fileName = string.Format("{0}", x.number);
+            string pdfDir = string.Format("~/upload/users/{0}/{1}/", x.userId, type);
+            string pdfPath = Server.MapPath(string.Format("{0}{1}.pdf", pdfDir, fileName.Replace('/','_')));
+
+            if (!Directory.Exists(Server.MapPath(pdfDir))) {
+                Directory.CreateDirectory(Server.MapPath(pdfDir));
+            }
+            File.Copy(pdfTempPath, pdfPath, true);
+        } catch (Exception e) { }
+    }
 
 }

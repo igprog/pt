@@ -1130,5 +1130,6 @@
   "bank": "Banka",
   "natural person": "Fizička osoba",
   "legal person": "Pravna osoba",
-  "different from the billing address": "Različita od adrese za naplatu"
+  "different from the billing address": "Različita od adrese za naplatu",
+  "offer": "Ponuda"
 }

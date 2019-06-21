@@ -20,65 +20,71 @@
         <div class="row">
             <label class="lead">{{'order overview' | translate}}</label>
             <div class="table-responsive" style="max-height:500px; overflow-y: scroll; -webkit-overflow-scrolling: touch;">
-                <table class="table table-bordered table-condensed">
-                    <tr>
-                        <th colspan="11"></th>
-                        <th colspan="7" class="text-center">{{'delivery address' | translate}}</th>
-                        <th colspan="4"></th>
-                    </tr>
-                    <tr>
-                        <th>{{'order number' | translate}}</th>
-                        <th>{{'status' | translate}}</th>
-                        <th>{{'items' | translate}}</th>
-                        <!--<th>{{'net' | translate}}</th>
-                        <th>{{'gross' | translate}}</th>
-                        <th>{{'discount' | translate}}</th>-->
-                        <th>{{'delivery price' | translate}}</th>
-                        <!--<th>{{'total with discount' | translate}}</th>-->
-                        <th>{{'total' | translate}}</th>
-                        <th>{{'currency'| translate}}</th>
-                        <th>{{'order date' | translate}}</th>
-                        <th>{{'first name' | translate}}</th>
-                        <th>{{'last name' | translate}}</th>
-                        <th>{{'company name' | translate}}</th>
-                        <th>{{'address' | translate}}</th>
-                        <th>{{'postal code' | translate}}</th>
-                        <th>{{'city' | translate}}</th>
-                        <th>{{'country' | translate}}</th>
-                        <th>{{'delivery type' | translate}}</th>
-                        <th>{{'payment method' | translate}}</th>
-                        <th>{{'note' | translate}}</th>
-                        <th>{{'send to print' | translate}}</th>
-                    </tr>
-                    <tr ng-repeat="x in o">
-                        <!--<td>{{x.orderId}}</td>-->
-                        <td>{{x.number}}</td>
-                        <td>{{x.status.title | translate}}</td>
-                        <td>
-                            <ul>
-                                <li ng-repeat="x in x.items">{{x.sku}} ({{x.quantity}})</li>
-                            </ul>
-                        </td>
-                        <!--<td>{{x.price.net | number:2}}</td>
-                        <td>{{x.price.gross | number:2}}</td>
-                        <th>{{x.price.discount | number:2}}</th>-->
-                        <th>{{(x.price.delivery * config.currency.course) | number:2}}</th>
-                        <th>{{(x.price.total * config.currency.course) | number:2}}</th>
-                        <!--<th>{{x.total | number:2}}</th>-->
-                        <td><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></td>
-                        <td>{{x.orderDate}}</td>
-                        <td>{{x.deliveryFirstName}}</td>
-                        <td>{{x.deliveryLastName}}</td>
-                        <td>{{x.deliveryCompanyName}}</td>
-                        <td>{{x.deliveryAddress}}</td>
-                        <td>{{x.deliveryPostalCode}}</td>
-                        <td>{{x.deliveryCity}}</td>
-                        <td>{{x.deliveryCountry}}</td>
-                        <td>{{x.deliveryType.title | translate}}</td>
-                        <td>{{x.paymentMethod.title | translate}}</td>
-                        <td>{{x.note}}</td>
-                        <td><i ng-if="x.sendToPrint" class="fa fa-check text-success"></i></td>
-                    </tr>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead style="background-color:#3B3A39; color:#fff">
+                        <tr>
+                            <th colspan="8"></th>
+                            <th colspan="7" class="text-center">{{'delivery address' | translate}}</th>
+                            <th colspan="4"></th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">{{'offer' | translate}}</th>
+                            <th class="text-center">{{'order number' | translate}}</th>
+                            <th class="text-center">{{'status' | translate}}</th>
+                            <th class="text-center">{{'items' | translate}}</th>
+                            <!--<th>{{'net' | translate}}</th>
+                            <th>{{'gross' | translate}}</th>
+                            <th>{{'discount' | translate}}</th>-->
+                            <th class="text-center">{{'delivery price' | translate}}</th>
+                            <!--<th>{{'total with discount' | translate}}</th>-->
+                            <th class="text-center">{{'total' | translate}}</th>
+                            <th class="text-center">{{'currency'| translate}}</th>
+                            <th class="text-center">{{'order date' | translate}}</th>
+                            <th class="text-center">{{'first name' | translate}}</th>
+                            <th class="text-center">{{'last name' | translate}}</th>
+                            <th class="text-center">{{'company name' | translate}}</th>
+                            <th class="text-center">{{'address' | translate}}</th>
+                            <th class="text-center">{{'postal code' | translate}}</th>
+                            <th class="text-center">{{'city' | translate}}</th>
+                            <th class="text-center">{{'country' | translate}}</th>
+                            <th class="text-center">{{'delivery type' | translate}}</th>
+                            <th class="text-center">{{'payment method' | translate}}</th>
+                            <th class="text-center">{{'note' | translate}}</th>
+                            <th class="text-center">{{'send to print' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in o">
+                            <td><a href="{{getPdfLink(x, 'offer')}}" check-link class="btn btn-success" download title="{{'offer' | translate}} (PDF)"><i class="fa fa-download"></i></a></td>
+                            <!--<td>{{x.orderId}}</td>-->
+                            <td>{{x.number}}</td>
+                            <td>{{x.status.title | translate}}</td>
+                            <td>
+                                <ul>
+                                    <li ng-repeat="x in x.items">{{x.sku}} ({{x.quantity}})</li>
+                                </ul>
+                            </td>
+                            <!--<td>{{x.price.net | number:2}}</td>
+                            <td>{{x.price.gross | number:2}}</td>
+                            <th>{{x.price.discount | number:2}}</th>-->
+                            <th>{{(x.price.delivery * config.currency.course) | number:2}}</th>
+                            <th>{{(x.price.total * config.currency.course) | number:2}}</th>
+                            <!--<th>{{x.total | number:2}}</th>-->
+                            <td><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></td>
+                            <td>{{x.orderDate}}</td>
+                            <td>{{x.deliveryFirstName}}</td>
+                            <td>{{x.deliveryLastName}}</td>
+                            <td>{{x.deliveryCompanyName}}</td>
+                            <td>{{x.deliveryAddress}}</td>
+                            <td>{{x.deliveryPostalCode}}</td>
+                            <td>{{x.deliveryCity}}</td>
+                            <td>{{x.deliveryCountry}}</td>
+                            <td>{{x.deliveryType.title | translate}}</td>
+                            <td>{{x.paymentMethod.title | translate}}</td>
+                            <td>{{x.note}}</td>
+                            <td><i ng-if="x.sendToPrint" class="fa fa-check text-success"></i></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
