@@ -378,38 +378,45 @@ public class Orders : System.Web.Services.WebService {
            // order.total = order.totalWithDiscount + order.discount;
             order.sendToPrint = sendToPrint;
             order.discount.coeff = user.discount.coeff;
-            SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase));
-            connection.Open();
-            order.number = !string.IsNullOrEmpty(order.number) ? order.number : getNewOrderNumber(connection);
+
             string sql = @"INSERT OR REPLACE INTO orders VALUES  
                        (@orderId, @userId, @items, @netPrice, @grossPrice, @currency, @orderDate, @deliveryFirstName, @deliveryLastName, @deliveryCompanyName, @deliveryAddress, @deliveryPostalCode, @deliveryCity, @deliveryCountry, @deliveryType, @paymentMethod, @note, @number, @status, @countryCode, @sendToPrint, @deliveryPrice, @discount, @total)";
-            SQLiteCommand command = new SQLiteCommand(sql, connection);
-            command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
-            command.Parameters.Add(new SQLiteParameter("userId", order.userId));
-            command.Parameters.Add(new SQLiteParameter("items", SetItems(order)));
-            command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
-            command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
-            command.Parameters.Add(new SQLiteParameter("currency", order.currency));
-            command.Parameters.Add(new SQLiteParameter("orderDate", order.orderDate));
-            command.Parameters.Add(new SQLiteParameter("deliveryFirstName", order.deliveryFirstName));
-            command.Parameters.Add(new SQLiteParameter("deliveryLastName", order.deliveryLastName));
-            command.Parameters.Add(new SQLiteParameter("deliveryCompanyName", order.deliveryCompanyName));
-            command.Parameters.Add(new SQLiteParameter("deliveryAddress", order.deliveryAddress));
-            command.Parameters.Add(new SQLiteParameter("deliveryPostalCode", order.deliveryPostalCode));
-            command.Parameters.Add(new SQLiteParameter("deliveryCity", order.deliveryCity));
-            command.Parameters.Add(new SQLiteParameter("deliveryCountry", order.deliveryCountry));
-            command.Parameters.Add(new SQLiteParameter("deliveryType", order.deliveryType.code));
-            command.Parameters.Add(new SQLiteParameter("paymentMethod", order.paymentMethod.code));
-            command.Parameters.Add(new SQLiteParameter("note", order.note));
-            command.Parameters.Add(new SQLiteParameter("number", order.number));
-            command.Parameters.Add(new SQLiteParameter("status", order.status.code));
-            command.Parameters.Add(new SQLiteParameter("countryCode", order.countryCode));
-            command.Parameters.Add(new SQLiteParameter("sendToPrint", order.sendToPrint));
-            command.Parameters.Add(new SQLiteParameter("deliveryPrice", order.price.delivery));
-            command.Parameters.Add(new SQLiteParameter("discount", order.price.discount));
-            command.Parameters.Add(new SQLiteParameter("total", order.price.total));
-            command.ExecuteNonQuery();
-            connection.Close();
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + dataBase))) {
+                connection.Open();
+                order.number = !string.IsNullOrEmpty(order.number) ? order.number : getNewOrderNumber(connection);
+                using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                    command.Parameters.Add(new SQLiteParameter("orderId", order.orderId));
+                    command.Parameters.Add(new SQLiteParameter("userId", order.userId));
+                    command.Parameters.Add(new SQLiteParameter("items", SetItems(order)));
+                    command.Parameters.Add(new SQLiteParameter("netPrice", order.netPrice));
+                    command.Parameters.Add(new SQLiteParameter("grossPrice", order.grossPrice));
+                    command.Parameters.Add(new SQLiteParameter("currency", order.currency));
+                    command.Parameters.Add(new SQLiteParameter("orderDate", order.orderDate));
+                    command.Parameters.Add(new SQLiteParameter("deliveryFirstName", order.deliveryFirstName));
+                    command.Parameters.Add(new SQLiteParameter("deliveryLastName", order.deliveryLastName));
+                    command.Parameters.Add(new SQLiteParameter("deliveryCompanyName", order.deliveryCompanyName));
+                    command.Parameters.Add(new SQLiteParameter("deliveryAddress", order.deliveryAddress));
+                    command.Parameters.Add(new SQLiteParameter("deliveryPostalCode", order.deliveryPostalCode));
+                    command.Parameters.Add(new SQLiteParameter("deliveryCity", order.deliveryCity));
+                    command.Parameters.Add(new SQLiteParameter("deliveryCountry", order.deliveryCountry));
+                    command.Parameters.Add(new SQLiteParameter("deliveryType", order.deliveryType.code));
+                    command.Parameters.Add(new SQLiteParameter("paymentMethod", order.paymentMethod.code));
+                    command.Parameters.Add(new SQLiteParameter("note", order.note));
+                    command.Parameters.Add(new SQLiteParameter("number", order.number));
+                    command.Parameters.Add(new SQLiteParameter("status", order.status.code));
+                    command.Parameters.Add(new SQLiteParameter("countryCode", order.countryCode));
+                    command.Parameters.Add(new SQLiteParameter("sendToPrint", order.sendToPrint));
+                    command.Parameters.Add(new SQLiteParameter("deliveryPrice", order.price.delivery));
+                    command.Parameters.Add(new SQLiteParameter("discount", order.price.discount));
+                    command.Parameters.Add(new SQLiteParameter("total", order.price.total));
+                    command.ExecuteNonQuery();
+                } 
+                connection.Close();
+            }
+
+            PrintPdf p = new PrintPdf();
+            string offerPdf = p.OfferPdf(order, false, lang);
+            
             /*
              * TODO
             Mail m = new Mail();

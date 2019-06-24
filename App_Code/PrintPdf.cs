@@ -212,10 +212,13 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             p.Add(new Chunk(note, GetFont(true)));
             if(row <= 6) {
                 doc.Add(p);
-                if(row > 3) {
+                if(row > 2) {
                     doc.NewPage();
                     AppendHeader(doc, lang);
                     spacing = 40f;
+                    AppendFooter(doc, spacing);
+                } else {
+                    spacing = 5f;
                     AppendFooter(doc, spacing);
                 }
             } else if (row > 6 && row <= 12) {
@@ -228,10 +231,6 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
                 AppendFooter(doc, spacing);
             } 
             
-
-           
-
-        
 
             //#region Footer
 

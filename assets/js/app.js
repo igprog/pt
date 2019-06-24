@@ -1080,7 +1080,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
              '<p>' + $translate.instant('your') + ' <a href="https://wwww.' + $rootScope.config.appname + '">' + $rootScope.config.name + ' Tim</a></p>';
-             sendMail(sendto, subject, body, []);
+             sendMail(sendto, subject, body, [], null);
              if (isCheckout == true) {
                  $scope.nextStep('shippingMethodTpl', 3);
              }
@@ -1095,11 +1095,11 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
 
-    var sendMail = function (sendto, subject, body, cc) {
+    var sendMail = function (sendto, subject, body, cc, file) {
         $http({
             url: 'Mail.asmx/SendMail',
             method: 'POST',
-            data: { sendTo: sendto, subject: subject, body: body, cc: cc }
+            data: { sendTo: sendto, subject: subject, body: body, cc: cc, file: file }
         })
      .then(function (response) {
          //alert($translate.instant(response.data.d));
@@ -1203,7 +1203,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('best regards') + ',</p>' +
              '<br/>' +
              '<p>' + $translate.instant('your') + ' <a href="' + $rootScope.config.appname + '">' + $rootScope.config.appname + ' ' + $translate.instant('team') + '</a></p>';
-             sendMail(sendto, subject, body, []);
+
+             sendMail(sendto, subject, body, [], $scope.getPdfLink($scope.order, 'offer'));
 
             var bodyToMe =
                '<p>' + $translate.instant('new order') + ': ' +
@@ -1215,7 +1216,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                '<br/>' +
                '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
                '<p>' + $translate.instant('delivery type') + ': ' + $translate.instant($scope.order.deliveryType.title) + '.</p>';
-            sendMail($rootScope.config.email, subject, bodyToMe, $rootScope.config.emailcc);
+            sendMail($rootScope.config.email, subject, bodyToMe, $rootScope.config.emailcc, null);
 
              $scope.nextStep('orderConfirmationTpl', 6);
              clearCart();
@@ -1258,7 +1259,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          '<br/>' +
          '<p>Vaš <a href="https://www.' + $rootScope.config.appname + '">' + $rootScope.config.name + ' Tim</a></p>';
 
-         sendMail(sendto, subject, body, []);
+         sendMail(sendto, subject, body, [], null);
 
          $scope.loginMsg = $translate.instant("your account information has been sent to the email address");
          $scope.loginMsgClass = 'info';
@@ -1449,7 +1450,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $http({
             url: 'Mail.asmx/SendMail',
             method: 'POST',
-            data: { sendTo: $rootScope.config.email, subject: subject, body: body, cc: $rootScope.config.emailcc }
+            data: { sendTo: $rootScope.config.email, subject: subject, body: body, cc: $rootScope.config.emailcc, file:null }
         })
      .then(function (response) {
          $scope.issent = true;

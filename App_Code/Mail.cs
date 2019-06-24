@@ -24,7 +24,7 @@ public class Mail : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string SendMail(string sendTo, string subject, string body, string[] cc) {
+    public string SendMail(string sendTo, string subject, string body, string[] cc, string file) {
         try {
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(myEmail);
@@ -37,6 +37,10 @@ public class Mail : System.Web.Services.WebService {
             mail.Subject = subject;
             mail.Body = body;
             mail.IsBodyHtml = true;
+            if (!string.IsNullOrEmpty(file)) {
+                Attachment attachment = new Attachment(Server.MapPath(file.Replace("../", "~/")));
+                mail.Attachments.Add(attachment);
+            }
             SmtpClient smtp = new SmtpClient(myServerHost, myServerPort);
             NetworkCredential Credentials = new NetworkCredential(myEmail, myPassword);
             smtp.Credentials = Credentials;
