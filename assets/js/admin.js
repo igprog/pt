@@ -288,6 +288,29 @@ angular.module('app', [])
         $scope.pdfLink = null;
     }
 
+    $scope.getPdfLink = function (x, type) {
+        return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
+    }
+
+    $scope.createInvoicePdf = function (o, isForeign) {
+        $scope.loading = true;
+        $scope.pdfLink = null;
+        var tempFileName = null;
+        $http({
+            url: 'PrintPdf.asmx/InvoicePdf',
+            method: 'POST',
+            data: { order: o, isForeign: isForeign, lang: 'hr' }
+        })
+     .then(function (response) {
+         $scope.loading = false;
+         var tempFileName = response.data.d;
+         $scope.pdfLink = 'upload/invoice/temp/' + tempFileName + '.pdf';
+     },
+     function (response) {
+         $scope.loading = false;
+         alert(response.data.d);
+     });
+    }
 
 }])
 

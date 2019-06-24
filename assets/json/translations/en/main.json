@@ -307,5 +307,6 @@
   "natural person": "Natural person",
   "legal person": "Legal person",
   "different from the billing address": "Different from the billing address",
-  "offer": "Offer"
+  "offer": "Offer",
+  "invoice": "Invoice"
 }

@@ -23,12 +23,13 @@
                 <table class="table table-condensed table-bordered table-striped">
                     <thead style="background-color:#3B3A39; color:#fff">
                         <tr>
-                            <th colspan="8"></th>
+                            <th colspan="9"></th>
                             <th colspan="7" class="text-center">{{'delivery address' | translate}}</th>
                             <th colspan="4"></th>
                         </tr>
                         <tr>
                             <th class="text-center">{{'offer' | translate}}</th>
+                            <th class="text-center">{{'invoice' | translate}}</th>
                             <th class="text-center">{{'order number' | translate}}</th>
                             <th class="text-center">{{'status' | translate}}</th>
                             <th class="text-center">{{'items' | translate}}</th>
@@ -55,7 +56,8 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="x in o">
-                            <td><a href="{{getPdfLink(x, 'offer')}}" check-link class="btn btn-success" download title="{{'offer' | translate}} (PDF)"><i class="fa fa-download"></i></a></td>
+                            <td><a href="{{getPdfLink(x, 'offer')}}" check-link class="btn btn-success" download title="{{'offer' | translate}} (PDF)"><i class="fa fa-file-pdf-o"></i></a></td>
+                            <td><a href="{{getPdfLink(x, 'invoice')}}" check-link class="btn btn-danger" download title="{{'invoice' | translate}} (PDF)"><i class="fa fa-file-pdf-o"></i></a></td>
                             <!--<td>{{x.orderId}}</td>-->
                             <td>{{x.number}}</td>
                             <td>{{x.status.title | translate}}</td>
