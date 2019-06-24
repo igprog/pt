@@ -21,6 +21,7 @@ namespace Igprog {
         public string orders = "orders";
         public string featured = "featured";
         public string size = "size";
+        public string invoice = "invoice";
 
         #region CreateTable (products.ddb)
 
@@ -272,15 +273,26 @@ namespace Igprog {
                         note NVARCHAR(200),
                         number NVARCHAR(50),
                         status NVARCHAR(50),
-                        countryCode NVARCHAR (50),
-                        sendToPrint NVARCHAR (50),
+                        countryCode NVARCHAR(50),
+                        sendToPrint NVARCHAR(50),
                         deliveryPrice NVARCHAR(50),
                         discount NVARCHAR(50),
                         total NVARCHAR(50))";
             CreateTable(path, sql);
         }
 
-
+        //TODO:
+        public void Invoice(string path) {
+            string sql = @"CREATE TABLE IF NOT EXISTS invoice
+                        (invoiceId NVARCHAR(50) PRIMARY KEY,
+                        number NVARCHAR(50),
+                        year NVARCHAR(50),
+                        operator NVARCHAR(50),
+                        device NVARCHAR(50),
+                        orderId NVARCHAR(50),
+                        userId NVARCHAR(50))";
+            CreateTable(path, sql);
+        }
         #endregion
 
         public void CreateDataBase(string dataBase, string table) {
@@ -322,6 +334,9 @@ namespace Igprog {
                     break;
                 case "featured":
                     Featured(path);
+                    break;
+                case "invoice":
+                    Invoice(path);
                     break;
                 default:
                     break;

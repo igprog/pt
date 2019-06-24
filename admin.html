@@ -372,7 +372,7 @@
                         <button ng-if="!pdfLink" class="btn btn-primary" ng-disabled="loading" ng-click="createOfferPdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create Offer (PDF)</button>
                         <!--<a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>-->
                         <button ng-if="!pdfLink" class="btn btn-danger" ng-disabled="loading" ng-click="createInvoicePdf(o, false)"><i class="fa fa-{{loading==true?'spinner fa-spin':'file-pdf-o'}}"></i> Create Invoice (PDF)</button>
-                        <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
+                        <a ng-if="pdfLink" href="{{pdfLink}}" class="btn btn-success" check-link download ng-click="removePdfLink()"><i class="fa fa-download"></i> Download PDF</a>
                     </div>
                 </div>            
 

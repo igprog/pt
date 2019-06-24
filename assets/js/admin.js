@@ -778,4 +778,20 @@ angular.module('app', [])
 
 }])
 
+.directive('checkLink', function ($http) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            attrs.$observe('href', function (href) {
+                $http.get(href).success(function () {
+                }).error(function () {
+                    element.attr('class', 'btn btn-default');
+                    element.attr('disabled', 'disabled');
+                });
+            });
+        }
+    };
+})
+;
+
 ;
