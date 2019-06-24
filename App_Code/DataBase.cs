@@ -287,8 +287,6 @@ namespace Igprog {
                         (invoiceId NVARCHAR(50) PRIMARY KEY,
                         number NVARCHAR(50),
                         year NVARCHAR(50),
-                        operator NVARCHAR(50),
-                        device NVARCHAR(50),
                         orderId NVARCHAR(50),
                         userId NVARCHAR(50))";
             CreateTable(path, sql);

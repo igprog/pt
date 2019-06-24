@@ -257,6 +257,11 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
      [WebMethod]
     public string InvoicePdf(Orders.NewOrder order, bool isForeign, string lang) {
         try {
+            Invoice i = new Invoice();
+            Invoice.NewInvoice invoice = new Invoice.NewInvoice();
+            invoice = i.Save(order);
+            order.invoice = invoice.number;
+
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();
             var doc = new Document();
@@ -276,7 +281,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             table0.SpacingBefore = 40f;
             p = new Paragraph();
             //TODO: order number
-            p.Add(new Paragraph(string.Format("Račun broj: {0}", order.number), GetFont(12, Font.BOLD)));
+            p.Add(new Paragraph(string.Format("Račun broj: {0}", order.invoice), GetFont(12, Font.BOLD)));
             table0.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, BackgroundColor=Color.LIGHT_GRAY });
             doc.Add(table0);
            
@@ -482,6 +487,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             doc.Close();
 
             SavePdf(order, filePath, "invoice");
+
 
             return fileName;
         } catch (Exception e) {

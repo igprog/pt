@@ -69,6 +69,8 @@ public class Orders : System.Web.Services.WebService {
 
         public DiscountCoeff discount = new DiscountCoeff(); //TOOD
 
+        public string invoice { get; set; }
+
     }
 
     public class Item {
