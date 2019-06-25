@@ -344,18 +344,55 @@ namespace Igprog {
         private void CreateTable(string path, string sql) {
             try {
                 if (File.Exists(path)){
-                    SQLiteConnection connection = new SQLiteConnection("Data Source=" + path);
-                    connection.Open();
-                    SQLiteCommand command = new SQLiteCommand(sql, connection);
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                };
+                    using(SQLiteConnection connection = new SQLiteConnection("Data Source=" + path)) {
+                        connection.Open();
+                        using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+                            command.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                }
             } catch (Exception e) { }
         }
 
         public string GetDataBasePath(string dataBase) {
             return HttpContext.Current.Server.MapPath(string.Format(@"~/App_Data/{0}", dataBase));
         }
+
+        //public void AddColumn(string path, string table, string column) {
+        //    if (!CheckColumn(path, table, column)) {
+        //        string sql = string.Format("ALTER TABLE {0} ADD COLUMN {1} VARCHAR (50)", table, column);
+        //        CreateTable(path, sql);
+        //    }
+        //}
+
+        ///************** Check if column exists ***********/
+        //private bool CheckColumn(string path, string table, string column) {
+        //    try {
+        //        DataBase db = new DataBase();
+        //        bool exists = false;
+        //        string name = null;
+        //        string sql = string.Format("pragma table_info('{0}')", table);
+        //        using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + path)) {
+        //            connection.Open();
+        //            using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
+        //                using (SQLiteDataReader reader = command.ExecuteReader()) {
+        //                    while (reader.Read()) {
+        //                        name = reader.GetValue(1) == DBNull.Value ? "" : reader.GetString(1);
+        //                        if (name == column) {
+        //                            exists = true;
+        //                        }
+        //                    }
+        //                }   
+        //            } 
+        //            connection.Close();
+        //        } 
+        //        return exists;
+        //    } catch (Exception e) { return false; }
+        //}
+        ///*************************************************/
+
+
 
     }
 

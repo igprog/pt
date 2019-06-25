@@ -488,13 +488,11 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             SavePdf(order, filePath, "invoice");
 
-
             return fileName;
         } catch (Exception e) {
             return e.Message;
         }
     }
-
 
     private Font GetFont(int size, int style) {
        return FontFactory.GetFont(HttpContext.Current.Server.MapPath("~/assets/fonts/ARIALUNI.TTF"), BaseFont.IDENTITY_H, false, size, style);
@@ -588,7 +586,14 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
            // string pdfTempPath = Server.MapPath(string.Format("~/upload/invoice/temp/{0}.pdf", pdf));
             int year = DateTime.Now.Year; // x.year;
             //string fileName = string.Format("{0}_{1}", x.number, year);
-            string fileName = string.Format("{0}", x.number);
+            string number = null;
+            switch(type) {
+                case "offer": number = x.number; break;
+                case "invoice": number = x.invoice; break;
+                default: number = "xxx"; break;
+            }
+
+            string fileName = string.Format("{0}", number);
             string pdfDir = string.Format("~/upload/users/{0}/{1}/", x.userId, type);
             string pdfPath = Server.MapPath(string.Format("{0}{1}.pdf", pdfDir, fileName.Replace('/','_')));
 

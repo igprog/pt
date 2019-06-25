@@ -148,6 +148,21 @@ angular.module('app', [])
          });
     }
 
+    //TODO create web method
+    //var getOrderByOrderId = function (x) {
+    //    $http({
+    //        url: 'Orders.asmx/GetOrderByOrderId',
+    //        method: 'POST',
+    //        data: {orderId: x.orderId }
+    //    })
+    //     .then(function (response) {
+    //         $scope.o = JSON.parse(response.data.d);
+    //     },
+    //     function (response) {
+    //         alert(response.data.d);
+    //     });
+    //}
+
     $scope.isdetails = false;
     $scope.showDetails = function (x, show) {
         clear();
@@ -305,12 +320,20 @@ angular.module('app', [])
          $scope.loading = false;
          var tempFileName = response.data.d;
          $scope.pdfLink = 'upload/invoice/temp/' + tempFileName + '.pdf';
+
+
+         //TODO: GetOrder
+         //getOrderByOrderId(o.orderId);
+
      },
      function (response) {
          $scope.loading = false;
          alert(response.data.d);
      });
     }
+
+
+
 
 }])
 

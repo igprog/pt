@@ -28,7 +28,7 @@ public class Invoice {
     public NewInvoice Save(Orders.NewOrder order) {
         try {
             NewInvoice x = new NewInvoice();
-            x.invoiceId = Guid.NewGuid().ToString();
+            x.invoiceId = string.IsNullOrEmpty(order.invoiceId) ? Guid.NewGuid().ToString() : order.invoiceId;
             x.year = DateTime.Now.Year;
             x.orderId = order.orderId;
             x.userId = order.userId;
@@ -50,17 +50,20 @@ public class Invoice {
     }
 
     private string getNewInvoiceNumber(SQLiteConnection connection) {
-        int startNumber = 1;
-        int lastRow = 0;
-        string sql = "SELECT MAX(rowid) FROM invoice";
+        string x = "1-1-1";
+        string lastNumber = null;
+        string sql = string.Format("SELECT max(number) FROM invoice WHERE year = '{0}'", DateTime.Now.Year);
         using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
             using (SQLiteDataReader reader = command.ExecuteReader()) {
                 while (reader.Read()) {
-                    lastRow = reader.GetValue(0) == DBNull.Value ? 0 : reader.GetInt32(0);
+                    lastNumber = reader.GetValue(0) == DBNull.Value ? "" : reader.GetString(0);
                 }
             }
         }
-        return string.Format("{0}-1-1", (lastRow + startNumber).ToString());
+        if(!string.IsNullOrEmpty(lastNumber) && lastNumber.Split('-').Length > 0) {
+            x = string.Format("{0}-1-1", (Convert.ToInt32(lastNumber.Split('-')[0]) + 1).ToString());
+        }
+        return x;
     }
 
 
