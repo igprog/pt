@@ -148,28 +148,36 @@ angular.module('app', [])
          });
     }
 
-    //TODO create web method
-    //var getOrderByOrderId = function (x) {
-    //    $http({
-    //        url: 'Orders.asmx/GetOrderByOrderId',
-    //        method: 'POST',
-    //        data: {orderId: x.orderId }
-    //    })
-    //     .then(function (response) {
-    //         $scope.o = JSON.parse(response.data.d);
-    //     },
-    //     function (response) {
-    //         alert(response.data.d);
-    //     });
-    //}
+    //TODO: Backend method: GetItemsDatas for one order
+    var getOrderByOrderId = function (x) {
+        $http({
+            url: 'Orders.asmx/GetOrderByOrderId',
+            method: 'POST',
+            data: { orderId: x }
+        })
+        .then(function (response) {
+            $scope.o = JSON.parse(response.data.d);
+
+            //$scope.o.number = res.number;
+            //$scope.o.invoice = res.invoice;
+            //$scope.o.invoiceId = res.invoiceId;
+        },
+        function (response) {
+            alert(response.data.d);
+        });
+    }
 
     $scope.isdetails = false;
     $scope.showDetails = function (x, show) {
         clear();
-        $scope.o = x;
         if (x != null) {
-            $scope.items = GetItems(x.items);
-            $scope.items_utt = GetItems_utt($scope.items);
+            getOrderByOrderId(x.orderId);
+            if (x != null) {
+                $scope.items = GetItems(x.items);
+                $scope.items_utt = GetItems_utt($scope.items);
+            }
+        } else {
+            load();
         }
         $scope.isdetails = show;
     }
@@ -304,7 +312,11 @@ angular.module('app', [])
     }
 
     $scope.getPdfLink = function (x, type) {
-        return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
+        var link = type == 'offer'
+           ? 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf'
+           : 'upload/users/' + x.userId + '/' + type + '/' + x.invoice + '.pdf';
+        return link;
+        //return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
     }
 
     $scope.createInvoicePdf = function (o, isForeign) {
@@ -320,19 +332,13 @@ angular.module('app', [])
          $scope.loading = false;
          var tempFileName = response.data.d;
          $scope.pdfLink = 'upload/invoice/temp/' + tempFileName + '.pdf';
-
-
-         //TODO: GetOrder
-         //getOrderByOrderId(o.orderId);
-
+         getOrderByOrderId(o.orderId);
      },
      function (response) {
          $scope.loading = false;
          alert(response.data.d);
      });
     }
-
-
 
 
 }])

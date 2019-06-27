@@ -19,7 +19,7 @@ public class Invoice {
 
      public class NewInvoice {
         public string invoiceId;
-        public string number;
+        public int number;
         public int year;
         public string orderId;
         public string userId;
@@ -35,7 +35,7 @@ public class Invoice {
             db.CreateDataBase(dataBase, db.invoice);
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + HttpContext.Current.Server.MapPath("~/App_Data/" + dataBase))) {
                 connection.Open();
-                x.number = !string.IsNullOrEmpty(order.invoice) ? order.invoice : getNewInvoiceNumber(connection);
+                x.number = !string.IsNullOrEmpty(order.invoice) ? Convert.ToInt32(order.invoice.Split('-')[0]) : getNewInvoiceNumber(connection);
                 string sql = string.Format(@"INSERT OR REPLACE INTO invoice VALUES  
                        ('{0}', '{1}', '{2}', '{3}', '{4}')", x.invoiceId, x.number, x.year, x.orderId, x.userId);
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
@@ -49,8 +49,10 @@ public class Invoice {
         }
     }
 
-    private string getNewInvoiceNumber(SQLiteConnection connection) {
-        string x = "1-1-1";
+    //  1/WEB/1/1
+
+     private int getNewInvoiceNumber(SQLiteConnection connection) {
+        int x = 1;
         string lastNumber = null;
         string sql = string.Format("SELECT max(number) FROM invoice WHERE year = '{0}'", DateTime.Now.Year);
         using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
@@ -60,11 +62,10 @@ public class Invoice {
                 }
             }
         }
-        if(!string.IsNullOrEmpty(lastNumber) && lastNumber.Split('-').Length > 0) {
-            x = string.Format("{0}-1-1", (Convert.ToInt32(lastNumber.Split('-')[0]) + 1).ToString());
+        if(!string.IsNullOrEmpty(lastNumber)) {
+            x = Convert.ToInt32(lastNumber) + 1;
         }
         return x;
     }
-
 
 }

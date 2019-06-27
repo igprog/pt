@@ -254,13 +254,13 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
         }
     }
 
-     [WebMethod]
+    [WebMethod]
     public string InvoicePdf(Orders.NewOrder order, bool isForeign, string lang) {
         try {
             Invoice i = new Invoice();
             Invoice.NewInvoice invoice = new Invoice.NewInvoice();
             invoice = i.Save(order);
-            order.invoice = invoice.number;
+            order.invoice = string.Format("{0}-1-1", invoice.number);
 
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();
