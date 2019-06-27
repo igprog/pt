@@ -49,8 +49,6 @@ public class Invoice {
         }
     }
 
-    //  1/WEB/1/1
-
      private int getNewInvoiceNumber(SQLiteConnection connection) {
         int x = 1;
         string lastNumber = null;
@@ -67,5 +65,8 @@ public class Invoice {
         }
         return x;
     }
+
+    // TODO: Create function InvoiceFormat (//  1/WEB/1/1)
+    // string.Format("{0}-1-1"...
 
 }
