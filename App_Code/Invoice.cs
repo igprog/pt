@@ -35,7 +35,7 @@ public class Invoice {
             db.CreateDataBase(dataBase, db.invoice);
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + HttpContext.Current.Server.MapPath("~/App_Data/" + dataBase))) {
                 connection.Open();
-                x.number = !string.IsNullOrEmpty(order.invoice) ? Convert.ToInt32(order.invoice.Split('-')[0]) : getNewInvoiceNumber(connection);
+                x.number = !string.IsNullOrEmpty(order.invoice) ? Convert.ToInt32(order.invoice.Split('/')[0]) : getNewInvoiceNumber(connection);
                 string sql = string.Format(@"INSERT OR REPLACE INTO invoice VALUES  
                        ('{0}', '{1}', '{2}', '{3}', '{4}')", x.invoiceId, x.number, x.year, x.orderId, x.userId);
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
@@ -66,7 +66,8 @@ public class Invoice {
         return x;
     }
 
-    // TODO: Create function InvoiceFormat (//  1/WEB/1/1)
-    // string.Format("{0}-1-1"...
+    public string InvoiceFormat(int number) {
+        return string.Format("{0}{1}", number, ConfigurationManager.AppSettings["invoiceSufix"]);
+    }
 
 }

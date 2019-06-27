@@ -314,7 +314,7 @@ angular.module('app', [])
     $scope.getPdfLink = function (x, type) {
         var link = type == 'offer'
            ? 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf'
-           : 'upload/users/' + x.userId + '/' + type + '/' + x.invoice + '.pdf';
+           : 'upload/users/' + x.userId + '/' + type + '/' + x.invoice.replace('/', '_').replace('/', '_') + '.pdf';
         return link;
         //return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
     }

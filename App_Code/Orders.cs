@@ -22,6 +22,7 @@ public class Orders : System.Web.Services.WebService {
     DataBase db = new DataBase();
     string orderOptionsFile = "orderoptions";
     Translate T = new Translate();
+    Invoice i = new Invoice();
 
     public Orders() { 
     }
@@ -233,7 +234,7 @@ public class Orders : System.Web.Services.WebService {
                             x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
                             x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
                             x.discount.coeff = reader.GetValue(34) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(34));
-                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : string.Format("{0}-1-1", reader.GetString(35));
+                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : i.InvoiceFormat(Convert.ToInt32(reader.GetString(35)));
                             x.invoiceId = reader.GetValue(36) == DBNull.Value ? "" : reader.GetString(36);
                             xx.Add(x);
                         }
@@ -309,7 +310,7 @@ public class Orders : System.Web.Services.WebService {
                             x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
                             x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
                             x.discount.coeff = reader.GetValue(34) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(34));
-                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : string.Format("{0}-1-1", reader.GetString(35));
+                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : i.InvoiceFormat(Convert.ToInt32(reader.GetString(35)));
                             x.invoiceId = reader.GetValue(36) == DBNull.Value ? "" : reader.GetString(36);
                             // x.total = x.totalWithDiscount + x.deliveryPrice;
                             xx.Add(x);
@@ -384,7 +385,7 @@ public class Orders : System.Web.Services.WebService {
                             x.price.discount = reader.GetValue(32) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(32));
                             x.price.total = reader.GetValue(33) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(33));
                             x.discount.coeff = reader.GetValue(34) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(34));
-                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : string.Format("{0}-1-1", reader.GetString(35));
+                            x.invoice = reader.GetValue(35) == DBNull.Value ? "" : i.InvoiceFormat(Convert.ToInt32(reader.GetString(35)));
                             x.invoiceId = reader.GetValue(36) == DBNull.Value ? "" : reader.GetString(36);
                         }
                     }  
