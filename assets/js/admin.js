@@ -313,10 +313,9 @@ angular.module('app', [])
 
     $scope.getPdfLink = function (x, type) {
         var link = type == 'offer'
-           ? 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf'
-           : 'upload/users/' + x.userId + '/' + type + '/' + x.invoice.replace('/', '_').replace('/', '_') + '.pdf';
+            ? 'upload/' + type + '/' + x.orderId + '.pdf'
+            : 'upload/' + type + '/' + x.invoiceId + '.pdf';
         return link;
-        //return 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf';
     }
 
     $scope.createInvoicePdf = function (o, isForeign) {
@@ -339,7 +338,6 @@ angular.module('app', [])
          alert(response.data.d);
      });
     }
-
 
 }])
 
@@ -516,8 +514,6 @@ angular.module('app', [])
          alert(response.data.d);
      });
     }
-
-
 
 }])
 

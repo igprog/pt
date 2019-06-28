@@ -99,22 +99,6 @@ public class PrintPdf : System.Web.Services.WebService {
 
             AppendOfferTblHeader(table);
 
-//            string price_title = string.Format(@"Cijena
-//(bez PDV-a)");
-//            string total_title = string.Format(@"Ukupno
-//(bez PDV-a)");
-
-           
-
-            //table.AddCell(new PdfPCell(new Paragraph("Rb", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Proizvod / usluga", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_LEFT, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Količina", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("j.m.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph(price_title, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Rabat%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("PDV%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph(total_title, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-
             Price pr = new Price();
             double vat = Math.Round((pr.GetCoeff().vat-1)*100, 2);
 
@@ -137,14 +121,6 @@ public class PrintPdf : System.Web.Services.WebService {
                     }
                 }
                 AppendOfferTblRow(table, row, item, lang, vat);
-                //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
-                //table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2 });
-                //table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                //table.AddCell(new PdfPCell(new Phrase("kom.", GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", item.price)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", item.discount * 100)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", vat)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-                //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * item.discount))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             }
 
             doc.Add(table);
@@ -173,18 +149,9 @@ public class PrintPdf : System.Web.Services.WebService {
             table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
-
-            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", totPrice * order.discount.coeff), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-
             doc.Add(table2);
 
             float spacing = 20f;
-            //if (row == 1) { spacing = 160f; }
-            //if (row == 2) { spacing = 140f; }
-            //if (row == 3) { spacing = 100f; }
-            //if (row == 4) { spacing = 60f; }
-            //if (row == 5) { spacing = 20f; }
-
 
             p = new Paragraph();
             p.Add(new Chunk(string.Format("UKUPNO KOMADA: {0}", order.items.Count), GetFont(true)));
@@ -231,19 +198,6 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
                 AppendFooter(doc, spacing, false);
             } 
             
-
-            //#region Footer
-
-            //if (row > 3) {
-            //    doc.NewPage();
-            //    AppendHeader(doc, lang);
-            //    AppendFooter(doc, spacing);
-            //} else {
-            //    AppendFooter(doc, spacing);
-            //}
-
-            //#endregion Footer
-
             doc.Close();
 
             SavePdf(order, filePath, "offer");
@@ -260,7 +214,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             Invoice i = new Invoice();
             Invoice.NewInvoice invoice = new Invoice.NewInvoice();
             invoice = i.Save(order);
-            order.invoice = i.InvoiceFormat(invoice.number); // string.Format("{0}-1-1", invoice.number);
+            order.invoice = i.InvoiceFormat(invoice.number);
 
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();
@@ -280,7 +234,6 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             table0.WidthPercentage = 100f;
             table0.SpacingBefore = 40f;
             p = new Paragraph();
-            //TODO: order number
             p.Add(new Paragraph(string.Format("Račun broj: {0}", order.invoice), GetFont(12, Font.BOLD)));
             table0.AddCell(new PdfPCell(p) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, BackgroundColor=Color.LIGHT_GRAY });
             doc.Add(table0);
@@ -330,22 +283,6 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             AppendOfferTblHeader(table);
 
-//            string price_title = string.Format(@"Cijena
-//(bez PDV-a)");
-//            string total_title = string.Format(@"Ukupno
-//(bez PDV-a)");
-
-           
-
-            //table.AddCell(new PdfPCell(new Paragraph("Rb", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Proizvod / usluga", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_LEFT, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Količina", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("j.m.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph(price_title, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("Rabat%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph("PDV%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-            //table.AddCell(new PdfPCell(new Paragraph(total_title, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-
             Price pr = new Price();
             double vat = Math.Round((pr.GetCoeff().vat-1)*100, 2);
 
@@ -383,23 +320,12 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-
-            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-            //table2.AddCell(new PdfPCell(new Phrase("Ukupno rabat:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
-            //table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat-1)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-
-
-            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", totPrice * order.discount.coeff), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
 
             doc.Add(table2);
 
@@ -438,9 +364,6 @@ Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
 
             float spacing = 20f;
 
-
-//            p = new Paragraph();
-//            p.Add(new Chunk(note, GetFont(true)));
             if(row <= 4) {
                 doc.Add(p);
 
@@ -448,8 +371,6 @@ Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
                 if (row == 2) { spacing = 60f; }
                 if (row == 3) { spacing = 40f; }
                 if (row == 4) { spacing = 10f; }
-                //if (row == 5) { spacing = 20f; }
-                //if (row == 6) { spacing = 5f; }
 
                 AppendFooter(doc, spacing, true);
                 //if (row > 2) {
@@ -470,19 +391,6 @@ Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
                 doc.Add(p);
                 AppendFooter(doc, spacing, true);
             } 
-            
-
-            //#region Footer
-
-            //if (row > 3) {
-            //    doc.NewPage();
-            //    AppendHeader(doc, lang);
-            //    AppendFooter(doc, spacing);
-            //} else {
-            //    AppendFooter(doc, spacing);
-            //}
-
-            //#endregion Footer
 
             doc.Close();
 
@@ -588,14 +496,21 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
             //string fileName = string.Format("{0}_{1}", x.number, year);
             string number = null;
             switch(type) {
-                case "offer": number = x.number; break;
-                case "invoice": number = x.invoice; break;
+                case "offer": number = x.orderId; break;
+                case "invoice": number = x.invoiceId; break;
                 default: number = "xxx"; break;
+                    //case "offer": number = x.number; break;
+                    //case "invoice": number = x.invoice; break;
+                    //default: number = "xxx"; break;
             }
 
             string fileName = string.Format("{0}", number);
-            string pdfDir = string.Format("~/upload/users/{0}/{1}/", x.userId, type);
-            string pdfPath = Server.MapPath(string.Format("{0}{1}.pdf", pdfDir, fileName.Replace('/','_')));
+            string pdfDir = string.Format("~/upload/{0}/", type);
+            string pdfPath = Server.MapPath(string.Format("{0}{1}.pdf", pdfDir, fileName));
+
+            //string fileName = string.Format("{0}", number);
+            //string pdfDir = string.Format("~/upload/users/{0}/{1}/", x.userId, type);
+            //string pdfPath = Server.MapPath(string.Format("{0}{1}.pdf", pdfDir, fileName.Replace('/','_')));
 
             if (!Directory.Exists(Server.MapPath(pdfDir))) {
                 Directory.CreateDirectory(Server.MapPath(pdfDir));

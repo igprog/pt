@@ -1395,8 +1395,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.getPdfLink = function (x, type) {
         var link = type == 'offer'
-            ? 'upload/users/' + x.userId + '/' + type + '/' + x.number.replace('/', '_') + '.pdf'
-            : 'upload/users/' + x.userId + '/' + type + '/' + x.invoice.replace('/', '_').replace('/', '_') + '.pdf';
+            ? 'upload/' + type + '/' + x.orderId + '.pdf'
+            : 'upload/' + type + '/' + x.invoiceId + '.pdf';
         return link;
     }
 
