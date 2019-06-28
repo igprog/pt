@@ -1394,9 +1394,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     $scope.getPdfLink = function (x, type) {
-        var link = type == 'offer'
+        var link = null;
+        if (x !== undefined) {
+            link = type == 'offer'
             ? 'upload/' + type + '/' + x.orderId + '.pdf'
             : 'upload/' + type + '/' + x.invoiceId + '.pdf';
+        }
         return link;
     }
 

@@ -215,6 +215,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             Invoice.NewInvoice invoice = new Invoice.NewInvoice();
             invoice = i.Save(order);
             order.invoice = i.InvoiceFormat(invoice.number);
+            order.invoiceId = invoice.invoiceId;
 
             GetFont(8, Font.ITALIC).SetColor(255, 122, 56);
             Paragraph p = new Paragraph();

@@ -428,6 +428,7 @@ public class Orders : System.Web.Services.WebService {
                     i.style = variant.style;
                     i.shortdesc_en = variant.shortdesc_en;
                     i.supplier = variant.supplier;
+                    i.discount = user.discount.coeff;
                     order.items.Add(i);
                     order.netPrice += Math.Round(variant.myprice.net * pr.GetCoeff().eurorate * variant.quantity, 2);
                     order.grossPrice += Math.Round(variant.myprice.gross * pr.GetCoeff().eurorate * variant.quantity, 2);
