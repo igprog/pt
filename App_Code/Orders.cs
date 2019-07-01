@@ -639,8 +639,9 @@ public class Orders : System.Web.Services.WebService {
             }
             x.discount = Math.Round(x.net * (user != null ? user.discount.coeff : 0), 2);
             //x.discount = x.net * (user != null ? user.discount.coeff : 0);
-            x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round(x.net * (priceCoeff.vat - 1), 2) : 0) : Math.Round(x.net * (priceCoeff.vat - 1), 2));
+            x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2) : 0) : Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2));
             //x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? x.net * (priceCoeff.vat - 1) : 0) : x.net * (priceCoeff.vat - 1));
+            //x.netWithDiscount = Math.Round(x.net - x.discount, 2);
             x.netWithDiscount = x.net - x.discount;
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
             x.delivery = (x.gross * course) < 1000 ? Math.Round((orderOptions.deliveryprice / course), 2) : 0;

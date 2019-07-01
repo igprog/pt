@@ -205,6 +205,20 @@ public class Price : System.Web.Services.WebService{
         }
         return xx;
     }
+
+    public Total GetPriceTotal(Orders.NewOrder order) {
+        Total x = new Total();
+        Orders o = new Orders();
+        Orders.OrderOption orderOptions = o.GetOrderOptions();
+        double vat = GetCoeff().vat;
+        x.net = order.items.Sum(a => a.price * a.quantity);
+        x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
+        x.noVat = x.net - x.discount;
+        x.vat = (x.net - x.discount) * (vat - 1);
+        x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice : 0;
+        x.total = x.noVat + x.vat + x.delivery;
+        return x;
+    }
     #endregion Methods
 
 }
