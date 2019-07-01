@@ -41,6 +41,14 @@ public class Price : System.Web.Services.WebService{
         public double coeff { get; set; }
         public double value { get; set; }
     }
+
+    public class Total {
+        public double net;
+        public double discount;
+        public double noVat;
+        public double vat;
+        public double total;
+    }
     #endregion Class
 
     #region WebMethods

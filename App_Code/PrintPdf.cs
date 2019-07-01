@@ -24,6 +24,7 @@ public class PrintPdf : System.Web.Services.WebService {
     string logoPath = HttpContext.Current.Server.MapPath(string.Format("~/assets/img/{0}", ConfigurationManager.AppSettings["logo"]));
     iTextSharp.text.pdf.draw.LineSeparator line = new iTextSharp.text.pdf.draw.LineSeparator(0f, 100f, Color.BLACK, Element.ALIGN_LEFT, 1);
     Translate t = new Translate();
+    Price pr = new Price();
 
     public PrintPdf() {
     }
@@ -131,23 +132,45 @@ public class PrintPdf : System.Web.Services.WebService {
             widths = new float[] { 5f, 2f, 1f };
             table2.SetWidths(widths);
 
-            //TODO: srediti kod, refaktorirati: order.items.Sum(a => a.price * a.quantity)
+            Price.Total tot = GetPriceTotal(order);
+
+            //double priceNetTot = order.items.Sum(a => a.price * a.quantity);
+            //double discountTot = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
+            //double priceNoVatTot = priceNetTot - discountTot;
+            //double vatTot = (priceNetTot - discountTot) * (pr.GetCoeff().vat - 1);
+            //double priceTot = (priceNetTot - discountTot + (priceNetTot - discountTot) * (pr.GetCoeff().vat - 1));
 
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a i rabata):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.net), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno rabat:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.discount), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.noVat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat-1)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.vat), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.total), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+
+            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a i rabata):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //table2.AddCell(new PdfPCell(new Phrase("Ukupno rabat:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5 });
+            //table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
+            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat-1)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
             doc.Add(table2);
 
@@ -316,17 +339,17 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             widths = new float[] { 5f, 2f, 1f };
             table2.SetWidths(widths);
 
-            //TODO: srediti kod, refaktorirati: order.items.Sum(a => a.price * a.quantity)
+            Price.Total tot = GetPriceTotal(order);
 
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.net), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat-1)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.vat), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.total), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
             doc.Add(table2);
 
@@ -342,11 +365,24 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             table3.AddCell(new PdfPCell(new Phrase("Iznos poreza", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, BackgroundColor = Color.LIGHT_GRAY, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table3.AddCell(new PdfPCell(new Phrase("Ukupno", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, BackgroundColor = Color.LIGHT_GRAY, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
+            //double priceNetTot = order.items.Sum(a => a.price * a.quantity);
+            //double discountTot = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
+            //double priceNoVatTot = priceNetTot - discountTot;
+            //double vatTot = (priceNetTot - discountTot) * (pr.GetCoeff().vat - 1);
+            //double priceTot = (priceNetTot - discountTot + (priceNetTot - discountTot) * (pr.GetCoeff().vat - 1));
+
             table3.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table3.AddCell(new PdfPCell(new Phrase(string.Format("{0} {1:N}%", t.Tran("vat", lang).ToUpper(), vat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", tot.net), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", tot.vat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", tot.total), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+
+
+            //table3.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            //table3.AddCell(new PdfPCell(new Phrase(string.Format("{0} {1:N}%", t.Tran("vat", lang).ToUpper(), vat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", order.items.Sum(a => a.price * a.quantity)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            //table3.AddCell(new PdfPCell(new Phrase(string.Format("{0:N}", (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount) + (order.items.Sum(a => a.price * a.quantity) - order.items.Sum(a => a.price * a.quantity * a.discount)) * (pr.GetCoeff().vat - 1))), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
             doc.Add(table3);
 
@@ -544,7 +580,18 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", item.price)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", item.discount * 100)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", vat)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
-        table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", (item.price * item.quantity) - (item.price * item.quantity * item.discount))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+        table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", (item.price * item.quantity) - Math.Round((item.price * item.quantity * item.discount),2))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+    }
+
+    private Price.Total GetPriceTotal(Orders.NewOrder order) {
+        Price.Total x = new Price.Total();
+        double vat = pr.GetCoeff().vat;
+        x.net = order.items.Sum(a => a.price * a.quantity);
+        x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
+        x.noVat = x.net - x.discount;
+        x.vat = (x.net - x.discount) * (vat - 1);
+        x.total = (x.net - x.discount + (x.net - x.discount) * (vat - 1));
+        return x;
     }
 
 
