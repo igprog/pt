@@ -426,6 +426,7 @@ public class Orders : System.Web.Services.WebService {
                     i.color = variant.color;
                     i.size = variant.size;
                     i.style = variant.style;
+                    i.brand = variant.brand_code;
                     i.shortdesc_en = variant.shortdesc_en;
                     i.supplier = variant.supplier;
                     i.discount = user.discount.coeff;

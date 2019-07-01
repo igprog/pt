@@ -47,6 +47,7 @@ public class Price : System.Web.Services.WebService{
         public double discount;
         public double noVat;
         public double vat;
+        public double delivery;
         public double total;
     }
     #endregion Class

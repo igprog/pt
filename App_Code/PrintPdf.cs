@@ -98,7 +98,7 @@ public class PrintPdf : System.Web.Services.WebService {
             widths = new float[] { 1f, 4f, 1f, 1f, 1.5f, 1f, 1f, 1.5f };
             table.SetWidths(widths);
 
-            AppendOfferTblHeader(table);
+            AppendTblHeader(table);
 
             Price pr = new Price();
             double vat = Math.Round((pr.GetCoeff().vat-1)*100, 2);
@@ -118,10 +118,10 @@ public class PrintPdf : System.Web.Services.WebService {
                     doc.NewPage();
                     AppendHeader(doc, lang);
                     if(order.items.Count > 12) {
-                        AppendOfferTblHeader(table);
+                        AppendTblHeader(table);
                     }
                 }
-                AppendOfferTblRow(table, row, item, lang, vat);
+                AppendTblRow(table, row, item, lang, vat);
             }
 
             doc.Add(table);
@@ -149,9 +149,12 @@ public class PrintPdf : System.Web.Services.WebService {
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno (bez PDV-a):", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.noVat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
+            table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.vat), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, PaddingBottom = 5 });
-            table2.AddCell(new PdfPCell(new Phrase("Ukupan PDV:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
-            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.vat), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+            table2.AddCell(new PdfPCell(new Phrase("Cijena dostave:", GetFont(true))) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT, PaddingBottom = 5 });
+            table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.delivery), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, PaddingBottom = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase("", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2 });
             table2.AddCell(new PdfPCell(new Phrase("Ukupno za platiti:", GetFont(true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
             table2.AddCell(new PdfPCell(new Phrase(string.Format("{0:N} kn", tot.total), GetFont(10, true))) { Border = PdfPCell.NO_BORDER, Padding = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
@@ -305,7 +308,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
             widths = new float[] { 1f, 4f, 1f, 1f, 1.5f, 1f, 1f, 1.5f };
             table.SetWidths(widths);
 
-            AppendOfferTblHeader(table);
+            AppendTblHeader(table);
 
             Price pr = new Price();
             double vat = Math.Round((pr.GetCoeff().vat-1)*100, 2);
@@ -325,10 +328,10 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
                     doc.NewPage();
                     AppendHeader(doc, lang);
                     if(order.items.Count > 12) {
-                        AppendOfferTblHeader(table);
+                        AppendTblHeader(table);
                     }
                 }
-                AppendOfferTblRow(table, row, item, lang, vat);
+                AppendTblRow(table, row, item, lang, vat);
             }
 
             doc.Add(table);
@@ -459,11 +462,13 @@ Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
     }
 
     private string ItemDes(Orders.Item item,  string lang) {
-        return string.Format("{0} {1} {2} {3}"
-            , item.brand != null ? item.brand.ToUpper() : ""
+        string des = string.Format("{0} - {1} {2}, {3}, {4}"
             , item.style != null ? item.style.ToUpper() : ""
-            , lang == "hr" ? item.shortdesc_hr != null ? item.shortdesc_hr.ToUpper() : "" : item.shortdesc_en != null ? item.shortdesc_en.ToUpper() : ""
-            , t.Tran(item.color, lang).ToUpper());
+            , item.brand != null ? item.brand.ToUpper() : ""
+            , lang == "hr" ? (item.shortdesc_hr != null ? item.shortdesc_hr.ToUpper() : item.shortdesc_en.ToUpper()) : item.shortdesc_en != null ? item.shortdesc_en.ToUpper() : ""
+            , t.Tran(item.color, lang).ToUpper()
+            , item.size.ToUpper());
+        return des;
     }
 
     private void AppendFooter(Document doc, float spacing, bool invoice) {
@@ -556,7 +561,7 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         } catch (Exception e) { }
     }
 
-    private void AppendOfferTblHeader(PdfPTable table) {
+    private void AppendTblHeader(PdfPTable table) {
         string price_title = string.Format(@"Cijena
 (bez PDV-a)");
         string total_title = string.Format(@"Ukupno
@@ -569,10 +574,9 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         table.AddCell(new PdfPCell(new Paragraph("Rabat%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
         table.AddCell(new PdfPCell(new Paragraph("PDV%", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
         table.AddCell(new PdfPCell(new Paragraph(total_title, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 2, MinimumHeight = 20, HorizontalAlignment = PdfPCell.ALIGN_CENTER, VerticalAlignment = PdfCell.ALIGN_MIDDLE, BackgroundColor = Color.LIGHT_GRAY });
-
     }
 
-    private void AppendOfferTblRow(PdfPTable table, int row, Orders.Item item, string lang, double vat) {
+    private void AppendTblRow(PdfPTable table, int row, Orders.Item item, string lang, double vat) {
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}.", row), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_CENTER });
         table.AddCell(new PdfPCell(new Phrase(ItemDes(item, lang), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2 });
         table.AddCell(new PdfPCell(new Phrase(item.quantity.ToString(), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
@@ -590,7 +594,8 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
         x.noVat = x.net - x.discount;
         x.vat = (x.net - x.discount) * (vat - 1);
-        x.total = (x.net - x.discount + (x.net - x.discount) * (vat - 1));
+        x.delivery = Math.Round(order.price.delivery * Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]), 2);
+        x.total = x.noVat + x.vat + x.delivery;
         return x;
     }
 
