@@ -634,17 +634,17 @@ public class Orders : System.Web.Services.WebService {
             Price.PriceCoeff priceCoeff = p.GetCoeff();
             PriceTotal x = new PriceTotal();
             foreach (Cart.NewCart c in groupingCart) {
-                x.net += Math.Round(c.data.Sum(a => a.myprice.net * a.quantity), 2);
-                x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * a.quantity), 2);
+                x.net += Math.Round(c.data.Sum(a => a.myprice.net * course * a.quantity), 2);
+                x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * course * a.quantity), 2);
             }
             x.discount = Math.Round(x.net * (user != null ? user.discount.coeff : 0), 2);
             //x.discount = x.net * (user != null ? user.discount.coeff : 0);
             x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2) : 0) : Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2));
             //x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? x.net * (priceCoeff.vat - 1) : 0) : x.net * (priceCoeff.vat - 1));
             //x.netWithDiscount = Math.Round(x.net - x.discount, 2);
-            x.netWithDiscount = x.net - x.discount;
+            x.netWithDiscount = Math.Round(x.net - x.discount, 2);
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
-            x.delivery = (x.gross * course) < 1000 ? Math.Round((orderOptions.deliveryprice / course), 2) : 0;
+            x.delivery = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice), 2) : 0;
             x.total = x.netWithDiscountPlusVat + x.delivery;
 
             //x.discount = Math.Round(x.discount, 2);
@@ -653,8 +653,40 @@ public class Orders : System.Web.Services.WebService {
         } catch (Exception e) {
             return e.Message;
         }
-        
     }
+
+    //[WebMethod]
+    //public string GetTotalPrice(List<Cart.NewCart> groupingCart, Users.NewUser user, double course) {
+    //    try {
+    //        //TODO: round
+    //        OrderOption orderOptions = GetOrderOptions();
+    //        Price p = new Price();
+    //        Price.PriceCoeff priceCoeff = p.GetCoeff();
+    //        PriceTotal x = new PriceTotal();
+    //        foreach (Cart.NewCart c in groupingCart) {
+    //            x.net += Math.Round(c.data.Sum(a => a.myprice.net * a.quantity), 2);
+    //            x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * a.quantity), 2);
+    //        }
+    //        x.discount = Math.Round(x.net * (user != null ? user.discount.coeff : 0), 2);
+    //        //x.discount = x.net * (user != null ? user.discount.coeff : 0);
+    //        x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2) : 0) : Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2));
+    //        //x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? x.net * (priceCoeff.vat - 1) : 0) : x.net * (priceCoeff.vat - 1));
+    //        //x.netWithDiscount = Math.Round(x.net - x.discount, 2);
+    //        x.netWithDiscount = x.net - x.discount;
+    //        x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
+    //        x.delivery = (x.gross * course) < 1000 ? Math.Round((orderOptions.deliveryprice / course), 2) : 0;
+    //        x.total = x.netWithDiscountPlusVat + x.delivery;
+
+    //        //x.discount = Math.Round(x.discount, 2);
+    //        //x.vat = Math.Round(x.vat, 2);
+    //        return JsonConvert.SerializeObject(x, Formatting.None);
+    //    } catch (Exception e) {
+    //        return e.Message;
+    //    }
+    //}
+
+
+
     #endregion WebMethods
 
     #region Methods

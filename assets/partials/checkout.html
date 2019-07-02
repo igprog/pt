@@ -262,6 +262,36 @@
                                 <table class="table table-condensed">
                                     <tr>
                                         <td><label class="lead">{{'amounth without vat' | translate}}:</label></td>
+                                        <td><h4>kn {{price.net | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'discount' | translate}}:</label></td>
+                                        <td><h4>kn {{price.discount | number:2}} ({{u.discount.coeff * 100}}%)</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'amount without vat minus discount' | translate}}:</label></td>
+                                        <td><h4>kn {{price.netWithDiscount | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.deliveryCountry.Code=='HR'">
+                                        <td><label class="lead">{{'vat' | translate}}:</label></td>
+                                        <td><h4>kn {{price.vat | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.deliveryCountry.Code=='HR'">
+                                        <td><label class="lead">{{'amounth with vat' | translate}}:</label></td>
+                                        <td><h4>kn {{price.netWithDiscountPlusVat | number:2}}</h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="lead">{{'delivery price' | translate}}:</label></td>
+                                        <td><h4>kn {{price.delivery | number:2}}</h4></td>
+                                    </tr>
+                                    <tr ng-if="u.discount.coeff>0">
+                                        <td><label class="lead">{{'total' | translate}}:</label></td>
+                                        <td><h4 style="font-weight:bold; font-size:20px">kn {{price.total | number:2}}</h4></td>
+                                    </tr>
+                                </table>
+                                <!--<table class="table table-condensed">
+                                    <tr>
+                                        <td><label class="lead">{{'amounth without vat' | translate}}:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.net  * config.currency.course) | number:2}}</h4></td>
                                     </tr>
                                     <tr ng-if="u.discount.coeff>0">
@@ -288,7 +318,7 @@
                                         <td><label class="lead">{{'total' | translate}}:</label></td>
                                         <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.total * config.currency.course) | number:2}}</h4></td>
                                     </tr>
-                                </table>
+                                </table>-->
                             </div>
                         </div>
                     </div>

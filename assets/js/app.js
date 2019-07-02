@@ -676,6 +676,21 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         localStorage.cart = JSON.stringify($scope.cart);
     }
 
+    var getTotalPrice = function (x) {
+        $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
+        $http({
+            url: 'Orders.asmx/GetTotalPrice',
+            method: 'POST',
+            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
+        })
+       .then(function (response) {
+           $rootScope.price = JSON.parse(response.data.d);
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+
     var groupingCart = function (x) {
         $http({
             url: 'Cart.asmx/GroupingCart',
@@ -685,7 +700,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        .then(function (response) {
            $rootScope.groupingCart = JSON.parse(response.data.d);
            localStorage.groupingcart = response.data.d;
+           debugger;
            priceSumTotal($rootScope.groupingCart);
+           getTotalPrice($rootScope.groupingCart);
        },
        function (response) {
            alert(response.data.d);
@@ -756,21 +773,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         return total;
     }
 
-    var getTotalPrice = function (x) {
-        $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
-        $http({
-            url: 'Orders.asmx/GetTotalPrice',
-            method: 'POST',
-            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
-        })
-       .then(function (response) {
-           $rootScope.price = JSON.parse(response.data.d);
-       },
-       function (response) {
-           alert(response.data.d);
-       });
-    }
-
     priceSumTotal = function (x) {
         $rootScope.priceTotal = { net: 0, gross: 0 };
         angular.forEach(x, function (value, key) {
@@ -784,6 +786,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
     if (angular.isDefined(localStorage.groupingcart) && localStorage.groupingcart != '') {
         priceSumTotal(JSON.parse(localStorage.groupingcart));
+        getTotalPrice(JSON.parse(localStorage.groupingcart));
     } else {
         $rootScope.priceTotal = { net: 0, gross: 0 };
     }
@@ -1195,7 +1198,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
              '<p>' + $translate.instant('order status') + ': ' + $translate.instant($scope.order.status.title) + '</p>' +
              '<p>' + $translate.instant('ordered products') + ': ' + items + '</p>' +
-             '<p>' + $translate.instant('total') + ': ' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
+             '<p>' + $translate.instant('total') + ': ' + $scope.price.total.toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
              '<p>' + $translate.instant('delivery address') + ': ' + deliveryAddress + '</p>' +
              '<br/>' +
              '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
@@ -1208,7 +1211,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                     '<li>' + $translate.instant('bank') + ': ' + $scope.companyInfo.bank + '</li>' +
                     '<li>' + $translate.instant('company') + ': ' + $scope.companyInfo.company + '</li>' +
                     '<li>' + $translate.instant('payment model') + ': HR99</li>' +
-                    '<li>' + $translate.instant('amount') + ': <strong>' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' </strong>' + $rootScope.config.currency.symbol + '</li>' +
+                    '<li>' + $translate.instant('amount') + ': <strong>' + $scope.price.total.toFixed(2) + ' </strong>' + $rootScope.config.currency.symbol + '</li>' +
                     '<li>' + $translate.instant('description of payment') + ': ' + $scope.order.number + '</li>' +
                 '</ul>' +
                 '<hr />' +
@@ -1227,7 +1230,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
                '<p>' + $translate.instant('order status') + ': ' + $translate.instant($scope.order.status.title) + '</p>' +
                '<p>' + $translate.instant('ordered products') + ': ' + items + '</p>' +
-               '<p>' + $translate.instant('total') + ': ' + ($scope.price.total * $rootScope.config.currency.course).toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
+               '<p>' + $translate.instant('total') + ': ' + $scope.price.total + ' ' + $rootScope.config.currency.symbol + '</p>' +
                '<p>' + $translate.instant('delivery address') + ': ' + deliveryAddress + '</p>' +
                '<br/>' +
                '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
