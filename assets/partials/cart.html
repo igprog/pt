@@ -75,7 +75,8 @@
             <div class="col-md-offset-6 information-entry">
                 <div class="cart-summary-box">
                     <div class="table-responsive">
-                        <table ng-controller="cartCtrl" class="table table-condensed">
+                        <!--<table ng-controller="cartCtrl" class="table table-condensed">-->
+                        <table class="table table-condensed">
                             <tr>
                                 <td><label class="lead">{{'amounth without vat' | translate}}:</label></td>
                                 <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.net  * config.currency.course) | number:2}}</h4></td>

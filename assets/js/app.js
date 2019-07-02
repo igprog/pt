@@ -756,6 +756,21 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         return total;
     }
 
+    var getTotalPrice = function (x) {
+        $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
+        $http({
+            url: 'Orders.asmx/GetTotalPrice',
+            method: 'POST',
+            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
+        })
+       .then(function (response) {
+           $rootScope.price = JSON.parse(response.data.d);
+       },
+       function (response) {
+           alert(response.data.d);
+       });
+    }
+
     priceSumTotal = function (x) {
         $rootScope.priceTotal = { net: 0, gross: 0 };
         angular.forEach(x, function (value, key) {
@@ -775,6 +790,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.priceSumTotal = function () {
         priceSumTotal($rootScope.groupingCart);
+        getTotalPrice($rootScope.groupingCart);
     }
 
     $rootScope.multipleColorStyle = function (x, c) {
@@ -1402,6 +1418,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         }
         return link;
     }
+
 
 }])
 
