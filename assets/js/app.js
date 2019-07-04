@@ -227,21 +227,29 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.group = params[0].substring(7);
         type = "brand";
         $scope.current = params[0].substring(7);
+        $scope.searchQuery = '';
+        $sessionStorage.search = '';
     }
     if (params[0].substring(1, 7) === 'gender') {
         $scope.group = params[0].substring(8);
         type = "gender";
         $scope.current = params[0].substring(8);
+        $scope.searchQuery = '';
+        $sessionStorage.search = '';
     }
     if (params[0].substring(1, 6) === 'isnew') {
         $scope.group = params[0].substring(7);
         type = "isnew";
         $scope.current = "new models";
+        $scope.searchQuery = '';
+        $sessionStorage.search = '';
     }
     if (params[0].substring(1, 7) === 'outlet') {
         $scope.group = params[0].substring(8);
         type = "outlet";
         $scope.current = "outlet";
+        $scope.searchQuery = '';
+        $sessionStorage.search = '';
     }
 
 
@@ -376,8 +384,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     }
 
     var searchProducts = function (limit, category) {
-        $sessionStorage.search = $scope.searchQuery;
         $scope.isloading = true;
+        $sessionStorage.search = $scope.searchQuery;
+        if ($scope.searchQuery !== '') {
+            $scope.group = '';
+            type = '';
+        }
         $http({
             url: 'Products.asmx/SearchProducts',
             method: 'POST',
@@ -700,7 +712,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
        .then(function (response) {
            $rootScope.groupingCart = JSON.parse(response.data.d);
            localStorage.groupingcart = response.data.d;
-           debugger;
            priceSumTotal($rootScope.groupingCart);
            getTotalPrice($rootScope.groupingCart);
        },
