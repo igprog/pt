@@ -181,7 +181,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             p = new Paragraph();
             p.Add(new Chunk(note, GetFont(true)));
-            if(row <= 6) {
+            if(row <= 5) {
                 doc.Add(p);
                 if(row > 2) {
                     doc.NewPage();
@@ -192,7 +192,7 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
                     spacing = 5f;
                     AppendFooter(doc, spacing, false);
                 }
-            } else if (row > 6 && row <= 12) {
+            } else if (row > 5 && row <= 12) {
                 doc.NewPage();
                 AppendHeader(doc, lang);
                 doc.Add(p);
@@ -564,18 +564,6 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}%", string.Format("{0:N}", vat)), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
         table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", string.Format("{0:N}", (item.price * item.quantity) - Math.Round((item.price * item.quantity * item.discount),2))), GetFont())) { Border = PdfPCell.BOTTOM_BORDER, Padding = 2, MinimumHeight = 30, PaddingTop = 2, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
     }
-
-    //private Price.Total GetPriceTotal(Orders.NewOrder order) {
-    //    Price.Total x = new Price.Total();
-    //    double vat = pr.GetCoeff().vat;
-    //    x.net = order.items.Sum(a => a.price * a.quantity);
-    //    x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
-    //    x.noVat = x.net - x.discount;
-    //    x.vat = (x.net - x.discount) * (vat - 1);
-    //    x.delivery = Math.Round(order.price.delivery * Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]), 2);
-    //    x.total = x.noVat + x.vat + x.delivery;
-    //    return x;
-    //}
 
 
 }

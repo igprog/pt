@@ -50,7 +50,13 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
               reloadPage();
           });
     };
-    getConfig();
+    if (!angular.isDefined($sessionStorage.config)) {
+        getConfig();
+    } else {
+        $rootScope.config = $sessionStorage.config;
+        reloadPage();
+    }
+    //getConfig();
 
     var getCompanyInfo = function () {
         $http({
@@ -166,7 +172,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 }])
 
-.controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage) {
+.controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $timeout) {
 
     var getConfig = function () {
         $http.get('./config/config.json')
@@ -193,10 +199,13 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
     if (angular.isDefined($sessionStorage.config)) {
         $scope.setLanguage($sessionStorage.config.language);
     }
-    
+
     $scope.setCurrency = function (x) {
-        $rootScope.config.currency = x;
-       // $localStorage.config.currency = x;  // TODO
+        $rootScope.config.currency = JSON.parse(angular.toJson(x));
+        $sessionStorage.config.currency = $rootScope.config.currency;
+        $timeout(function () {
+            window.location.reload(true);
+        }, 200);
     };
 
 }])
@@ -702,6 +711,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
            alert(response.data.d);
        });
     }
+    if ($rootScope.groupingCart !== undefined) {
+        getTotalPrice($rootScope.groupingCart);
+    }
 
     var groupingCart = function (x) {
         $http({
@@ -1175,7 +1187,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                 method: 'POST',
                 data: { user: u, order: $scope.order, cart: $rootScope.groupingCart, lang: $sessionStorage.config.language.code, sendToPrint: sendtoprint }
             })
-       .then(function (response) {
+        .then(function (response) {
            if (response.data.d.startsWith($translate.instant('no stock for'))) {
                alert(response.data.d);
            }
@@ -1413,7 +1425,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $http({
             url: 'Orders.asmx/GetTotalPrice',
             method: 'POST',
-            data: { groupingCart:x, user:$rootScope.u, course:$rootScope.config.currency.course }
+            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
         })
        .then(function (response) {
            $scope.price = JSON.parse(response.data.d);
@@ -1504,24 +1516,24 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 }])
 
-.controller('cartCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, $localStorage) {
-    $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
-    $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
-    var getTotalPrice = function (x) {
-        $http({
-            url: 'Orders.asmx/GetTotalPrice',
-            method: 'POST',
-            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
-        })
-       .then(function (response) {
-           $scope.price = JSON.parse(response.data.d);
-       },
-       function (response) {
-           alert(response.data.d);
-       });
-    }
-    getTotalPrice($rootScope.groupingCart);
-}])
+//.controller('cartCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, $localStorage) {
+//    $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
+//    $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
+//    var getTotalPrice = function (x) {
+//        $http({
+//            url: 'Orders.asmx/GetTotalPrice',
+//            method: 'POST',
+//            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
+//        })
+//       .then(function (response) {
+//           $scope.price = JSON.parse(response.data.d);
+//       },
+//       function (response) {
+//           alert(response.data.d);
+//       });
+//    }
+//    getTotalPrice($rootScope.groupingCart);
+//}])
 
 .directive('checkImage', function ($http) {
     return {

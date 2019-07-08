@@ -207,6 +207,7 @@ public class Price : System.Web.Services.WebService{
     }
 
     public Total GetPriceTotal(Orders.NewOrder order) {
+        double eurHrkCourse = Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]);
         Total x = new Total();
         Orders o = new Orders();
         Orders.OrderOption orderOptions = o.GetOrderOptions();
@@ -215,7 +216,7 @@ public class Price : System.Web.Services.WebService{
         x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
         x.noVat = x.net - x.discount;
         x.vat = (x.net - x.discount) * (vat - 1);
-        x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice : 0;
+        x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice * eurHrkCourse : 0;
         x.total = x.noVat + x.vat + x.delivery;
         return x;
     }
