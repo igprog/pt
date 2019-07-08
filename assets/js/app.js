@@ -883,7 +883,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 }])
 
-.controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window) {
+.controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout) {
     $scope.currentStep = 1;
     $scope.cart = !angular.isDefined(localStorage.cart) || localStorage.cart == '' ? [] : JSON.parse(localStorage.cart);
     $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
@@ -1143,12 +1143,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             method: 'POST',
             data: { sendTo: sendto, subject: subject, body: body, cc: cc, file: file }
         })
-     .then(function (response) {
-         //alert($translate.instant(response.data.d));
-     },
-     function (response) {
-         alert(response.data.d);
-     });
+        .then(function (response) {
+            //alert($translate.instant(response.data.d));
+        },
+        function (response) {
+            alert(response.data.d);
+        });
     }
 
     $scope.confirm = function (u, tpl, step) {
@@ -1253,12 +1253,15 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                '<p>' + $translate.instant('order number') + ': ' + $scope.order.number + '</p>' +
                '<p>' + $translate.instant('order status') + ': ' + $translate.instant($scope.order.status.title) + '</p>' +
                '<p>' + $translate.instant('ordered products') + ': ' + items + '</p>' +
-               '<p>' + $translate.instant('total') + ': ' + $scope.price.total + ' ' + $rootScope.config.currency.symbol + '</p>' +
+               '<p>' + $translate.instant('total') + ': ' + $scope.price.total.toFixed(2) + ' ' + $rootScope.config.currency.symbol + '</p>' +
                '<p>' + $translate.instant('delivery address') + ': ' + deliveryAddress + '</p>' +
                '<br/>' +
                '<p>' + $translate.instant('payment type') + ': ' + $translate.instant($scope.order.paymentMethod.title) + '.</p>' +
                '<p>' + $translate.instant('delivery type') + ': ' + $translate.instant($scope.order.deliveryType.title) + '.</p>';
-            sendMail($rootScope.config.email, subject, bodyToMe, $rootScope.config.emailcc, null);
+
+            $timeout(function () {
+                sendMail($rootScope.config.email, subject, bodyToMe, $rootScope.config.emailcc, null);
+            }, 2000);
 
              $scope.nextStep('orderConfirmationTpl', 6);
              clearCart();
