@@ -710,7 +710,7 @@ public class Products : System.Web.Services.WebService {
                         foreach (SizeSpecification s in size) {
                             sql = string.Format(@"INSERT INTO size (style, size, name_en, value, supplier)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                                                , s.style, s.size, s.name_en, s.value, supplier);
+                                                , s.style, s.size, s.name_en.Replace("'", ""), s.value, supplier);
                             command.CommandText = sql;
                             command.ExecuteNonQuery();
                         }
