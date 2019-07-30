@@ -1104,7 +1104,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
              $scope.alertmsg = $translate.instant(response.data.d);
              var sendto = u.email;
              var subject = $translate.instant('registration') + ' ' + $rootScope.config.appname;
-             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
+             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/' + $rootScope.config.logo + '">' +
              '<br/>' +
              '<hr/>' +
              '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
@@ -1211,7 +1211,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
              var sendto = u.email;
              var subject = $translate.instant('new order') + ' - Promo-Tekstil.com';
-             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
+             var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/' + $rootScope.config.logo + '">' +
              '<br/>' +
              '<hr/>' +
              '<p>' + $translate.instant('dear') + ', '  + u.firstName + ' ' + u.lastName + ', ' + u.companyName + '</p>' +
@@ -1285,7 +1285,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
          var user = JSON.parse(response.data.d);
          var sendto = user.email;
          var subject = $translate.instant('account information') + ' - Promo-Tekstil.com';
-         var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/promo-tekstil-logo.svg">' +
+         var body = '<img src="https://www.' + $rootScope.config.appname + '/assets/img/' + $rootScope.config.logo + '">' +
          '<br/>' +
          '<hr/>' +
          '<p>' + $translate.instant('dear') + ', ' + user.firstName + ' ' + user.lastName + ', ' + user.companyName + '</p>' +

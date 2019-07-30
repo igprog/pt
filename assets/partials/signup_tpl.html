@@ -127,16 +127,14 @@
                         <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
                     </div>
                 </form>
-                <div class="m10">
-                    <hr />
-                    <a href="" class="btn btn-primary pull-right" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
-                </div>
             </div>
         </div>
-        <!--<div class="row m10">
-            <hr />
-            <a href="" class="btn btn-primary pull-right" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
-        </div>-->
+        <div class="row text-right mt10">
+            <div class="col-sm-6 col-sm-offset-2">
+                <a href="" class="btn btn-primary" ng-click="signup(u, false)"><i class="fa fa-floppy-o"></i> {{'save' | translate}}</a>
+            </div>
+        </div>
+        <hr />
         <div ng-if="alertmsg" class="alert alert-{{alertclass}} m10 text-right">
             {{alertmsg | translate}}
         </div>

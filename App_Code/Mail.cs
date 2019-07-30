@@ -16,6 +16,7 @@ using System.Text;
 [System.Web.Script.Services.ScriptService]
 public class Mail : System.Web.Services.WebService {
     string myEmail = ConfigurationManager.AppSettings["myEmail"];
+    string myEmailName = ConfigurationManager.AppSettings["myEmailName"];
     string myPassword = ConfigurationManager.AppSettings["myPassword"];
     int myServerPort = Convert.ToInt32(ConfigurationManager.AppSettings["myServerPort"]);
     string myServerHost = ConfigurationManager.AppSettings["myServerHost"];
@@ -27,7 +28,7 @@ public class Mail : System.Web.Services.WebService {
     public string SendMail(string sendTo, string subject, string body, string[] cc, string file) {
         try {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(myEmail);
+            mail.From = new MailAddress(myEmail, myEmailName);
             mail.To.Add(sendTo);
             if (cc.Length > 0) {
                 foreach (string c in cc) {

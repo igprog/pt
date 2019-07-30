@@ -2,7 +2,7 @@
   "version": "24",
   "backend": "",
   "appname": "promo-tekstil.com",
-  "name":  "Promo Tekstil",
+  "name": "Promo Tekstil",
   "debug": true,
   "iban": "",
   "swift": "",
@@ -49,5 +49,6 @@
     }
   ],
   "prodctstoshow": 12,
-  "vatcoeff":  1.25
+  "vatcoeff": 1.25,
+  "logo": "pt-png-logo.png"
 }
