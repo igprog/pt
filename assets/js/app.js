@@ -271,7 +271,12 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 12;
     $scope.searchQuery = null;
-    $scope.filters = false;
+
+    if (!functions.isNullOrEmpty(localStorage.distinct == 'null' ? null : localStorage.distinct)) {
+        $scope.filters = true;
+    } else {
+        $scope.filters = false;
+    }
 
     $scope.sort = 'price';
     $scope.sortOrder = 'ASC';
@@ -293,7 +298,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         //window.scrollTo(0, 150);
         //$scope.page = x;
         //$sessionStorage.page = x;
-
 
         //TODO:
         $timeout(function () {
@@ -399,6 +403,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
             $scope.group = '';
             type = '';
         }
+        if (!functions.isNullOrEmpty(localStorage.distinct == 'null' ? null : localStorage.distinct)) {
+            $scope.d.distinct = JSON.parse(localStorage.distinct);
+        }
         $http({
             url: 'Products.asmx/SearchProducts',
             method: 'POST',
@@ -425,6 +432,9 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $sessionStorage.config.prodctstoshow = show;
         $scope.searchQuery = '';
         $scope.page = 1;
+
+        localStorage.distinct = JSON.stringify($scope.d.distinct);
+
         searchProducts($scope.show, $scope.category);
         $scope.filters = true;
     }
@@ -453,6 +463,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
     $scope.clearFilters = function () {
         $scope.filters = false;
+        localStorage.distinct = null;
         //$scope.href('index.html?category=' + $scope.category);
         $scope.href('index.html?category=' + $scope.category + '&page=1');
     }
