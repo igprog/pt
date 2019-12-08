@@ -956,50 +956,6 @@ public class Products : System.Web.Services.WebService {
             }
             else {
                 if(filter != null) {
-                    /*
-                    StringBuilder sqlColorfilter = new StringBuilder();
-                    if (filter.colorGroup.Count > 0) {
-                        if (filter.colorGroup.Count(a => a.isselected == true) > 0) {
-                            bool isOr = false;
-                            sqlColorfilter.AppendLine(string.Format("{0} (", isWhere == true ? "AND" : "WHERE"));
-                            isWhere = true;
-                            foreach (DistColorGroup cg in filter.colorGroup) {
-                                if (cg.isselected == true) {
-                                    if (isOr == true) {
-                                        sqlColorfilter.AppendLine("OR (");
-                                    } else {
-                                        sqlColorfilter.AppendLine(" (");
-                                    }
-                                    int count = 0;
-                                    foreach (var cc in cg.colorchild) {
-                                        sqlColorfilter.AppendLine(string.Format(@"{0} p.colorname = '{1}'", count > 0 && count < cg.colorchild.Count ? "OR" : "", cc.colorgroupname));
-                                        count += 1;
-                                    }
-                                    sqlColorfilter.AppendLine(" )");
-                                    isOr = true;
-                                }
-                            }
-                            sqlColorfilter.AppendLine(" )");
-                        }
-                    }
-
-                    StringBuilder sqlSizeFilter = new StringBuilder();
-                    if (filter.size.Count > 0) {
-                        if (filter.size.Count(a => a.isselected == true) > 0) {
-                            isWhere = true;
-                            sqlSizeFilter.AppendLine("AND (");
-                            int count = 0;
-                            foreach (Size s in filter.size) {
-                                if (s.isselected == true) {
-                                    sqlSizeFilter.AppendLine(string.Format(@"{0} p.size = '{1}'", count > 0 && count < filter.size.Count ? "OR" : "", s.title));
-                                    count += 1;
-                                }
-                            }
-                            sqlSizeFilter.AppendLine(" )");
-                        }
-                    }
-                    */
-
                     StringBuilder sqlBrandFilter = new StringBuilder();
                     if (filter.brand.Count > 0) {
                         if (filter.brand.Count(a => a.isselected == true) > 0) {
@@ -1031,7 +987,6 @@ public class Products : System.Web.Services.WebService {
                             sqlGenderFilter.AppendLine(" )");
                         }
                     }
-                    //sqlFilterQuery = sqlColorfilter + " " + sqlSizeFilter + " " + sqlBrandFilter + "" + sqlGenderFilter;
                     sqlFilterQuery = sqlBrandFilter + "" + sqlGenderFilter;
                 }
             }
@@ -1040,19 +995,6 @@ public class Products : System.Web.Services.WebService {
                 connection.Open();
                 string sql = string.Format(@"SELECT style, imageurl, isnew, category_code, outlet, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min FROM style
                                             {5} {2} {3} {4} {6} LIMIT {0}  OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
-
-                //string sql = string.Format(@"SELECT p.sku, p.colorname, p.size, p.style, p.brand, p.modelimageurl, p.shortdesc_en, p.longdesc_en, p.gender_en, p.category_en, p.colorhex, p.colorgroup_id, p.isnew, st.sizes, st.colors, s.price, p.colorimageurl, p.packshotimageurl, p.category_code, p.brand_code, p.gender_code, st.outlet, st.isnew, t.shortdesc_hr, t.longdesc_hr, p.supplier, MIN(s.price) FROM product p
-                //                            LEFT OUTER JOIN style st
-                //                            ON p.style = st.style
-                //                            LEFT OUTER JOIN stock s
-                //                            ON p.sku = s.sku
-                //                            LEFT OUTER JOIN translation t
-                //                            ON p.sku = t.sku
-                //                            {5}
-                //                            {2} {3} {4}
-                //                            GROUP BY p.style
-                //                            {6}
-                //                            LIMIT {0} OFFSET {1}", limit, (page - 1) * limit, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery, groupQuery, OrderBy(sort, order));
                 using (SQLiteCommand command = new SQLiteCommand(sql, connection)) {
                     using (SQLiteDataReader reader = command.ExecuteReader()) {
                         while (reader.Read()) {
@@ -1066,19 +1008,8 @@ public class Products : System.Web.Services.WebService {
                     }    
                 }
                 xxx.products = xx;
-                //xxx.distinct = !string.IsNullOrWhiteSpace(sqlSearchQuery) ? GetDistinct(connection, category, null, null) : null;
                 xxx.response.count = GetCount(string.Format(@"
                                     SELECT COUNT(style) FROM style {0} {1} {2} {3}", groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
-                //xxx.response.count = GetCount(string.Format(@"
-                //                            SELECT COUNT(DISTINCT p.style) FROM product p
-                //                            LEFT OUTER JOIN style st
-                //                            ON p.style = st.style
-                //                            LEFT OUTER JOIN stock s
-                //                            ON p.sku = s.sku
-                //                            LEFT OUTER JOIN translation t
-                //                            ON p.sku = t.sku
-                //                            {0} {1} {2} {3}"
-                //                , groupQuery, sqlCategoryQuery, sqlSearchQuery, sqlFilterQuery), connection);
                 connection.Close();
             }
             xxx.response.maxPrice = xx.Count > 0 ? xx.Max(a => a.price_min.net) : 0;

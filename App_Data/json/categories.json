@@ -7,17 +7,17 @@
   {
     "code": "Bodywarmer",
     "isselected": true,
-    "order": 17
+    "order": 18
   },
   {
     "code": "Cap",
     "isselected": true,
-    "order": 18
+    "order": 19
   },
   {
     "code": "CorporateWear",
     "isselected": true,
-    "order": 19
+    "order": 20
   },
   {
     "code": "Jacket",
@@ -82,11 +82,16 @@
   {
     "code": "Lacuna",
     "isselected": true,
-    "order": 20
+    "order": 21
   },
   {
     "code": "Workwear",
     "isselected": true,
-    "order": 21
+    "order": 22
+  },
+  {
+    "code": "BagAndAccessories",
+    "isselected": true,
+    "order": 17
   }
 ]
