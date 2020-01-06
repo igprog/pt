@@ -617,6 +617,7 @@ public class Products : System.Web.Services.WebService {
         string sql = "";
         stopwatch.Start();
         double uttTime = 0;
+        List<Style> errorStyles = new List<Style>();
         try {
             List<Product> products = new List<Product>();
             products = JsonConvert.DeserializeObject<List<Product>>(RequestData("https://www.utteam.com/api/dataexport/b102f37bc6e73a7d59e12828a92f26f3?action=product&format=json&variables=&fields=sku,colorname,size,style,brand,modelimageurl,shortdesc_en,longdesc_en,gender_en,category_en,colorhex,colorgroup_id,isnew,colorimageurl,packshotimageurl,weight,colorswatch,outlet,caseqty"));
@@ -660,7 +661,9 @@ public class Products : System.Web.Services.WebService {
                         command.ExecuteNonQuery();
                         foreach (Style s in style) {
                             var prod = products.Find(a => a.style == s.style);
-                            double price_min = stock.Where(a => a.style == s.style).Min(a => a.price);
+                            if (prod != null) {
+                            //double price_min = stock.Where(a => a.style == s.style).Min(a => a.price);
+                            double price_min = stock.Where(a => a.style == s.style).DefaultIfEmpty().Min(a => a == null ? 0 : a.price);
                             var tran = tt.Find(a => a.style == s.style);
                             sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
                                                 VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
@@ -678,31 +681,11 @@ public class Products : System.Web.Services.WebService {
                                                , s.category_en.Replace("&", "and"), supplier);
                             command.CommandText = sql_tran;
                             command.ExecuteNonQuery();
+                            } else {
+                                errorStyles.Add(s);
+                            }
+                            
                         }
-
-
-                        //OLD
-                        //foreach (Style s in style) {
-                        //    sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier)
-                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}')"
-                        //                        , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
-                        //                        , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
-                        //                        , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier);
-                        //    command.CommandText = sql;
-                        //    command.ExecuteNonQuery();
-                        //}
-
-                        //sql_delete = string.Format("DELETE FROM stock WHERE supplier = '{0}';", supplier);
-                        //command.CommandText = sql_delete;
-                        //command.ExecuteNonQuery();
-                        //foreach (Stock s in stock) {
-                        //    sql = string.Format(@"INSERT INTO stock (style, color, size, sku, uttstock, suppstock, price, specialprice, specialstart, specialend, currency, uom, supplier)
-                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}')"
-                        //                        , s.style, s.color, s.size, s.sku, s.uttstock, s.suppstock, s.price
-                        //                        , s.specialprice, s.specialstart , s.specialend, s.currency, s.uom, supplier);
-                        //    command.CommandText = sql;
-                        //    command.ExecuteNonQuery();
-                        //}
 
                         sql_delete = string.Format("DELETE FROM size WHERE supplier = '{0}';", supplier);
                         command.CommandText = sql_delete;
@@ -726,33 +709,30 @@ public class Products : System.Web.Services.WebService {
                               command.ExecuteNonQuery();
                           } */
 
-
-                        //foreach (Style s in style) {
-                        //    sql = string.Format(@"INSERT OR IGNORE INTO translation (style, shortdesc_en, longdesc_en, category_en, supplier)
-                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                        //                        , s.style, s.shortdesc_en.Replace("'", ""), s.longdesc_en.Replace("'", "")
-                        //                        , s.category_en.Replace("&", "and"), supplier);
-                        //    command.CommandText = sql;
-                        //    command.ExecuteNonQuery();
-                        //}
-
-                        //foreach (Product p in products) {
-                        //    sql = string.Format(@"INSERT OR IGNORE INTO translation (sku, shortdesc_en, longdesc_en, category_en, supplier)
-                        //                        VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                        //                        , p.sku, p.shortdesc_en.Replace("'", ""), p.longdesc_en.Replace("'", "")
-                        //                        , p.category_en.Replace("&", "and"), supplier);
-                        //    command.CommandText = sql;
-                        //    command.ExecuteNonQuery();
-                        //}
-
                         transaction.Commit();
                     }
                 }
                 connection.Close();
-            } return string.Format(@"{0} items downloaded from UTT in {1} seconds. Insert into products.ddb in {2} seconds.", products.Count(), uttTime, (stopwatch.Elapsed.TotalSeconds - uttTime));
+            } return string.Format(@"{0} items downloaded from UTT in {1} seconds. Insert into products.ddb in {2} seconds.
+                                    {3} items not updated{4}"
+                                    , products.Count(), uttTime, (stopwatch.Elapsed.TotalSeconds - uttTime), errorStyles.Count(), GetErrorItems(errorStyles));
         } catch (Exception e) {
             uttTime = stopwatch.Elapsed.TotalSeconds;
             return string.Format("ERROR: {0} ({1} seconds)", e.Message, uttTime);
+        }
+    }
+
+    private string GetErrorItems(List<Style> errorStyles) {
+        if (errorStyles.Count > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(": (");
+            foreach(Style s in errorStyles) {
+                sb.Append(string.Format("{0},", s.style));
+            }
+            sb.Append(").");
+            return sb.ToString();
+        } else {
+            return "";
         }
     }
 
