@@ -1002,7 +1002,7 @@
     <script type="text/ng-template" id="companyinfo">
         <div ng-controller="companyInfoCtrl" class="container">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <fieldset class="fieldset-border">
                         <legend class="fieldset-border">Company Info</legend>
                         <div class="table-responsive">
@@ -1014,6 +1014,10 @@
                                 <tr>
                                     <td>Company (long)</td>
                                     <td><input ng-model="d.companylong" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Company (footer)</td>
+                                    <td><textarea ng-model="d.companyfooter" class="form-control" rows="6" /></td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
@@ -1052,12 +1056,28 @@
                                     <td><input ng-model="d.bank" type="text" class="form-control" /></td>
                                 </tr>
                                 <tr>
+                                    <td>Bank (short)</td>
+                                    <td><input ng-model="d.bankshort" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
                                     <td>E-mail</td>
                                     <td><input ng-model="d.email" type="text" class="form-control" /></td>
                                 </tr>
                                 <tr>
                                     <td>Phone</td>
                                     <td><input ng-model="d.phone" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Operator Code</td>
+                                    <td><input ng-model="d.operatorcode" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Operator Name</td>
+                                    <td><input ng-model="d.operatorname" type="text" class="form-control" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Web</td>
+                                    <td><input ng-model="d.web" type="text" class="form-control" /></td>
                                 </tr>
                             </table>
                         </div>

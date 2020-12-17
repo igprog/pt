@@ -57,7 +57,7 @@ public class Price : System.Web.Services.WebService{
     public string GetPriceCoeff(string filename) {
         string json = GetJsonFile(filename);
         PriceCoeff x = new PriceCoeff();
-        if(GetJsonFile(filename) != null) {
+        if (GetJsonFile(filename) != null) {
             x = JsonConvert.DeserializeObject<PriceCoeff>(GetJsonFile(filename));
         } else {
             x = InitPriceJson();

@@ -24,17 +24,23 @@ public class Admin : System.Web.Services.WebService {
     public class CompanyInfo {
         public string company;
         public string companylong;
+        public string companyfooter;
         public string address;
         public string zipCode;
         public string city;
         public string country;
+        public string idnumber;
         public string pin;
         public string iban;
         public string iban1;
         public string swift;
         public string bank;
+        public string bankshort;
         public string email;
         public string phone;
+        public string operatorcode;
+        public string operatorname;
+        public string web;
     }
 
     [WebMethod]
@@ -68,17 +74,32 @@ public class Admin : System.Web.Services.WebService {
         CompanyInfo x = new CompanyInfo();
         x.company = null;
         x.companylong = null;
+        x.companyfooter = null;
         x.address = null;
         x.zipCode = null;
         x.city = null;
         x.country = null;
+        x.idnumber = null;
         x.pin = null;
         x.iban = null;
         x.iban1 = null;
         x.swift = null;
         x.bank = null;
+        x.bankshort = null;
         x.email = null;
         x.phone = null;
+        x.operatorcode = null;
+        x.operatorname = null;
+        x.web = null;
+        return x;
+    }
+
+    public CompanyInfo GetCompanyInfoData() {
+        CompanyInfo x = new CompanyInfo();
+        string json = f.GetFile("json", companyinfo);
+        if (json != null) {
+            x = JsonConvert.DeserializeObject<CompanyInfo>(json);
+        }
         return x;
     }
 

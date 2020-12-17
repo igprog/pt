@@ -25,6 +25,7 @@ public class PrintPdf : System.Web.Services.WebService {
     iTextSharp.text.pdf.draw.LineSeparator line = new iTextSharp.text.pdf.draw.LineSeparator(0f, 100f, Color.BLACK, Element.ALIGN_LEFT, 1);
     Translate t = new Translate();
     Price pr = new Price();
+    Admin A = new Admin();
 
     public PrintPdf() {
     }
@@ -165,19 +166,38 @@ public class PrintPdf : System.Web.Services.WebService {
             p.Add(new Chunk("OVO NIJE FISKALIZIRANI RAČUN.", GetFont(true)));
             doc.Add(p);
 
-            string note = @"
+            Admin.CompanyInfo i = A.GetCompanyInfoData();
+
+            string note = string.Format(@"
 Vaš predračun/ponuda vrijedi do datuma roka plaćanja istaknutog na vrhu dokumenta.
 Plaćanje je 100% avans ukoliko nije drugačije navedeno.
 Uplatu predračuna ili ponude možete izvršiti na naše sljedeće račune pri Erste & Steiermärkische Bank d.d.
-IBAN: HR4424020061100647760 ili
-IBAN: HR3024020061500057346
+IBAN: {0}
 Model plaćanja: HR99 / HR00
 Poziv na broj možete pustiti prazan, Vaše uplate vodimo pod vašim imenom.
 Dostavu vršimo dostavnim službama: Overseas Express / GLS i dostavu naplaćujemo po trenutno važećim cjenicima
 navedenih dostavnih službi, ukoliko nije drugačije navedeno.
-Ukoliko imate bilo kakvih pitanja slobodno nam se obratite putem maila: info@megamajice.com, info@studio-lateralus.hr,
-putem naših web stranica: www.megamajice.com ili pozivom na broj: +385 91 460 70 10 (Poziv, SMS, Viber ili Whatsapp)
-VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
+Ukoliko imate bilo kakvih pitanja slobodno nam se obratite putem maila: {1},
+putem naših web stranica: {2} {3}
+VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!"
+        , i.iban
+        , i.email
+        , i.web
+        , !string.IsNullOrEmpty(i.phone) ? string.Format("ili pozivom na broj: {0} (Poziv, SMS, Viber ili Whatsapp)", i.phone) : "");
+
+            ////            string note = @"
+            ////Vaš predračun/ponuda vrijedi do datuma roka plaćanja istaknutog na vrhu dokumenta.
+            ////Plaćanje je 100% avans ukoliko nije drugačije navedeno.
+            ////Uplatu predračuna ili ponude možete izvršiti na naše sljedeće račune pri Erste & Steiermärkische Bank d.d.
+            ////IBAN: HR4424020061100647760 ili
+            ////IBAN: HR3024020061500057346
+            ////Model plaćanja: HR99 / HR00
+            ////Poziv na broj možete pustiti prazan, Vaše uplate vodimo pod vašim imenom.
+            ////Dostavu vršimo dostavnim službama: Overseas Express / GLS i dostavu naplaćujemo po trenutno važećim cjenicima
+            ////navedenih dostavnih službi, ukoliko nije drugačije navedeno.
+            ////Ukoliko imate bilo kakvih pitanja slobodno nam se obratite putem maila: info@megamajice.com, info@studio-lateralus.hr,
+            ////putem naših web stranica: www.megamajice.com ili pozivom na broj: +385 91 460 70 10 (Poziv, SMS, Viber ili Whatsapp)
+            ////VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             p = new Paragraph();
             p.Add(new Chunk(note, GetFont(true)));
@@ -367,15 +387,30 @@ VAŽNO: po ovom dokumentu iskazani porez NIJE MOGUĆE koristiti kao pretporez!";
 
             doc.Add(table3);
 
-            string note = @"
-Uplatu računa možete izvršiti na naše sljedeće račune pri Erste & Steiermärkische Bank d.d.
+            Admin.CompanyInfo ci = A.GetCompanyInfoData();
 
-IBAN: HR4424020061100647760 ili
-IBAN: HR3024020061500057346
+            string note = string.Format(@"
+Uplatu računa možete izvršiti na naše sljedeće račune pri {0}
+
+IBAN: {1} {2}
 
 Model plaćanja: HR99 / HR00
 Poziv na broj možete pustiti prazan, Vaše uplate vodimo pod vašim imenom.
-Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
+Molimo Vas da Vašu uplatu izvršite do datuma dospijeća."
+        , ci.bank
+        , ci.iban
+        , !string.IsNullOrEmpty(ci.iban1) ? string.Format(@" ili
+        IBAN: {0}", ci.iban1): "");
+
+            //            string note = @"
+            //Uplatu računa možete izvršiti na naše sljedeće račune pri Erste & Steiermärkische Bank d.d.
+
+            //IBAN: HR4424020061100647760 ili
+            //IBAN: HR3024020061500057346
+
+            //Model plaćanja: HR99 / HR00
+            //Poziv na broj možete pustiti prazan, Vaše uplate vodimo pod vašim imenom.
+            //Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
 
             p = new Paragraph();
             p.Add(new Chunk(note, GetFont()));
@@ -450,23 +485,39 @@ Molimo Vas da Vašu uplatu izvršite do datuma dospijeća.";
     }
 
     private void AppendFooter(Document doc, float spacing, bool invoice) {
+        Admin.CompanyInfo ci = A.GetCompanyInfoData();
         PdfPTable table = new PdfPTable(2);
         table.SpacingBefore = spacing;
         table.WidthPercentage = 100f;
         //  float[] sign_widths = new float[] { 4f, 1f };
         // table3.SetWidths(sign_widths);
         table.AddCell(new PdfPCell(new Phrase("Zahvaljujemo na Vašem povjerenju.", GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_LEFT });
-        table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  invoice ? "Oznaka operatera: MIRZA" : "Obračunao(la): Mirza Hodžić"), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+        table.AddCell(new PdfPCell(new Phrase(string.Format("{0}", invoice ? string.Format("Oznaka operatera: {0}", ci.operatorcode) : string.Format("Obračunao(la): {0}", ci.operatorname)), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
+
+        //table.AddCell(new PdfPCell(new Phrase(string.Format("{0}",  invoice ? "Oznaka operatera: MIRZA" : "Obračunao(la): Mirza Hodžić"), GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, PaddingTop = 5, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
 
         doc.Add(table);
 
-        string footer = @"
-Lateralus j.d.o.o. jednostavno društvo sa ograničenom odgovornošću sa sjedištem u Kastvu, registrirano na Trgovačkom sudu u Rijeci sa temeljnim kapitalom: 200,00kn, uplaćenim u cijelosti. Osnivač društva: Mirza Hodžić. Društvo zastupa: Azra Hodžić, zastupa samostalno i neograničeno.
-Matični broj društva: 040297018, OIB: 90780660216
-Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 2402006 15 00 05 73 46 (SWIFT/BIC: ESBCHR22 / BANK: Erste & Steiermärkische Bank d.d.)";
+        string footer = string.Format(@"
+{0}
+Matični broj društva: {1}, OIB: {2}
+Transakcijski računi (IBAN): {3}- {4}{5} (SWIFT/BIC: {6} / BANK: {7})"
+            , ci.companyfooter
+            , ci.idnumber
+            , ci.pin
+            , ci.bankshort
+            , ci.iban
+            , !string.IsNullOrEmpty(ci.iban1) ? string.Format("; {0} - {1}", ci.bankshort, ci.iban1) : ""
+            , ci.swift
+            , ci.bank);
+
+        //        string footer = @"
+        //Lateralus j.d.o.o. jednostavno društvo sa ograničenom odgovornošću sa sjedištem u Kastvu, registrirano na Trgovačkom sudu u Rijeci sa temeljnim kapitalom: 200,00kn, uplaćenim u cijelosti. Osnivač društva: Mirza Hodžić. Društvo zastupa: Azra Hodžić, zastupa samostalno i neograničeno.
+        //Matični broj društva: 040297018, OIB: 90780660216
+        //Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 2402006 15 00 05 73 46 (SWIFT/BIC: ESBCHR22 / BANK: Erste & Steiermärkische Bank d.d.)";
 
         Paragraph p = new Paragraph();
-        p.Add(new Chunk(footer, GetFont()));
+        p.Add(new Chunk(footer, GetFont(8)));
         doc.Add(p);
     }
 
@@ -474,7 +525,8 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         Image logo = Image.GetInstance(logoPath);
         logo.Alignment = Image.ALIGN_RIGHT;
         //logo.ScaleToFit(160f, 30f);
-        logo.ScaleToFit(280f, 70f);
+        //logo.ScaleToFit(280f, 70f);
+        logo.ScaleToFit(200f, 60f);
         logo.SpacingAfter = 15f;
         //logo.ScalePercent(9f);
 
@@ -488,22 +540,26 @@ Transakcijski računi (IBAN): ERSTE- HR 44 2402006 11 00 64 77 60; ERSTE - HR30 
         string info = string.Format(@"
         {0}
         {1} {2}, {3} {4}: {5}
-        IBAN: {6}
-        IBAN: {7}
-        TEL: {8}
+        IBAN: {6}{7}{8}
         MAIL: {9}"
-, ci.companylong
-, ci.zipCode, ci.city, ci.address, t.Tran("pin", lang).ToUpper(), ci.pin
-, ci.iban, ci.iban1
-, ci.phone
-, ci.email
-);
+            , ci.companylong
+            , ci.zipCode
+            , ci.city
+            , ci.address
+            , t.Tran("pin", lang).ToUpper()
+            , ci.pin
+            , ci.iban
+            , !string.IsNullOrEmpty(ci.iban1) ? string.Format(@"
+IBAN: {0}", ci.iban1) : ""
+            , !string.IsNullOrEmpty(ci.phone) ? string.Format(@"
+TEL: {0}", ci.phone) : ""
+            , ci.email);
 
         PdfPTable header_table = new PdfPTable(2);
         header_table.AddCell(new PdfPCell(logo) { Border = PdfPCell.NO_BORDER, Padding = 0, VerticalAlignment = PdfCell.ALIGN_BOTTOM });
         header_table.AddCell(new PdfPCell(new Phrase(info, GetFont())) { Border = PdfPCell.NO_BORDER, Padding = 0, HorizontalAlignment = PdfPCell.ALIGN_RIGHT });
         header_table.WidthPercentage = 100f;
-        float[] header_widths = new float[] { 1f, 1f };
+        float[] header_widths = new float[] { 1f, 2f };
         header_table.SetWidths(header_widths);
         doc.Add(header_table);
     }

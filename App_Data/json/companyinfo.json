@@ -1,1 +1,22 @@
-{"company":"Lateralus j.d.o.o.","companylong":"Lateralus j.d.o.o. - za računalne usluge i trgovinu","address":"Žegoti 27","zipCode":"51215","city":"Kastav","country":"Hrvatska","pin":"90780660216","iban":"HR4424020061100647760","iban1":"HR3024020061500057346","swift":null,"bank":"Erste&Steiermärkische Bank d.d.","email":"info@promo-tekstil.com","phone":"+385 91 460 7010"}
+{
+  "company": "Studio A5 j.d.o.o.",
+  "companylong": "Studio A5 j.d.o.o. za računalno programiranje, trgovinu i pružanje usluga",
+  "companyfooter": "Studio A5 jednostavno društvo s ograničenom odgovornošću za računalno programiranje, trgovinu i pružanje usluga, registrirano na Trgovačkom sudu u Rijeci sa temeljnim kapitalom: 200,00kn, uplaćenim u cijelosti. Osnivač društva: Almir Hodžić. Društvo zastupa: Almir Hodžić, zastupa samostalno i neograničeno.",
+  "address": "Mate Balote 20/A",
+  "zipCode": "51000",
+  "city": "Rijeka",
+  "country": "Hrvatska",
+  "idnumber": "040421061",
+  "pin": "43566265122",
+  "iban": "HR8024020061100999513",
+  "iban1": "",
+  "swift": "ESBCHR22",
+  "bank": "Erste & Steiermärkische Bank d.d.",
+  "bankshort": "ERSTE",
+  "email": "info@promo-tekstil.com",
+  "phone": "",
+  "operatorcode": "ALMIR",
+  "operatorname": "Almir Hodžić",
+  "web": "promo-tekstil.com"
+
+}
