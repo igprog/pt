@@ -1,0 +1,195 @@
+﻿<div class="content-push">
+    <div class="breadcrumb-box">
+        <a href="index.html">{{'home' | translate}}</a>
+        <a href="index.html?category:{{p.category_code}}">{{p.category_en | translate}}</a>
+        <a ng-show="shortdesc(p, config.language.code)" href="#">
+            <span style="font-weight:bold">{{p.style}}</span>
+            {{shortdesc(p, config.language.code)}}
+        </a>
+    </div>
+
+    <div class="information-blocks">
+        <div class="row">
+            <div class="col-sm-4 information-entry">
+                <div ng-if="loading_p" class="text-center" style="height:200px; line-height:200px;">
+                    <i class="fa fa-spinner fa-4x fa-spin text-info"></i>
+                </div>
+                <div ng-if="!loading_p">
+                    <div>
+                        <img ng-if="p.packshotimageurl!=null" src="{{p.packshotimageurl[mainImgIdx]}}" class="img-responsive" alt="" />
+                        <img ng-if="p.packshotimageurl==null" src="{{p.modelimageurl}}" class="img-responsive" alt="" />
+                    </div>
+                    <div style="display:flex">
+                        <div ng-repeat="x in p.packshotimageurl" ng-click="selectImg($index)" ng-mouseover="selectImg($index)">
+                            <img ng-if="p.supplier!=='lacuna'" check-image ng-src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                            <img ng-if="p.supplier=='lacuna'" check-image src="{{x}}" style="height:100px; cursor: pointer" class="img-thumbnail" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <p ng-if="shortdesc(p, config.language.code)" style="font-size: 30px;">{{shortdesc(p, config.language.code)}}</p>
+                <div class="row mt20">
+                    <div class="col-sm-6">
+                        <div class="product-detail-box">
+                            <h3 class="block-title inline-product-column-title text-capitalize">{{'main features' | translate}}</h3>
+                            <div class="footer-description">
+                                <p ng-if="longdesc(p, config.language.code)" ng-repeat="x in longdesc(p, config.language.code) track by $index">{{x}}</p>
+                            </div>
+                            <div class="price detail-info-entry">
+                                <div class="price current">
+                                    VPC {{'from' | translate}}: <span>{{p.price_min.net * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p>{{'available colors' | translate}}:</p>
+                                <div ng-if="loading" class="text-center text-primary">
+                                    <label class="lead text-primary">{{'loading' | translate}}...</label>
+                                    <div><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>
+                                </div>
+                                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x, true)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:20px; width:20px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
+                                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x, true)" style="border:1px solid gray; height:20px; width:20px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
+                                    <div style="{{multipleColorStyle2(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="product-detail-box">
+                            <div class="information-entry products-list">
+                                <h3 class="block-title inline-product-column-title text-capitalize">{{'taxonomy' | translate}}</h3>
+                                <div class="content footer-description">
+                                    <p><span class="text-capitalize">{{'brand' | translate}}</span>: {{p.brand}}</p>
+                                    <p><span class="text-capitalize">{{'product category' | translate}}</span>: {{p.category_en}}</p>
+                                    <p><span class="text-capitalize">{{'gender' | translate}}</span>: {{p.gender_en}}</p>
+                                    <p><span class="text-capitalize">{{'sizes' | translate}}</span>: {{p.sizes}}</p>
+                                    <p ng-if="p.carelabel[0].carelabels_en !== ''"><span class="text-capitalize">{{'care labels' | translate}}</span>: <img src="./assets/img/{{p.supplier}}{{x.carelabellogos}}" alt="" ng-repeat="x in p.carelabel track by $index" style="width:40px; padding-left:5px" data-toggle="tooltip" title="{{x.carelabels_en}}" /></p>
+                                    <div style="padding:10px"><img src="./assets/img/brand_logo/{{p.brand_code}}.png" /></div>
+                                    <span ng-if="p.outlet==1" class="inline-label red ng-binding ng-scope">{{'product_is_on_sale' | translate}}!</span>
+                                    <span ng-if="p.isnew==1" class="inline-label green ng-binding ng-scope">{{'product_new' | translate}}</span>
+                                    <span class="inline-label green" style="color:000;">{{'warehouse_status' | translate}}</span>
+                                    <span class="inline-label green">{{'delivery_status' | translate}}</span>
+                                    <div class="col-sm-12" style="margin-top:10px">
+                                        <h3 class="block-title inline-product-column-title">{{'pieces in the box' | translate}}</h3>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-condensed text-small" style="font-size:11px">
+                                                <tr style="font-weight:bold">
+                                                    <th ng-repeat="x in p.piecesPerBox">{{x.size}}</th>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-weight:bold" ng-repeat="x in p.piecesPerBox">{{x.qty}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="p.size_specification.length>0" class="col-sm-12" style="margin-top:20px">
+                        <h3 class="block-title inline-product-column-title"><span class="text-capitalize">{{'size specification' | translate}}</span> (cm)</h3>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed text-small" style="font-size:11px">
+                                <tr style="font-weight:bold">
+                                    <th>{{'size' | translate}}</th>
+                                    <th ng-repeat="x in p.size_specification[0].name_en.split('|')">{{x}}</th>
+                                    <th rowspan="{{p.size_specification.length + 1}}" style="border: solid 1px lightgray; vertical-align:middle; text-align:center; margin-top:20px">
+                                        <img src="./assets/img/utt/{{p.specimageurl}}" />
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="x in p.size_specification">
+                                    <td style="font-weight:bold">{{x.size}}</td>
+                                    <td ng-repeat="y in x.value.split('|') track by $index">{{y}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div>
+            <label class="lead"><i class="fa fa-filter"></i> {{'filtering options' | translate}}</label>
+            <div>
+                <div ng-if="x.colorhex.split('/').length==1" ng-click="filterColor(x, false)" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:30px; width:30px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}"></div>
+                <div ng-if="x.colorhex.split('/').length>1" ng-click="filterColor(x, false)" style="border:1px solid gray; height:30px; width:30px; margin:2px; display: inline-block; cursor: pointer" ng-repeat="x in stockGroupedByColor track by $index" title="{{x.color | translate}}">
+                    <div style="{{multipleColorStyle(x,c)}}" ng-repeat="c in x.colorhex.split('/')"></div>
+                </div>
+            </div>
+            <div>
+                <button ng-if="filterColors.length>0" class="btn btn-default" ng-click="clearFilters()"><span class="text-primary"><i class="fa fa-eye"></i> {{'show all' | translate}}</span></button>
+            </div>
+        </div>
+        <label class="lead text-uppercase">{{'colors' | translate}} / {{'sizes' | translate}}</label>
+        <div ng-if="loading" class="text-center text-primary">
+            <label class="lead text-primary">{{'loading' | translate}}...</label>
+            <div><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>
+        </div>
+        <div class="table-responsive" style="max-height:700px; overflow-y: scroll; -webkit-overflow-scrolling: touch;">
+            <table class="table table-condensed table-bordered text-small">
+                <tr ng-if="checkColorfilter(filterColors, x.colorhex)" ng-repeat="x in stockGroupedByColor track by $index" style="margin-top:2px" title="{{x.color | translate}}">
+                    <td>
+                        <div ng-if="x.colorhex.split('/').length==1" style="background-color:{{x.colorhex}}; border:1px solid gray; margin:2px; height:30px; width:30px; cursor: pointer" ng-click="setColorImage(x.stock[0])">
+
+                        </div>
+                        <div ng-if="x.colorhex.split('/').length>1" style="border:1px solid gray; height:30px; width:30px; cursor: pointer" ng-click="setColorImage(x.stock[0])">
+                            <div style="{{multipleColorStyle(x,c)}}" ng-repeat="c in x.colorhex.split('/')">
+                            </div>
+                        </div>
+                        <span ng-if="x.stock[0].outlet==1" class="inline-label red">{{'outlet' | translate}}!</span>
+                    </td>
+                    <td ng-repeat="y in x.stock" ng-class="delivery(y).css_bg">
+                        <span class="input-group" style="max-width:220px">
+                            <span class="input-group-addon" style="min-width:50px">{{y.size}}</span>
+                            <input ng-model="y.quantity" type="number" class="form-control" min="0" style="width:70px">
+                        </span>
+                        <div ng-if="y.quantity>0 && !delivery(y).title" class="text-center">
+                            <span>
+                                <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(y.myprice.net * y.quantity * config.currency.course) | number:2}}
+                            </span>
+                        </div>
+                        <div ng-if="delivery(y).title">
+                            <label ng-class="delivery(y).css">{{delivery(y).title | translate}}</label>
+                            <label>{{'stock' | translate}}: {{y.uttstock}}</label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <pre ng-if="config.debug">{{priceSum(stockGroupedByColor) | json}}</pre>
+
+        <div class="cart-summary-box mt20">
+            <div class="sub-total">{{'total' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).net) | number:2}}</div>
+            <div class="grand-total">{{'total' | translate}} + {{'vat' | translate}}: <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(priceSum(stockGroupedByColor).gross) | number:2}}</div>
+        </div>
+        <div class="detail-info-entry mt20">
+            <a href="" class="button style-10" ng-click="addToCart(stockGroupedByColor)">{{'add to cart' | translate}}</a>
+            <div ng-if="chartMsg.msg" class="message-box message-{{chartMsg.css}}">
+                <div class="message-icon"><i class="fa fa-{{chartMsg.icon}}"></i></div>
+                <div class="message-text"><b>{{chartMsg.msg}}.</b></div>
+            </div>
+            <div>
+                <a ng-if="addedToCart" href="cart.html" class="button style-15">{{'show cart' | translate}}</a>
+                <a ng-if="addedToCart" href="index.html?category:{{p.category_code}}" class="button style-15">{{'continue shopping' | translate}}</a>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div ng-if="config.debug">
+            stockGroupedByColor:
+            <pre>{{stockGroupedByColor | json}}</pre>
+            p:
+            <pre>{{p | json}}</pre>
+        </div>
+
+    </div>
+    <div class="mt60">
+        <ng-include src="'../assets/partials/featured.html'"></ng-include>
+    </div>
+</div>
+
+

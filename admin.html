@@ -319,15 +319,38 @@
                             <label class="checkbox-entry">
                                 <input ng-model="o.sendToPrint" type="checkbox" /> <span class="check"></span>Send to print
                             </label>
-                            <div class="lead text-center well">
-                                <div class="large">Gross price: {{o.grossPrice}} kn</div>
-                                <div class="small">Net price: {{o.netPrice}} kn</div>
-                            </div>
                         </div>
                     </div>
-
-                    <label>Discount: <span class="badge">{{o.discount.coeff * 100}} %</span></label>
-
+                    <label>Price</label>
+                    <div class="well">
+                        <table>
+                            <tr>
+                                <td>Gross price:</td>
+                                <td class="text-right pl5">{{o.grossPrice}} kn</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Net price:</td>
+                                <td class="text-right pl5">{{o.netPrice}} kn</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Discount:</td>
+                                <td class="text-right pl5">{{o.price.discount}} kn</td>
+                                <td class="pl5"><span class="badge">{{o.discount.coeff * 100}} %</span></td>
+                            </tr>
+                            <tr>
+                                <td>Delivery:</td>
+                                <td class="text-right pl5">{{o.price.delivery}} kn</td>
+                                <td></td>
+                            </tr>
+                            <tr style="font-weight:600">
+                                <td>Total:</td>
+                                <td class="text-right pl5"><u>{{o.price.total}} kn</u></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
                     <label>Items</label>
                     <div class="table-responsive">
                         <table class="table table-condensed table-striped">

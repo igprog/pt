@@ -30,6 +30,9 @@ angular.module('functions', [])
                     return (x.longdesc_en);
                 }
             }
+        },
+        seotitle: function (x) {
+            return x.toLowerCase().replace(/\s+/g, '-').replace('ž', 'z').replace('š', 's').replace('č', 'c').replace('ć', 'c').replace('đ', 'd');
         }
     }
 }]);

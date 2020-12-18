@@ -2,28 +2,47 @@
 app.js
 (c) 2017-2019 IG PROG, www.igprog.hr
 */
-angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
+angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'functions'])
 
-.config(['$translateProvider', '$translatePartialLoaderProvider', '$httpProvider', function ($translateProvider, $translatePartialLoaderProvider, $httpProvider) {
+.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$translatePartialLoaderProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $translateProvider, $translatePartialLoaderProvider, $httpProvider) {
 
-        $translateProvider.useLoader('$translatePartialLoader', {
-            urlTemplate: './assets/json/translations/{lang}/{part}.json'
-        });
-        $translateProvider.preferredLanguage('hr');
-        $translatePartialLoaderProvider.addPart('main');
-        $translateProvider.useSanitizeValueStrategy('escape');
+    $stateProvider
+        .state('shop', {
+            url: '/', templateUrl: './assets/partials/shop_new.html', controller: 'shopCtrl'
+        })
+        //.state('product', {
+        //    url: '/:title_seo', params: { id: null }, templateUrl: './assets/partials/product.html', controller: 'productCtrl'
+        //})
+        .state('product', {
+            url: '/:title_seo/:style', templateUrl: './assets/partials/product_new.html', controller: 'productCtrl'
+        })
+        //.state('product', {
+        //    url: '/:title_seo', params: { style: null }, templateUrl: './assets/partials/product_new.html', controller: 'productCtrl'
+        //})
 
-        //--------------disable catche---------------------
-        if (!$httpProvider.defaults.headers.get) {
-            $httpProvider.defaults.headers.get = {};
-        }
-        $httpProvider.defaults.headers.get['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
-        $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
-        $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
-        //-------------------------------------------------
-    }])
+    $urlRouterProvider.otherwise("/");
 
-.controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window) {
+
+    $translateProvider.useLoader('$translatePartialLoader', {
+        urlTemplate: './assets/json/translations/{lang}/{part}.json'
+    });
+    $translateProvider.preferredLanguage('hr');
+    $translatePartialLoaderProvider.addPart('main');
+    $translateProvider.useSanitizeValueStrategy('escape');
+
+    //--------------disable catche---------------------
+    if (!$httpProvider.defaults.headers.get) {
+        $httpProvider.defaults.headers.get = {};
+    }
+    $httpProvider.defaults.headers.get['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+    $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+    //-------------------------------------------------
+}])
+
+.controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window, $state, $stateParams) {
+
+    $rootScope.title_seo = 'Promo Tekstil';
 
     if (angular.isDefined($sessionStorage.u)) {
         $rootScope.u = JSON.parse($sessionStorage.u);
@@ -47,6 +66,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
           .then(function (response) {
               $sessionStorage.config = response.data;
               $rootScope.config = response.data;
+              $rootScope.img_seo = '/assets/img/' + $rootScope.config.logo;
               reloadPage();
           });
     };
@@ -170,6 +190,8 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         return (functions.longdesc(x, lang));
     }
 
+    $state.go('shop');
+
 }])
 
 .controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $timeout) {
@@ -215,11 +237,16 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 //}])
 
-.controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout) {
+.controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout, $state, $stateParams) {
     $scope.isloading = false;
     $scope.group = "";
     $scope.displayFilters = false;
     var type = "";
+
+    $scope.go = function (style, shortdesc) {
+        var title_seo = functions.seotitle(shortdesc);
+        $state.go('product', { title_seo: title_seo, style: style });
+    }
 
     var queryString = location.search;
     var params = queryString.split('&');
@@ -260,7 +287,6 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
         $scope.searchQuery = '';
         $sessionStorage.search = '';
     }
-
 
     if (params[0].substring(1, 9) === 'category') {
         $scope.category = params[0].substring(10);
@@ -558,7 +584,7 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
 
 }])
 
-.controller('productCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$window', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $window, $localStorage) {
+.controller('productCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$window', '$localStorage', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $window, $localStorage, $state, $stateParams) {
     var style = '';
     var queryString = location.search;
     var params = queryString.split('&');
@@ -604,10 +630,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
       });
     }
 
-    $rootScope.productTitle = null;
+    //$rootScope.productTitle = null;
     $rootScope.productDesc = null;
     $scope.loading_p = false;
-    var load = function (style, color) {
+    var load = function (style, title_seo, color) {
         $scope.loading_p = true;
         $http({
             url: 'Products.asmx/GetProduct',
@@ -620,8 +646,11 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
                //$window.document.title = 'Promo-Tekstil - ' + $translate.instant($scope.p.shortdesc_en);
                //location.hash = '#/' + unescape($translate.instant($scope.p.shortdesc_en)).replace(/\s/g, "-");
            }
-           $rootScope.productTitle = $scope.shortdesc($scope.p, $rootScope.config.language.code)
+           //$rootScope.productTitle = $scope.shortdesc($scope.p, $rootScope.config.language.code)
+           debugger;
+           $rootScope.title_seo = title_seo;
            $rootScope.productDesc = $scope.longdesc($scope.p, $rootScope.config.language.code)
+           $rootScope.img_seo = $scope.p.modelimageurl;
 
            $scope.loading_p = false;
 
@@ -654,7 +683,10 @@ angular.module('app', ['ngStorage', 'pascalprecht.translate', 'functions'])
            alert(JSON.parse(response.data.d));
        });
     };
-    load(style, color);
+
+    debugger;
+    load($stateParams.style, $stateParams.title_seo, color);
+    //load(style, color);
 
     $scope.setSize = function (x) {
         $scope.choosen.size = x;
