@@ -244,7 +244,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var type = "";
 
     $scope.go = function (style, shortdesc) {
-        var title_seo = functions.seotitle(shortdesc);
+        var title_seo = shortdesc.toLowerCase().replace(/\s+/g, '-').replace('ž', 'z').replace('š', 's').replace('č', 'c').replace('ć', 'c').replace('đ', 'd');
         $state.go('product', { title_seo: title_seo, style: style });
     }
 
