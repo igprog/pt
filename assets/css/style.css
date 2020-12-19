@@ -131,7 +131,7 @@ body{font-family: 'Titillium Web', sans-serif; font-weight: 400; font-size: 14px
 /*content block*/
 #content-block{position: relative; overflow: hidden;}
 /*last child margins*/
-#content-block *:last-child{margin-bottom: 0;}
+/*#content-block *:last-child{margin-bottom: 0;}*/
 /*nopadding class*/
 .nopadding {padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0;}
 /*content center*/

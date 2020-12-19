@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
-<html lang="hr">
+<html ng-app="app" ng-controller="appCtrl" lang="hr">
 <head>
-    <title>Promo Tekstil</title>
+    <title>{{title_seo}}</title>
     <!-- Global site tag (gtag.js) - Google Analitika -->
     <!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117186742-1"></script>
     <script>
@@ -19,8 +19,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Promo Tekstil" />
     <meta property="og:description" content="Najpovoljnije cijene tekstilnih proizvoda na hrvatkom tržištu. Opširan katalog najpoznatijih svjetskih brendova. Brza dostava na vašu adresu. Majice, Polo Majice, Hoodice, Hlače, Torbe, Kape i ostali proizvodi." />
-    <meta property="og:url" content="https://www.promo-tekstil.hr" />
-    <meta property="og:image" content="https://www.promo-tekstil.hr/assets/img/logo/logo.png">
+    <meta property="og:url" content="https://www.promo-tekstil.hr/{{img_seo}}" />
+    <meta property="og:image" content="{{img_seo}}">
+    <!--<meta property="og:image" content="https://www.promo-tekstil.hr/assets/img/logo/logo.png">-->
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="200">
     <meta property="og:image:height" content="200">
@@ -45,6 +46,7 @@
 
 	<script src="../assets/js/vendor/angular.min.js"></script>
     <script src="../assets/js/vendor/ngStorage.min.js"></script>
+    <script src="../assets/js/vendor/angular-ui-router.min.js"></script>
     <script src="../assets/js/vendor/angular-translate.min.js"></script>
     <script src="../assets/js/vendor/angular-translate-loader-partial.min.js"></script>
 	
@@ -63,8 +65,7 @@
 	<!-- FAVICON -->
 
 </head>
-<body class="style-3" ng-app="app" ng-controller="appCtrl" ng-cloak>
-
+<body class="style-3" ng-cloak>
     <div>
         <!-- LOADER -->
         <div id="loader-wrapper">
@@ -75,185 +76,20 @@
                 <span id="bubble3"></span>
             </div>
         </div>
-
         <div id="content-block">
             <div class="content-center fixed-header-margin">
-
                 <ng-include src="'../assets/partials/header.html'"></ng-include>
-
                 <div class="content-push">
-
-
                     <div class="information-blocks">
-                        <ng-include src="'../assets/partials/shop.html'"></ng-include>
+                        <ui-view autoscroll="d.autoscroll"></ui-view>
                     </div>
-                    
-
-                    <!--<div class="information-blocks">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="sidebar-navigation">
-                                    <div class="title text-uppercase">{{'product categories' | translate}}<i class="fa fa-angle-down"></i></div>
-                                    <div class="list text-uppercase">
-                                        <a class="entry" href="shop.html?category:{{x.code}}" ng-repeat="x in categories | orderBy: 'order'"><span><i class="fa fa-angle-right"></i>{{x.title | translate}}</span><span class="pull-right">({{x.count}})</span></a>
-                                    </div>
-                                </div>
-                                <div class="clear"></div>
-                            </div>
-
-                                <div class="col-md-8" style="padding-bottom: 7px;">
-                                    <a href="shop.html?category:T-Shirt"><img src="assets/img/frontpage/ljeto.gif" class="img-responsive m10" alt="Ljeto se bliži - Provjerite najnoviju ponudu za ljetnu sezonu 2018!" /></a>
-                                </div>
-
-                                <div class="col-md-4" style="padding-bottom: 7px;">
-                                    <a href="shop.html?brand:Gildan"><img src="assets/img/frontpage/gildan.jpg" class="img-responsive m10" alt="GILDAN PROIZVODI - Provjerite najnoviju ponudu za ljetnu sezonu 2018!" /></a>
-                                </div>
-
-                                <div class="col-md-4" style="padding-bottom: 7px;">
-                                    <a href="shop.html?brand:Kariban"><img src="assets/img/frontpage/kariban.jpg" class="img-responsive m10" alt="KARIBAN PROIZVODI - Provjerite najnoviju ponudu za ljetnu sezonu 2018!" /></a>
-                                </div>
-
-                                <div class="col-md-4" style="padding-bottom: 7px;">
-                                    <a href="shop.html?brand:Kimood"><img src="assets/img/frontpage/kimood.jpg" class="img-responsive m10" alt="KIMOOD PROIZVODI - Provjerite najnoviju ponudu za ljetnu sezonu 2018!" /></a>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <a href="shop.html?brand:SOLS"><img src="assets/img/frontpage/sols.jpg" class="img-responsive m10" alt="SOLS PROIZVODI - Provjerite najnoviju ponudu za ljetnu sezonu 2018!" /></a>
-                                </div>
-
-                            <div class="col-md-12">
-                                <ng-include src="'../assets/partials/featured.html'"></ng-include>
-
-                            </div>
-                            </div>
-                    </div>-->
-
-                    <!--ZAŠTO KUPOVATI NA PROMO-TEKSTILU?-->
-
-                    <div class="information-blocks">
-                        <div class="row">
-                            <div class="col-md-12 information-entry">
-                                <div class="article-container style-1">
-                                    <h2>{{'why shop' | translate}}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="information-blocks">
-                        <div class="column-article-wrapper">
-                            <div class="row nopadding">
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'lowest prices' | translate}}</h2>
-                                        <img src="assets/img/various/niske_cijene.svg" class="img-responsive m10" alt="Najniže cijene" />
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'great offerings' | translate}}</h2>
-                                        <img src="assets/img/various/velik_izbor.svg" class="img-responsive m10" alt="Veliki izbor" />
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'free delivery' | translate}}</h2>
-                                        <img src="assets/img/various/besplatna_dostava.svg" class="img-responsive m10" alt="Besplatna dostava iznad 1000kn" />
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'loyalty program' | translate}}</h2>
-                                        <img src="assets/img/various/vjernost.svg" class="img-responsive m10" alt="Program vjernosti" />
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row nopadding">
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'user support' | translate}}</h2>
-                                        <img src="assets/img/various/korisnicka.svg" class="img-responsive m10" alt="Korisnička podrška" />
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'direct from supplier' | translate}}</h2>
-                                        <img src="assets/img/various/direct.svg" class="img-responsive m10" alt="Direktno od dobavljača" />
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'promotions sales' | translate}}</h2>
-                                        <img src="assets/img/various/promocije.svg" class="img-responsive m10" alt="Outlet rasprodaje" />
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-3 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'safe shopping' | translate}}</h2>
-                                        <img src="assets/img/various/lock.svg" class="img-responsive m10" alt="Program vjernosti" />
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--PROGRAM VJERNOSTI-->
-
-                    <div class="information-blocks">
-                        <div class="row">
-                            <div class="col-md-12 information-entry">
-                                <div class="article-container style-1">
-                                    <h2>{{'loyalty program' | translate}}</h2>
-                                    <div class="footer-description">{{'loyalty description' | translate}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="information-blocks">
-                        <div class="column-article-wrapper">
-                            <div class="row nopadding">
-                                <div class="col-sm-4 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'bronze' | translate}} - {{'five discount' | translate}}</h2>
-                                        <img src="assets/img/various/broncana_kartica_promo_tekstil.png" class="img-responsive m10" alt="Brončana kartica - Program vjernosti" />
-                                    </div>
-                                </div>
-                                <div class="col-sm-4 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'silver' | translate}} - {{'ten discount' | translate}}</h2>
-                                        <img src="assets/img/various/srebrna_kartica_promo_tekstil.png" class="img-responsive m10" alt="Srebrna kartica - Program vjernosti" />
-                                    </div>
-                                </div>
-                                <div class="col-sm-4 information-entry left-border nopadding">
-                                    <div class="column-article-entry">
-                                        <h2 style="text-align:center; font-size:20px">{{'gold' | translate}} - {{'fifteen discount' | translate}}</h2>
-                                        <img src="assets/img/various/zlatna_kartica_promo_tekstil.png" class="img-responsive m10" alt="Zlatna kartica - Program vjernosti" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!--FOOTER-->
-
+                    <ng-include src="'../assets/partials/shop-info.html'"></ng-include>
+                </div>>
                 <ng-include src="'../assets/partials/footer.html'"></ng-include>
             </div>
-
         </div>
         <div class="clear"></div>
-
-
         <ng-include src="'../assets/partials/cartpopup.html'"></ng-include>
-
     </div>
   
     <script src="../assets/js/vendor/global.js"></script>

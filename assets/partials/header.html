@@ -4,32 +4,31 @@
             <div class="header-top-entry">
                 <div class="title"><img src="assets/img/{{config.language.code}}.svg" alt="" />{{config.language.title}}<i class="fa fa-caret-down"></i></div>
                 <div class="list">
-                    <a href="#" class="list-entry" ng-repeat="x in config.languages" ng-click="setLanguage(x)"><img src="assets/img/{{x.code}}.svg" alt="" />{{x.title}}</a>
+                    <a href="" class="list-entry" ng-repeat="x in config.languages" ng-click="setLanguage(x)"><img src="assets/img/{{x.code}}.svg" alt="" />{{x.title}}</a>
                 </div>
             </div>
             <div class="header-top-entry">
                 <div class="title"><b>{{'currency' | translate}}</b> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span> <span class="text-uppercase">{{config.currency.code}}</span><i class="fa fa-caret-down"></i></div>
                 <div class="list">
-                    <a href="#" class="list-entry" ng-repeat="x in config.currencies" ng-click="setCurrency(x)"><span class="text-uppercase"><span ng-if="x.symbol">{{x.symbol}}</span> {{x.code}}</span></a>
+                    <a href="" class="list-entry" ng-repeat="x in config.currencies" ng-click="setCurrency(x)"><span class="text-uppercase"><span ng-if="x.symbol">{{x.symbol}}</span> {{x.code}}</span></a>
                 </div>
             </div>
-            <div class="header-top-entry hidden-xs">
-                <div class="title"><i class="fa fa-phone"></i>{{'any question? call us' | translate}}<a href="tel:+385916440201"><b>+385 91 460 7010</b></a></div>
+            <div ng-if="companyInfo.phone" class="header-top-entry hidden-xs">
+                <div class="title"><i class="fa fa-phone"></i>{{'any question? call us' | translate}}<a href="tel:{{companyInfo.phone}}"><b>{{companyInfo.phone}}</b></a></div>
             </div>
             <div class="socials-box">
-                <a href="#"><img src="assets/img/various/facebook-icon-promo-tekstil.svg" /></a>
+                <a href=""><img src="assets/img/various/facebook-icon-promo-tekstil.svg" /></a>
             </div>
             <div class="menu-button responsive-menu-toggle-class"><i class="fa fa-reorder"></i></div>
             <div class="clear"></div>
         </div>
-
         <div class="header-middle">
             <div class="logo-wrapper">
                 <a id="logo" href="index.html"><img src="assets/img/{{config.logo}}" alt="Promo Tekstil" /></a>
             </div>
             <div class="right-entries">
-                <a class="header-functionality-entry" href="cart.html">
-                    <i class="fa fa-shopping-cart"></i><span ng-if="priceTotal.net>0" class="badge" style="position:relative; top:-10px;">{{groupingCart.length}}</span><span class="text-capitalize"> {{'basket' | translate}}</span>
+                <a class="header-functionality-entry" href="cart.html" title="{{'basket' | translate}}">
+                    <i class="fa fa-shopping-cart"></i><sup ng-if="priceTotal.net>0" class="badge" style="position:relative; top:-10px;">{{groupingCart.length}}</sup><span class="text-capitalize"> {{'basket' | translate}}</span>
                     <b ng-if="priceTotal.net>0"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{priceTotal.net * config.currency.course | number:2}}</b>
                 </a>
             </div>
