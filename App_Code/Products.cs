@@ -1048,18 +1048,6 @@ public class Products : System.Web.Services.WebService {
                                 x.style,
                                 reader.GetValue(29) == DBNull.Value ? 0 : Convert.ToDouble(reader.GetString(29)));
 
-                            //x.price_min = pr.GetPrice(
-                            //    priceCoeff,
-                            //    reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20),
-                            //    reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21),
-                            //    x.style,
-                            //    GetUttPrice(connection, x.style, "MIN"));
-
-                            //x.price_max = pr.GetPrice(
-                            //    reader.GetValue(20) == DBNull.Value ? "" : reader.GetString(20),
-                            //    reader.GetValue(21) == DBNull.Value ? "" : reader.GetString(21),
-                            //    x.style,
-                            //    GetUttPrice(connection, x.style, "MAX"));
                             List<Stock> st = new List<Stock>();
                             x.stock = st;
                             x.size_specification = GetSizeSpecification(connection, x.style);

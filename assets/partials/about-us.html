@@ -44,14 +44,14 @@
                     <img src="/assets/img/test_image_placeholder.png" class="img-responsive m10" alt="Promo Tekstil" />
                     <h5>Company info</h5>
                     <p>
-                        Company name: {{config.name}} {{companyInfo.company}}<br />
+                        Company name: {{companyInfo.company}}<br />
                         Address: {{companyInfo.address}}, {{companyInfo.city}}, {{companyInfo.zipCode}} {{companyInfo.country}}<br />
                         VAT: HR{{companyInfo.pin}}<br />
                     </p>
                     <h5>Contact</h5>
                     <p>
                         Email: {{companyInfo.email}}<br />
-                        Telefon: {{companyInfo.phone}}
+                        <span ng-if="companyInfo.phone">Phone: {{companyInfo.phone}}</span>
                     </p>
                 </div>
             </div>
@@ -97,14 +97,14 @@
                     <img src="/assets/img/test_image_placeholder.png" class="img-responsive m10" alt="Promo Tekstil" />
                     <h5>Informacije o tvrtci</h5>
                     <p>
-                        Naziv tvrtke: {{config.name}} {{companyInfo.company}}<br />
+                        Naziv tvrtke: {{companyInfo.company}}<br />
                         Adresa: {{companyInfo.address}}, {{companyInfo.city}}, {{companyInfo.zipCode}} {{companyInfo.country}}<br />
                         OIB: {{companyInfo.pin}}<br />
                     </p>
                     <h5>Kontakt</h5>
                     <p>
                         Email: {{companyInfo.email}}<br />
-                        Telefon: {{companyInfo.phone}}
+                        <span ng-if="companyInfo.phone">Telefon: {{companyInfo.phone}}</span>
                     </p>
                 </div>
             </div>

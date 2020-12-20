@@ -10,15 +10,9 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         .state('shop', {
             url: '/', templateUrl: './assets/partials/shop.html', controller: 'shopCtrl'
         })
-        //.state('product', {
-        //    url: '/:title_seo', params: { id: null }, templateUrl: './assets/partials/product.html', controller: 'productCtrl'
-        //})
         .state('product', {
             url: '/:title_seo/:style', templateUrl: './assets/partials/product.html', controller: 'productCtrl'
         })
-        //.state('product', {
-        //    url: '/:title_seo', params: { style: null }, templateUrl: './assets/partials/product_new.html', controller: 'productCtrl'
-        //})
 
     $urlRouterProvider.otherwise("/");
 
@@ -39,39 +33,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
     //-------------------------------------------------
 }])
-
-    //TODO
-// handle successful topic loading  
-//.run(function ($rootScope, $window) {
-//    $rootScope.$on('$routeChangeSuccess', function () {
-//        debugger;
-//        var interval = setInterval(function () {  
-//            if (document.readyState == 'complete') {  
-//                //code that executes when partial view is loaded  
-
-//                //find the main heading tag for the help topic  
-//                var heading = document.querySelector('#content h2');  
-//                if (heading !== null) {  
-//                    // set page title to topic heading  
-//                    document.title = heading.textContent.trim() + ' - Wijmo 5 Help';  
-//                }  
-//                //}
-
-//                //find meta description tag  
-//                var meta = document.querySelector('meta[name=description]');
-//                //find first paragraph in the help topic that isn't empty  
-//                var content = document.querySelector('#content p:not(:empty)');
-//                if (meta !== null && content !== null) {
-//                    // set meta description to content of first paragraph in topic  
-//                    meta.setAttribute('content', content.textContent.trim());
-//                }
-
-
-
-//            }  
-//        }, 200);  
-//    });  
-//}) 
 
 .controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window, $state, $stateParams) {
 
@@ -265,10 +226,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
 }])
 
-//.controller('productsCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate) {
-
-
-//}])
 
 .controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout, $state, $stateParams) {
     $scope.isloading = false;
@@ -277,7 +234,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var type = "";
 
     $scope.go = function (style, shortdesc) {
-        var title_seo = shortdesc.toLowerCase().replace(/\s+/g, '-').replace('ž', 'z').replace('š', 's').replace('č', 'c').replace('ć', 'c').replace('đ', 'd').replace('®', '').replace('é', 'e').replace('™', '');
+        var title_seo = functions.titleseo(shortdesc);
         $state.go('product', { title_seo: title_seo, style: style });
     }
 
@@ -363,8 +320,8 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
             //window.location.href = window.location.origin + window.location.pathname + params[0] + '&page=' + x;
             //window.location.href = window.location.origin + window.location.pathname + params[0].length == 0 ? '?category=' + $scope.category : params[0] + '&page=' + x;
             window.location.href = window.location.origin +
-                (window.location.pathname === '/' ? '/index.html' : window.location.pathname) +
-                (params[0].length <= 1 ? '?category=' + $scope.category : params[0]) +
+                (window.location.pathname === '/' ? '' : window.location.pathname) +
+                (params[0].length <= 1 ? '/?category=' + $scope.category : params[0]) +
                 '&page=' + x;
 
             window.scrollTo(0, 150);
@@ -524,7 +481,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         $scope.filters = false;
         localStorage.distinct = null;
         //$scope.href('index.html?category=' + $scope.category);
-        $scope.href('index.html?category=' + $scope.category + '&page=1');
+        $scope.href('./?category=' + $scope.category + '&page=1');
     }
 
     $scope.showFilters = function () {
@@ -717,7 +674,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
        });
     };
     load(style, color);
-    //load(style, title_seo, color);
 
     $scope.setSize = function (x) {
         $scope.choosen.size = x;
@@ -767,7 +723,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     $scope.removeVariant = function (x) {
-        debugger;
         angular.forEach($scope.cart, function (value, key) {
             if (value.sku == x.sku) {
                 $scope.cart.splice(key, 1);

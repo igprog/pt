@@ -41,6 +41,7 @@ public class Admin : System.Web.Services.WebService {
         public string operatorcode;
         public string operatorname;
         public string web;
+        public string facebook;
     }
 
     [WebMethod]
@@ -91,6 +92,7 @@ public class Admin : System.Web.Services.WebService {
         x.operatorcode = null;
         x.operatorname = null;
         x.web = null;
+        x.facebook = null;
         return x;
     }
 

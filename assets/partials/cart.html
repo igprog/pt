@@ -1,7 +1,7 @@
 ﻿<div class="content-push" ng-controller="productCtrl" style="min-height:400px">
 
     <div class="breadcrumb-box">
-        <a href="index.html">{{'home' | translate}}</a>
+        <a href="./">{{'home' | translate}}</a>
         <a href="cart.html">{{'cart' | translate}}</a>
     </div>
 
@@ -68,7 +68,7 @@
         </div>
         
         <div class="cart-submit-buttons-box">
-            <a href="index.html" class="button style-15"><i class="fa fa-cart-plus"></i>{{groupingCart.length==0? ('start shoping' | translate) : ('continue shopping' | translate)}}</a>
+            <a href="./" class="button style-15"><i class="fa fa-cart-plus"></i>{{groupingCart.length==0? ('start shoping' | translate) : ('continue shopping' | translate)}}</a>
             <a ng-if="groupingCart.length>0" class="button style-15 text-danger text-uppercase" ng-click="clearAll()"><i class="fa fa-trash-o"></i> {{'clear all' | translate}}</a>
         </div>
         <div ng-if="groupingCart.length>0" class="row">

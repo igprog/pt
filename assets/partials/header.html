@@ -16,15 +16,15 @@
             <div ng-if="companyInfo.phone" class="header-top-entry hidden-xs">
                 <div class="title"><i class="fa fa-phone"></i>{{'any question? call us' | translate}}<a href="tel:{{companyInfo.phone}}"><b>{{companyInfo.phone}}</b></a></div>
             </div>
-            <div class="socials-box">
-                <a href=""><img src="assets/img/various/facebook-icon-promo-tekstil.svg" /></a>
+            <div ng-if="companyInfo.facebook" class="socials-box">
+                <a href="{{companyInfo.facebook}}" title="facebook"><img src="assets/img/various/facebook-icon-promo-tekstil.svg" /></a>
             </div>
             <div class="menu-button responsive-menu-toggle-class"><i class="fa fa-reorder"></i></div>
             <div class="clear"></div>
         </div>
         <div class="header-middle">
             <div class="logo-wrapper">
-                <a id="logo" href="index.html"><img src="assets/img/{{config.logo}}" alt="Promo Tekstil" /></a>
+                <a id="logo" href="./"><img src="assets/img/{{config.logo}}" alt="Promo Tekstil" /></a>
             </div>
             <div class="right-entries">
                 <a class="header-functionality-entry" href="cart.html" title="{{'basket' | translate}}">
@@ -45,7 +45,7 @@
                 <nav>
                     <ul>
                         <li class="full-width">
-                            <a href="index.html" class="active text-uppercase">{{'home' | translate}}</a>
+                            <a href="./" class="active text-uppercase">{{'home' | translate}}</a>
                         </li>
                         <li class="column-1">
                             <a href="#" class="text-uppercase">{{'brands' | translate}}</a><i class="fa fa-chevron-down"></i>
@@ -54,23 +54,23 @@
                                     <img class="submenu-background" src="assets/img/various/menu-logo-brands.jpg" alt="" />
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="submenu-list-title"><a href="index.html?brand=all">{{'all brands' | translate}}</a><span class="toggle-list-button"></span></div>
+                                            <div class="submenu-list-title"><a href="./?brand=all">{{'all brands' | translate}}</a><span class="toggle-list-button"></span></div>
                                             <ul class="list-type-1 toggle-list-container" style="display:block">
-                                                <li><a href="index.html?brand=Gildan"><i class="fa fa-angle-right"></i>Gildan</a></li>
-                                                <li><a href="index.html?brand=K-UP"><i class="fa fa-angle-right"></i>K-UP</a></li>
-                                                <li><a href="index.html?brand=Kariban"><i class="fa fa-angle-right"></i>Kariban</a></li>
-                                                <li><a href="index.html?brand=Anvil"><i class="fa fa-angle-right"></i>Anvil</a></li>
-                                                <li><a href="index.html?brand=Proact"><i class="fa fa-angle-right"></i>Proact</a></li>
-                                                <li><a href="index.html?brand=Regatta"><i class="fa fa-angle-right"></i>Regatta</a></li>
-                                                <li><a href="index.html?brand=SOLS"><i class="fa fa-angle-right"></i>SOL'S</a></li>
-                                                <li><a href="index.html?brand=Kimood"><i class="fa fa-angle-right"></i>Kimood</a></li>
-                                                <li><a href="index.html?brand=Premier"><i class="fa fa-angle-right"></i>Premier</a></li>
-                                                <li><a href="index.html?brand=AllWeDois"><i class="fa fa-angle-right"></i>All We Do is</a></li>
-                                                <li><a href="index.html?brand=AsquithAndFox"><i class="fa fa-angle-right"></i>Asquith & Fox</a></li>
-                                                <li><a href="index.html?brand=AmericanApparel"><i class="fa fa-angle-right"></i>American Apparel</a></li>
-                                                <li><a href="index.html?brand=Beardream"><i class="fa fa-angle-right"></i>Beardream</a></li>
-                                                <li><a href="index.html?brand=JustHoods"><i class="fa fa-angle-right"></i>Just Hoods</a></li>
-                                                <li><a href="index.html?brand=ComfortColors"><i class="fa fa-angle-right"></i>Comfort Colors</a></li>
+                                                <li><a href="./?brand=Gildan"><i class="fa fa-angle-right"></i>Gildan</a></li>
+                                                <li><a href="./?brand=K-UP"><i class="fa fa-angle-right"></i>K-UP</a></li>
+                                                <li><a href="./?brand=Kariban"><i class="fa fa-angle-right"></i>Kariban</a></li>
+                                                <li><a href="./?brand=Anvil"><i class="fa fa-angle-right"></i>Anvil</a></li>
+                                                <li><a href="./?brand=Proact"><i class="fa fa-angle-right"></i>Proact</a></li>
+                                                <li><a href="./?brand=Regatta"><i class="fa fa-angle-right"></i>Regatta</a></li>
+                                                <li><a href="./?brand=SOLS"><i class="fa fa-angle-right"></i>SOL'S</a></li>
+                                                <li><a href="./?brand=Kimood"><i class="fa fa-angle-right"></i>Kimood</a></li>
+                                                <li><a href="./?brand=Premier"><i class="fa fa-angle-right"></i>Premier</a></li>
+                                                <li><a href="./?brand=AllWeDois"><i class="fa fa-angle-right"></i>All We Do is</a></li>
+                                                <li><a href="./?brand=AsquithAndFox"><i class="fa fa-angle-right"></i>Asquith & Fox</a></li>
+                                                <li><a href="./?brand=AmericanApparel"><i class="fa fa-angle-right"></i>American Apparel</a></li>
+                                                <li><a href="./?brand=Beardream"><i class="fa fa-angle-right"></i>Beardream</a></li>
+                                                <li><a href="./?brand=JustHoods"><i class="fa fa-angle-right"></i>Just Hoods</a></li>
+                                                <li><a href="./?brand=ComfortColors"><i class="fa fa-angle-right"></i>Comfort Colors</a></li>
                                                 <!--<li><a href="index.html?brand:Olima"><i class="fa fa-angle-right"></i>Olima</a></li>
                                                 <li><a href="index.html?brand:AsquithAndFox"><i class="fa fa-angle-right"></i>Asquith & Fox</a></li>
                                                 <li><a href="index.html?brand:TriDri"><i class="fa fa-angle-right"></i>TriDri</a></li>
@@ -118,7 +118,7 @@
                                 <div class="submenu-links-line">
                                     <div class="submenu-links-line-container">
                                         <div class="cell-view">
-                                            <div class="line-links"><b><a href="index.html"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>{{'see all brands' | translate}}</a></b></div>
+                                            <div class="line-links"><b><a href="./"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>{{'see all brands' | translate}}</a></b></div>
                                         </div>
                                     </div>
                                 </div>
@@ -128,18 +128,18 @@
                             <a href="#" class="text-uppercase">{{'gender' | translate}}</a><i class="fa fa-chevron-down"></i>
                             <div class="submenu">
                                 <ul class="simple-menu-list-column">
-                                    <li><a href="index.html?gender=UnisexClothing"><i class="fa fa-angle-right"></i>{{'unisex clothing' | translate}}</a></li>
-                                    <li><a href="index.html?gender=MensClothing"><i class="fa fa-angle-right"></i>{{'mens clothing' | translate}}</a></li>
-                                    <li><a href="index.html?gender=WomensClothing"><i class="fa fa-angle-right"></i>{{'womens clothing' | translate}}</a></li>
-                                    <li><a href="index.html?gender=ChildrensClothing"><i class="fa fa-angle-right"></i>{{'ChildrensClothing' | translate}}</a></li>
+                                    <li><a href="./?gender=UnisexClothing"><i class="fa fa-angle-right"></i>{{'unisex clothing' | translate}}</a></li>
+                                    <li><a href="./?gender=MensClothing"><i class="fa fa-angle-right"></i>{{'mens clothing' | translate}}</a></li>
+                                    <li><a href="./?gender=WomensClothing"><i class="fa fa-angle-right"></i>{{'womens clothing' | translate}}</a></li>
+                                    <li><a href="./?gender=ChildrensClothing"><i class="fa fa-angle-right"></i>{{'ChildrensClothing' | translate}}</a></li>
                                 </ul>
                             </div>
                         </li>
                         <li class="column-1">
-                            <a href="index.html?isnew=1" class="text-uppercase">{{'new models' | translate}}</a>
+                            <a href="./?isnew=1" class="text-uppercase">{{'new models' | translate}}</a>
                         </li>
                         <li class="column-1">
-                            <a href="index.html?outlet=1" class="text-uppercase">{{'on sale' | translate}}</a>
+                            <a href="./?outlet=1" class="text-uppercase">{{'on sale' | translate}}</a>
                         </li>
                         <li class="simple-list">
                             <a href="printing.html" class="text-uppercase">{{'printing' | translate}}</a>
@@ -169,7 +169,7 @@
  
                     <div class="clear"></div>
 
-                    <a href="index.html" class="fixed-header-visible additional-header-logo"> <img src="assets/img/{{config.logo}}" alt="" /></a>
+                    <a href="./" class="fixed-header-visible additional-header-logo"> <img src="assets/img/{{config.logo}}" alt="" /></a>
                 </nav>
                 <div class="navigation-footer responsive-menu-toggle-class">
                     <div class="navigation-copyright">{{'created with' | translate}} <i class="fa fa-heart" aria-hidden="true"></i> {{'by' | translate}} <a href="https://www.igprog.hr">IG PROG</a> {{'and' | translate}} <a href="https://www.studio-lateralus.hr">LATERALUS J.D.O.O.</a> {{'all rights reserved' | translate}}</div>
