@@ -1,17 +1,14 @@
-﻿<div class="content-push" ng-controller="productCtrl" style="min-height:400px">
-
+﻿<div class="content-push" style="min-height:400px">
     <div class="breadcrumb-box">
-        <a href="./">{{'home' | translate}}</a>
-        <a href="cart.html">{{'cart' | translate}}</a>
+        <a href="../">{{'home' | translate}}</a>
+        <a href="">{{'cart' | translate}}</a>
     </div>
-
     <div class="information-blocks">
         <div ng-if="groupingCart.length==0">
             <div class="alert alert-info">
                 {{'your basket is empty' | translate}}
             </div>
         </div>
-
         <div class="row" ng-repeat="x in groupingCart track by $index">
             <div class="col-sm-4">
                 <div class="traditional-cart-entry">
@@ -66,9 +63,8 @@
             groupingCart <pre>{{groupingCart | json}}</pre>
             cart <pre>{{cart | json}}</pre>
         </div>
-        
         <div class="cart-submit-buttons-box">
-            <a href="./" class="button style-15"><i class="fa fa-cart-plus"></i>{{groupingCart.length==0? ('start shoping' | translate) : ('continue shopping' | translate)}}</a>
+            <a href="../" class="button style-15"><i class="fa fa-cart-plus"></i>{{groupingCart.length==0? ('start shoping' | translate) : ('continue shopping' | translate)}}</a>
             <a ng-if="groupingCart.length>0" class="button style-15 text-danger text-uppercase" ng-click="clearAll()"><i class="fa fa-trash-o"></i> {{'clear all' | translate}}</a>
         </div>
         <div ng-if="groupingCart.length>0" class="row">
@@ -120,66 +116,7 @@
                                 <td><label class="lead">{{'total' | translate}}:</label></td>
                                 <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.total | number:2}}</h4></td>
                             </tr>
-                            <!--<tr ng-if="u==null">
-                                <td><label class="lead">{{'total' | translate}}:</label></td>
-                                <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.total | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u.discount.coeff>0">
-                                <td><label class="lead">{{'total' | translate}}:</label></td>
-                                <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.total | number:2}}</h4></td>
-                            </tr>-->
                         </table>
-                        <!--<table ng-controller="cartCtrl" class="table table-condensed">-->
-                        <!--<table class="table table-condensed">
-                            <tr>
-                                <td><label class="lead">{{'amounth without vat' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.net  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u==null">
-                                <td><label class="lead">{{'discount' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.discount * config.currency.course | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u==null">
-                                <td><label class="lead">{{'amount without vat minus discount' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscount  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u.discount.coeff>0">
-                                <td><label class="lead">{{'discount' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.discount * config.currency.course | number:2}} ({{u.discount.coeff * 100}}%)</h4></td>
-                            </tr>
-                            <tr ng-if="u.discount.coeff>0">
-                                <td><label class="lead">{{'amount without vat minus discount' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscount  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u==null">
-                                <td><label class="lead">{{'vat' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.vat  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u==null">
-                                <td><label class="lead">{{'amounth with vat' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscountPlusVat  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u.deliveryCountry.Code=='HR'">
-                                <td><label class="lead">{{'vat' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.vat  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u.deliveryCountry.Code=='HR'">
-                                <td><label class="lead">{{'amounth with vat' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.netWithDiscountPlusVat  * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr>
-                                <td><label class="lead">{{'delivery price' | translate}}:</label></td>
-                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.delivery * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u==null">
-                                <td><label class="lead">{{'total' | translate}}:</label></td>
-                                <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.total * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                            <tr ng-if="u.discount.coeff>0">
-                                <td><label class="lead">{{'total' | translate}}:</label></td>
-                                <td><h4 style="font-weight:bold; font-size:20px"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(price.total * config.currency.course) | number:2}}</h4></td>
-                            </tr>
-                        </table>-->
                     </div>
                     <a class="button style-10" href="checkout.html" ng-click="updateCart()">{{'proceed to checkout' | translate}}</a>
                 </div>

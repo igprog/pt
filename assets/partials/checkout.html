@@ -1,21 +1,15 @@
 ﻿<div id="checkout" class="content-push" ng-controller="userCtrl">
-
     <div class="breadcrumb-box">
-        <a href="./">{{'home' | translate}}</a>
-        <a href="#">{{'checkout' | translate}}</a>
+        <a href="../">{{'home' | translate}}</a>
+        <a href="">{{'checkout' | translate}}</a>
     </div>
-
     <ng-include src="'checkoutProgressBarTpl'"></ng-include>
-
     <div style="margin-top:150px; min-height:400px">
         <ng-include src="tpl"></ng-include>
     </div>
-    
     <pre ng-if="config.debug">{{u | json}}</pre>
     <pre ng-if="config.debug">{{order | json}}</pre>
-
 </div>
-
 
 <script type="text/ng-template" id="checkoutProgressBarTpl">
     <div class="checkout-wrap" style="margin:0px 0px 50px 0px">
@@ -27,7 +21,6 @@
             <li class="{{setProgressBarClass(5)}}" ng-click="setProgressBarClass(5)!=''?toggleTpl('orderReviewTpl'):''"><a href="">{{'review' | translate}}</a></li>
         </ul>
     </div>
-
 </script>
 
 <script type="text/ng-template" id="loginTpl">

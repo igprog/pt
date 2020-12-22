@@ -1,28 +1,21 @@
-﻿<div class="content-push" ng-controller="userCtrl">
-
+﻿<div class="content-push">
     <div class="breadcrumb-box">
-        <a href="./">{{'home' | translate}}</a>
-        <a href="login.html">{{'login form' | translate}}</a>
+        <a href="../">{{'home' | translate}}</a>
+        <a href="">{{'login form' | translate}}</a>
     </div>
-
     <div class="information-blocks" style="min-height:400px">
-
         <div ng-if="u.userId && showSuccessLoginMsg">
-
             <div class="{{loginMsgClass}}">
                 <div class="message-icon"><i class="fa fa-check"></i></div>
                 <div class="message-text">{{successLoginMsg}}</div>
             </div>
-
             <div class="row p10">
                 <div class="col-sm-3">
-                    <a href="./" class="btn btn-primary btn-block"><i class="fa fa-shopping-cart"></i> {{'start shopping' | translate}}</a>
-                    <a href="user.html" class="btn btn-default btn-block"><i class="fa fa-user"></i> {{'user pages' | translate}}</a>
+                    <a href="../" class="btn btn-primary btn-block"><i class="fa fa-shopping-cart"></i> {{'start shopping' | translate}}</a>
+                    <a href="" ng-click="go('user')" class="btn btn-default btn-block"><i class="fa fa-user"></i> {{'user pages' | translate}}</a>
                 </div>
             </div>
         </div>
-
-
         <div ng-hide="showSuccessLoginMsg" class="row">
             <div class="col-sm-6 information-entry">
                 <div class="login-box">
@@ -38,8 +31,10 @@
                         <h3>{{'new customers' | translate}}</h3>
                         <p>{{'register text' | translate}}</p>
                     </div>
-                    <a href="signup.html" class="button style-12 btn-block" ng-click="initUser(false)">{{'register account' | translate}}</a>
-                    <a href="./" class="button style-10 btn-block">{{'guest user' | translate}}</a>
+                    <a href="" class="button style-12 btn-block" ng-click="goSignup('signup', false)">{{'register account' | translate}}</a>
+                    <a href="" class="button style-10 btn-block" ng-click="goSignup('signup', true)">{{'guest user' | translate}}</a>
+                    <!--<a href="" class="button style-12 btn-block" ng-click="go('signup');initUser(false)">{{'register account' | translate}}</a>
+                    <a href="" ng-click="go('signup');initUser(true)"  class="button style-10 btn-block">{{'guest user' | translate}}</a>-->
                 </div>
             </div>
         </div>
@@ -53,11 +48,11 @@
         <label>{{'password' | translate}}</label>
         <input ng-model="password" type="password" value="" placeholder="Enter Password" class="simple-field">
         <div class="button style-10">{{'login' | translate}}<input type="submit" value="" ng-click="login(email, password, false)"></div>
-        <a ng-if="!forgotPass" class="forgot-password" href="#" ng-click="showForgotPassword()">{{'forgot password' | translate}}?</a>
+        <a ng-if="!forgotPass" class="forgot-password" href="" ng-click="showForgotPassword()">{{'forgot password' | translate}}?</a>
         <div ng-if="forgotPass">
             <label>{{'email' | translate}}</label>
             <input ng-model="u.email" type="text" value="" placeholder="Enter Email Address" class="simple-field">
-            <a class="button style-10 text-capitalize" href="#" ng-click="forgotPassword(u)">{{'send password' | translate}}</a>
+            <a class="button style-10 text-capitalize" href="" ng-click="forgotPassword(u)">{{'send password' | translate}}</a>
         </div>
     </form>
     <div ng-if="showLoginMsg" class="alert alert-{{loginMsgClass}}">
@@ -87,7 +82,4 @@
             </div>
         </div>
     </div>
-
-    
-
 </script>

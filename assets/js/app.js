@@ -4,7 +4,7 @@ app.js
 */
 angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'functions'])
 
-.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$translatePartialLoaderProvider', '$httpProvider', function ($stateProvider, $urlRouterProvider, $translateProvider, $translatePartialLoaderProvider, $httpProvider) {
+.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$translatePartialLoaderProvider', '$httpProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $translateProvider, $translatePartialLoaderProvider, $httpProvider, $locationProvider) {
 
     $stateProvider
         .state('shop', {
@@ -12,6 +12,36 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         })
         .state('product', {
             url: '/:title_seo/:style', templateUrl: './assets/partials/product.html', controller: 'productCtrl'
+        })
+        .state('cart', {
+            url: '/cart', templateUrl: '../assets/partials/cart.html', controller: 'productCtrl'
+        })
+        .state('about-us', {
+            url: '/about-us', templateUrl: '../assets/partials/about-us.html'
+        })
+        .state('contact-us', {
+            url: '/contact-us', templateUrl: '../assets/partials/contact-us.html', controller: 'contactCtrl'
+        })
+        .state('loyalty-program', {
+            url: '/loyalty-program', templateUrl: '../assets/partials/loyalty-program.html'
+        })
+        .state('terms-of-service', {
+            url: '/terms-of-service', templateUrl: '../assets/partials/terms-of-service.html'
+        })
+        .state('login', {
+            url: '/login', templateUrl: '../assets/partials/login.html', controller: 'userCtrl'
+        })
+        .state('signup', {
+            url: '/signup', params: { isguest: false }, templateUrl: '../assets/partials/signup.html', controller: 'userCtrl'
+        })
+        .state('user', {
+            url: '/user', templateUrl: '../assets/partials/user.html', controller: 'userCtrl'
+        })
+        .state('info', {
+            url: '/info', templateUrl: '../assets/partials/info.html'
+        })
+        .state('printing', {
+            url: '/printing', templateUrl: '../assets/partials/printing.html'
         })
 
     $urlRouterProvider.otherwise("/");
@@ -32,11 +62,30 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
     $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
     //-------------------------------------------------
+
+    //TODO
+    //-----remove # from url-----
+    //if (window.history && window.history.pushState) {
+    //    $locationProvider.html5Mode({
+    //        enabled: true,
+    //        requireBase: false
+    //    });
+    //}
+    //---------------------------
+
 }])
 
 .controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window, $state, $stateParams) {
 
+    if (window.location.pathname === '/index.html') {
+        window.location.href = "../";
+    }
+
     $rootScope.title_seo = 'Promo Tekstil';
+
+    $scope.go = function (x) {
+        $state.go(x);
+    }
 
     if (angular.isDefined($sessionStorage.u)) {
         $rootScope.u = JSON.parse($sessionStorage.u);
@@ -74,7 +123,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var getCompanyInfo = function () {
         $http({
-            url: 'Admin.asmx/GetCompanyInfo',
+            url: '../Admin.asmx/GetCompanyInfo',
             method: 'POST',
             data: {}
         })
@@ -89,7 +138,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var loadCategories = function () {
         $http({
-            url: 'Products.asmx/GetCategories',
+            url: '../Products.asmx/GetCategories',
             method: 'POST',
             data: { }
         })
@@ -104,7 +153,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var loadFeatured = function () {
         $http({
-            url: 'Featured.asmx/Load',
+            url: '../Featured.asmx/Load',
             method: 'POST',
             data: ''
         })
@@ -119,7 +168,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var loadNewProducts = function () {
         $http({
-            url: 'Featured.asmx/LoadNewProducts',
+            url: '../Featured.asmx/LoadNewProducts',
             method: 'POST',
             data: ''
         })
@@ -138,7 +187,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var initFeatured = function () {
         $http({
-            url: 'Featured.asmx/Init',
+            url: '../Featured.asmx/Init',
             method: 'POST',
             data: ''
         })
@@ -186,6 +235,8 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     $state.go('shop');
 
+    $scope.year = new Date().getFullYear();
+
 }])
 
 .controller('headerCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $timeout) {
@@ -202,9 +253,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     } else {
         $rootScope.config = $sessionStorage.config;
     }
-
-    //$rootScope.u = !angular.isDefined($sessionStorage.u) ? $scope.initUser() : JSON.parse($sessionStorage.u);
-
 
     $scope.setLanguage = function (x) {
         $rootScope.config.language = x;
@@ -226,7 +274,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
 }])
 
-
 .controller('shopCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout, $state, $stateParams) {
     $scope.isloading = false;
     $scope.group = "";
@@ -242,11 +289,11 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var params = queryString.split('&');
 
     if (params.length > 1) {
-        $scope.page = parseInt(params[1].substring(5, 6));
+        var param = params[1].split('=');
+        $scope.page = param.length === 2 ? parseInt(param[1]) : 1;
     } else {
         $scope.page = 1;
     }
-    //$scope.page = 1;
     window.scrollTo(0, 150);
 
     if (params[0].substring(1, 6) === 'brand') {
@@ -285,7 +332,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         $scope.category = "";
     }
 
-    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 12;
+    $scope.show = angular.isDefined($sessionStorage.config) ? $sessionStorage.config.prodctstoshow : 16;
     $scope.searchQuery = null;
 
     if (!functions.isNullOrEmpty(localStorage.distinct == 'null' ? null : localStorage.distinct)) {
@@ -330,7 +377,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
           //  searchProducts($scope.show, $scope.category);
 
-
         }, 200);
 
         //searchProducts($scope.show, $scope.category);
@@ -340,7 +386,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         $scope.isloading = true;
        // $scope.group = null;
         $http({
-            url: 'Products.asmx/GetProductsByCategory',
+            url: '../Products.asmx/GetProductsByCategory',
             method: 'POST',
             data: { limit: limit, category: category, sort: $scope.sort, order: $scope.sortOrder }
         })
@@ -375,7 +421,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         //$scope.page = 1;
        // $scope.category = null;
         $http({
-            url: 'Products.asmx/GetProductsByGroup',
+            url: '../Products.asmx/GetProductsByGroup',
             method: 'POST',
             data: { limit: $scope.show, group: $scope.group, type: type, sort: $scope.sort, order: $scope.sortOrder }
         })
@@ -423,7 +469,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
             $scope.d.distinct = JSON.parse(localStorage.distinct);
         }
         $http({
-            url: 'Products.asmx/SearchProducts',
+            url: '../Products.asmx/SearchProducts',
             method: 'POST',
             data: { limit: limit, page: $scope.page, category: category, search: $scope.searchQuery, filter: $scope.d.distinct, group: $scope.group, type: type, sort: $scope.sort, order: $scope.sortOrder }
         })
@@ -492,7 +538,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var getDistinctFilters = function (category, group) {
         $scope.loading_f = true;
         $http({
-            url: 'Products.asmx/GetDistinctFilters',
+            url: '../Products.asmx/GetDistinctFilters',
             method: 'POST',
             data: { category: category, group: group }
         })
@@ -608,7 +654,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var getStockGroupedByColor = function (style) {
         $scope.loading = true;
         $http({
-            url: 'Products.asmx/GetStockGroupedByColor',
+            url: '../Products.asmx/GetStockGroupedByColor',
             method: 'POST',
             data: { style: style }
         })
@@ -627,7 +673,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var load = function (style, color) {
         $scope.loading_p = true;
         $http({
-            url: 'Products.asmx/GetProduct',
+            url: '../Products.asmx/GetProduct',
             method: 'POST',
             data: { style: style, color: color }
         })
@@ -735,7 +781,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     var getTotalPrice = function (x) {
         $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
         $http({
-            url: 'Orders.asmx/GetTotalPrice',
+            url: '../Orders.asmx/GetTotalPrice',
             method: 'POST',
             data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
         })
@@ -752,7 +798,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var groupingCart = function (x) {
         $http({
-            url: 'Cart.asmx/GroupingCart',
+            url: '../Cart.asmx/GroupingCart',
             method: 'POST',
             data: { cart: x, product: $scope.p }
         })
@@ -866,7 +912,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
     var getProductColorImg = function (x) {
         $http({
-            url: 'Products.asmx/GetProductColorImg',
+            url: '../Products.asmx/GetProductColorImg',
             method: 'POST',
             data: { style: $scope.p.style, color: x.color }
         })
@@ -918,7 +964,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
 }])
 
-.controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout) {
+.controller('userCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$translatePartialLoader', '$localStorage', '$window', '$timeout', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $translatePartialLoader, $localStorage, $window, $timeout, $state, $stateParams) {
     $scope.currentStep = 1;
     $scope.cart = !angular.isDefined(localStorage.cart) || localStorage.cart == '' ? [] : JSON.parse(localStorage.cart);
     $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
@@ -928,6 +974,15 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     $scope.alertmsg = null;
     $scope.alertclass = 'info';
     $scope.personType = 0;
+    $scope.isGuest = false;
+
+    if ($stateParams.isguest !== undefined) {
+        $scope.isGuest = $stateParams.isguest;
+    }
+
+    $scope.goSignup = function (tpl, isGuest) {
+        $state.go(tpl, { isguest: isGuest });
+    }
 
     var getCountries = function () {
         $http({
@@ -1022,7 +1077,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     if (!angular.isDefined($sessionStorage.u) || $sessionStorage.u == null) {
-        $scope.initUser(false);
+        $scope.initUser($scope.isGuest);
         $scope.toggleTpl('registerTpl');
     } else {
         $rootScope.u = JSON.parse($sessionStorage.u);
@@ -1048,7 +1103,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         $scope.signupTpl = true;
     }
 
- 
     $scope.signup = function (u, isCheckout) {
         $scope.alertmsg = null;
         if (functions.isNullOrEmpty(u.firstName)) {
@@ -1149,8 +1203,8 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
              '<p>' + $translate.instant('user name') + ': ' + u.email + '</p>' + 
              '<p>' + $translate.instant('password') + Lozinka + ': ' + u.password + '</p>' +
              '<br/>' +
-             '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/login.html">https://www.' + $rootScope.config.appname + '/login.html</a></p>' +
-             '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/user.html">https://www.' + $rootScope.config.appname + '/user.html</a></p>' +
+             '<p>' + $translate.instant('you can log in by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/login">https://www.' + $rootScope.config.appname + '/login</a></p>' +
+             '<p>' + $translate.instant('you can edit your user profile by following the link') + ': <a href="https://www.' + $rootScope.config.appname + '/user">https://www.' + $rootScope.config.appname + '/user</a></p>' +
              '<br/>' +
              '<p>' + $translate.instant('if you have any questions feel free to contact us via e-mail') + ' <a href="mailto:' + $scope.companyInfo.email + '?Subject=Upit" target="_top">' + $scope.companyInfo.email + '</a>.</p>' +
              '<br/>' +
@@ -1329,8 +1383,8 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
          '<p>Korisničko ime: ' + user.userName + '</p>' +
          '<p>Lozinka: ' + user.password + '</p>' +
          '<br/>' +
-         '<p>Prijavite se klikom na poveznicu: <a href="https://www.' + $rootScope.config.appname + '/login.html">https://www.' + $rootScope.config.appname + '/login.html</a></p>' +
-         '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://www.' + $rootScope.config.appname + '/signup.html">https://www.' + $rootScope.config.appname + '/signup.html</a></p>' +
+         '<p>Prijavite se klikom na poveznicu: <a href="https://www.' + $rootScope.config.appname + '/login">https://www.' + $rootScope.config.appname + '/login</a></p>' +
+         '<p>Vaš korisnički profil možete uređivati na poveznici: <a href="https://www.' + $rootScope.config.appname + '/signup">https://www.' + $rootScope.config.appname + '/signup</a></p>' +
          '<br/>' +
          '<p>Želimo vam ugodnu kupovinu.</p>' +
          '<p>Stojimo na raspolaganju za sve vaše upite. Kontaktirati nas možete putem e-maila <a href="mailto:' + $scope.companyInfo.email + '?Subject=Upit" target="_top">' + $scope.companyInfo.email + '</a>.</p>' +
@@ -1527,7 +1581,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
         }
 
         $scope.issent = false;
-        var subject = $translate.instant('inquiry') + ' - ' + config.appname; // ' - Promo-Tekstil.com';
+        var subject = $translate.instant('inquiry') + ' - ' + $rootScope.config.appname; // ' - Promo-Tekstil.com';
         var body = '<p>' + $translate.instant('inquiry') + ':</p>' +
         '<p>' + $translate.instant('first name') + ': ' + d.firstName + '</p>' +
         '<p>' + $translate.instant('last name') + ': ' + d.lastName + '</p>' +
@@ -1543,7 +1597,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
          $scope.issent = true;
          $scope.alertmsg = null;
          $scope.response = $translate.instant(response.data.d);
-         $window.location.href = '#msg';
+         //$window.location.href = '#msg';
      },
      function (response) {
          $scope.issent = false;
@@ -1553,25 +1607,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
 }])
-
-//.controller('cartCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', '$localStorage', function ($scope, $http, $rootScope, $sessionStorage, $localStorage) {
-//    $rootScope.groupingCart = !angular.isDefined(localStorage.groupingcart) || localStorage.groupingcart == '' ? [] : JSON.parse(localStorage.groupingcart);
-//    $rootScope.u = angular.isDefined($rootScope.u) ? $rootScope.u : null;
-//    var getTotalPrice = function (x) {
-//        $http({
-//            url: 'Orders.asmx/GetTotalPrice',
-//            method: 'POST',
-//            data: { groupingCart: x, user: $rootScope.u, course: $rootScope.config.currency.course }
-//        })
-//       .then(function (response) {
-//           $scope.price = JSON.parse(response.data.d);
-//       },
-//       function (response) {
-//           alert(response.data.d);
-//       });
-//    }
-//    getTotalPrice($rootScope.groupingCart);
-//}])
 
 .directive('checkImage', function ($http) {
     return {
@@ -1601,8 +1636,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     };
 })
 ;
-
-
 
 
 ;

@@ -1,5 +1,5 @@
 ﻿{
-  "version": "29",
+  "version": "30",
   "backend": "",
   "appname": "promo-tekstil.com",
   "name": "Promo Tekstil",
@@ -48,7 +48,7 @@
       "course": 1
     }
   ],
-  "prodctstoshow": 12,
+  "prodctstoshow": 16,
   "vatcoeff": 1.25,
   "logo": "pt-png-logo.png"
 }

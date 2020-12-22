@@ -1,18 +1,17 @@
-﻿<div id="checkout" class="content-push" ng-controller="userCtrl" style="min-height:400px">
+﻿<div id="checkout" class="content-push" style="min-height:400px">
     <div class="breadcrumb-box">
-        <a href="./">{{'home' | translate}}</a>
-        <a href="user.html">{{'user pages' | translate}}</a>
+        <a href="../">{{'home' | translate}}</a>
+        <a href="">{{'user pages' | translate}}</a>
     </div>
     <div ng-if="u.userId">
         <ul class="nav nav-tabs">
-            <li class="{{userTpl=='editUserTpl'?'active':''}}" ng-click="toggleUserTpl('editUserTpl')"><a href="#"><i class="fa fa-user"></i> {{'edit profile' | translate}}</a></li>
-            <li class="{{userTpl=='ordersTpl'?'active':''}}" ng-click="toggleUserTpl('ordersTpl')"><a href="#"><i class="fa fa-shopping-cart"></i> {{'orders overview' | translate}}</a></li>
+            <li class="{{userTpl=='editUserTpl'?'active':''}}" ng-click="toggleUserTpl('editUserTpl')"><a href=""><i class="fa fa-user"></i> {{'edit profile' | translate}}</a></li>
+            <li class="{{userTpl=='ordersTpl'?'active':''}}" ng-click="toggleUserTpl('ordersTpl')"><a href=""><i class="fa fa-shopping-cart"></i> {{'orders overview' | translate}}</a></li>
         </ul>
         <div class="m10">
             <ng-include src="userTpl"></ng-include>
         </div>
     </div>
-   
 </div>
 
 <script type="text/ng-template" id="ordersTpl">
@@ -149,7 +148,7 @@
                         <div class="dropdown">
                             <button class="form-control dropdown-toggle text-left" type="button" data-toggle="dropdown">{{u.country.Name | translate}}</button>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><a href="#">{{x.Name | translate}}</a></li>
+                                <li ng-repeat="x in countries" ng-click="setCountry(x); setDeliveryAddress(sameDeliveryAddress)"><a href="">{{x.Name | translate}}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -204,7 +203,7 @@
                         <div class="dropdown">
                             <button class="form-control dropdown-toggle text-left" type="button" data-toggle="dropdown">{{u.deliveryCountry.Name | translate}}</button>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><a href="#">{{x.Name | translate}}</a></li>
+                                <li ng-repeat="x in countries" ng-click="setDeliveryCountry(x)"><a href="">{{x.Name | translate}}</a></li>
                             </ul>
                         </div>
                     </div>

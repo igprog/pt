@@ -19,9 +19,6 @@
                     </div>
                 </div>
                 <div class="article-container style-1">
-                    <!--<div style="height: 80px">
-                    <label class="lead">{{'billing address' | translate}}</label>
-                </div>-->
                     <div>
                         <label class="lead">{{'billing address' | translate}}</label>
                     </div>
@@ -57,11 +54,11 @@
             <div class="col-md-6 col-sm-offset-2 information-entry">
                 <div class="article-container style-1">
                     <!--<div style="height: 80px">
-                <label class="lead">{{'delivery address' | translate}}</label>
-                <label class="checkbox-entry">
-                    <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
-                </label>
-            </div>-->
+                        <label class="lead">{{'delivery address' | translate}}</label>
+                        <label class="checkbox-entry">
+                            <input ng-model="sameDeliveryAddress" type="checkbox" ng-click="setDeliveryAddress(sameDeliveryAddress)" /> <span class="check"></span> {{'same as billing address' | translate}}
+                        </label>
+                    </div>-->
                     <div>
                         <label class="lead">{{'delivery address' | translate}}</label>
                         <label class="checkbox-entry">
@@ -108,23 +105,25 @@
             </div>
         </div>
         <div class="row">
-            <div ng-if="!isGuest" class="col-sm-6 col-sm-offset-2">
+            <div class="col-sm-6 col-sm-offset-2">
                 <hr />
-                <label class="lead">{{'login data' | translate}}</label>
+                <label class="lead">{{'login data' | translate}} ({{isGuest}})</label>
                 <form>
                     <label>{{'email' | translate}}</label>
                     <input ng-model="u.email" type="text" value="" placeholder="{{'enter email' | translate}}" class="simple-field">
                     <label>{{'confirm email' | translate}}</label>
                     <input ng-model="u.emailConfirm" type="text" value="" placeholder="{{'confirm email' | translate}}" class="simple-field">
-                    <label>{{'password' | translate}}</label>
-                    <div class="input-group">
-                        <input ng-model="u.password" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
-                        <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
-                    </div>
-                    <label style="margin-top:24px">{{'confirm password' | translate}}</label>
-                    <div class="input-group">
-                        <input ng-model="u.passwordConfirm" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
-                        <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                    <div ng-if="!isGuest">
+                        <label>{{'password' | translate}}</label>
+                        <div class="input-group">
+                            <input ng-model="u.password" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
+                            <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                        </div>
+                        <label style="margin-top:24px">{{'confirm password' | translate}}</label>
+                        <div class="input-group">
+                            <input ng-model="u.passwordConfirm" type="{{showpass==true?'text':'password'}}" class="form-control simple-field" name="password">
+                            <span class="input-group-addon cursor" ng-click="showPassword()" title="{{showpass==true?('hide password' | translate):('show password' | translate)}}"><i class="fa fa-eye{{showpass==true?'-slash':''}}"></i></span>
+                        </div>
                     </div>
                 </form>
             </div>

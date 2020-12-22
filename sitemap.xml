@@ -6,28 +6,27 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://promo-tekstil.com/about-us.html</loc>
+    <loc>https://promo-tekstil.com/#/about-us</loc>
     <lastmod>2020-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promo-tekstil.com/contact-us.html</loc>
+    <loc>https://promo-tekstil.com/#/contact-us</loc>
     <lastmod>2020-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://promo-tekstil.com/loyalty-program.html</loc>
+    <loc>https://promo-tekstil.com/#/loyalty-program</loc>
     <lastmod>2020-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://promo-tekstil.com/terms-of-service.html</loc>
+    <loc>https://promo-tekstil.com/#/terms-of-service</loc>
     <lastmod>2020-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
 </urlset>
