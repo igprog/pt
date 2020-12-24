@@ -829,9 +829,16 @@
         <div ng-controller="orderOptionsCtrl" class="container">
             <div class="row" style="margin-bottom:20px">
                 <div class="col-sm-3">
-                    <h4>Delivery price</h4>
+                    <h4>Delivery price 1 (UTT)</h4>
                     <div class="input-group">
-                        <input ng-model="d.deliveryprice" class="form-control" />
+                        <input ng-model="d.deliveryprice1" class="form-control" />
+                        <span class="input-group-addon">€</span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Delivery price 2 (other)</h4>
+                    <div class="input-group">
+                        <input ng-model="d.deliveryprice2" class="form-control" />
                         <span class="input-group-addon">€</span>
                     </div>
                 </div>

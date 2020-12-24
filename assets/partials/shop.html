@@ -123,7 +123,7 @@
                                 <div ng-if="x.outlet==1" class="product-image-label type-2"><span>{{'outlet' | translate}}</span></div>
                                 <div ng-if="x.isnew==1" class="product-image-label type-1"><span>{{'new' | translate}}</span></div>
                                 <div class="product-slide-entry shift-image">
-                                    <a href="" ng-click="go(x.style, shortdesc(x, config.language.code))">
+                                    <a href="" ng-click="goProduct(x)">
                                         <div class="product-image">
                                             <div ng-if="x.supplier!=='lacuna'">
                                                 <img check-image ng-if="x.imageurl" ng-src="{{x.imageurl}}" alt="" class="img-resize" />
@@ -133,12 +133,12 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a href="" ng-click="go(x.style, shortdesc(x, config.language.code))">
+                                    <a href="" ng-click="goProduct(x)">
                                         <label ng-show="shortdesc(x, config.language.code)" class="title">{{shortdesc(x, config.language.code)}}</label>
                                         <label>{{x.brand}} {{x.style}}</label>
                                     </a>
                                     <a class="tag" href="../?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
-                                    <a href="" ng-click="go(x.style, shortdesc(x, config.language.code))">
+                                    <a href="" ng-click="goProduct(x)">
                                         <div class="article-container style-1">
                                             <label ng-repeat="y in longdesc(x, config.language.code) track by $index">{{y}}</label>
                                         </div>
@@ -148,6 +148,32 @@
                                         </div>
                                     </a>
                                 </div>
+                                <!--<div class="product-slide-entry shift-image">
+                                    <a href="" ng-click="goProduct(x.style, shortdesc(x, config.language.code))">
+                                        <div class="product-image">
+                                            <div ng-if="x.supplier!=='lacuna'">
+                                                <img check-image ng-if="x.imageurl" ng-src="{{x.imageurl}}" alt="" class="img-resize" />
+                                            </div>
+                                            <div ng-if="x.supplier==='lacuna'">
+                                                <img check-image ng-if="x.imageurl" src="{{x.imageurl}}" alt="" class="img-resize" />
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="" ng-click="goProduct(x.style, shortdesc(x, config.language.code))">
+                                        <label ng-show="shortdesc(x, config.language.code)" class="title">{{shortdesc(x, config.language.code)}}</label>
+                                        <label>{{x.brand}} {{x.style}}</label>
+                                    </a>
+                                    <a class="tag" href="../?gender={{x.gender_code}}"><span style="font-weight:bold">{{x.gender_code | translate}}</span></a>
+                                    <a href="" ng-click="goProduct(x.style, shortdesc(x, config.language.code))">
+                                        <div class="article-container style-1">
+                                            <label ng-repeat="y in longdesc(x, config.language.code) track by $index">{{y}}</label>
+                                        </div>
+                                        <div class="price">
+                                            <div style="padding:2px">MPC {{'from' | translate}}: <span>{{x.price_min.gross * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></div>
+                                            <div class="current" style="padding:2px">VPC {{'from' | translate}}: <span>{{x.price_min.net * config.currency.course | number:2}}</span> <span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span></div>
+                                        </div>
+                                    </a>
+                                </div>-->
                                 <div class="clear"></div>
                             </div>
                         </div>

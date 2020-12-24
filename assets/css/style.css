@@ -1591,6 +1591,7 @@ body.style-10 .product-slide-entry .subtitle:hover{color: #ca1515;}
 .inline-label{font-size: 11px; color: #fff; line-height: 19px; font-weight: 600; text-transform: uppercase; display: inline-block; vertical-align: middle; padding: 0 10px; background: #d14242; position: relative; margin-top: -2px; margin-left: 3px;}
 .inline-label.red{background: #d14242;}
 .inline-label.green{background: #aac840;}
+.inline-label.blue{background: #0e73a2;}
 .accordeon-title:after{content: "\f107"; position: absolute; height: 50px; line-height: 50px; top: 0; right: 0; font-size: 13px; color: #3B3A39; font-family: FontAwesome;}
 .accordeon-title.active:after{content: "\f106";}
 .accordeon-entry{padding: 0 0 20px 0; display: none;}

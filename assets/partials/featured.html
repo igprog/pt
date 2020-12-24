@@ -32,15 +32,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div ng-if="featuredType.code=='new'" ng-repeat="x in newProducts | limitTo: 4" class="swiper-slide" ng-click="href('product.html?style:'+x.style)">
+                            <div ng-if="featuredType.code=='new'" ng-repeat="x in newProducts | limitTo: 4" class="swiper-slide" ng-click="goProduct(x)">
                                 <div class="paddings-container" style="cursor:pointer">
                                     <div class="product-slide-entry">
                                         <div class="product-image">
                                             <img src="{{x.modelimageurl}}" alt="" />
                                         </div>
-                                        <a class="tag" href="#">{{x.style}}</a>
-                                        <a class="tag" href="#">{{x.brand}}</a>
-                                        <a class="title" href="#">{{(x.shortdesc_en | translate).replace('amp;', '')}}</a>
+                                        <a class="tag" href="">{{x.style}}</a>
+                                        <a class="tag" href="">{{x.brand}}</a>
+                                        <a class="title" href="">{{(x.shortdesc_en | translate).replace('amp;', '')}}</a>
                                     </div>
                                 </div>
                             </div>

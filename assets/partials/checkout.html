@@ -232,7 +232,7 @@
                         <hr />
                     </div>
                     <div class="row well" style="margin-top:40px">
-                        <div class="col-sm-4">
+                        <div class="col-lg-3">
                             <label class="lead">{{'billing address' | translate}}</label>
                             <label>{{u.firstName}} {{u.lastName}}</label>
                             <label ng-if="u.companyName">{{u.companyName}}</label>
@@ -240,7 +240,7 @@
                             <label>{{u.postalCode}} {{u.city}}</label>
                             <label>{{u.country.Name | translate}}</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-lg-3">
                             <label class="lead">{{'delivery address' | translate}}</label>
                             <label>{{u.deliveryFirstName}} {{u.deliveryLastName}}</label>
                             <label ng-if="u.deliveryCompanyName">{{u.deliveryCompanyName}}</label>
@@ -248,7 +248,7 @@
                             <label>{{u.deliveryPostalCode}} {{u.deliveryCity}}</label>
                             <label>{{u.deliveryCountry.Name | translate}}</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-lg-6 pt10">
                             <div class="table-responsive">
                                 <table class="table table-condensed">
                                     <tr>
@@ -272,7 +272,15 @@
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.netWithDiscountPlusVat | number:2}}</h4></td>
                                     </tr>
                                     <tr>
-                                        <td><label class="lead">{{'delivery price' | translate}}:</label></td>
+                                        <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 1:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery1 | number:2}}</h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 2:</label></td>
+                                        <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery2 | number:2}}</h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="lead">{{'delivery price' | translate}} - {{'total' | translate}}:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery | number:2}}</h4></td>
                                     </tr>
                                     <tr>

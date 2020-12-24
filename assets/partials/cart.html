@@ -12,6 +12,15 @@
         <div class="row" ng-repeat="x in groupingCart track by $index">
             <div class="col-sm-4">
                 <div class="traditional-cart-entry">
+                    <a href="" ng-click="goProduct(x.data[0]])"  class="image"><img src="{{x.data[0].modelimageurl}}" alt="" data-zoom="{{x.modelimageurl}}" /></a>
+                    <div class="content">
+                        <div class="cell-view">
+                            <a href="" ng-click="goProduct(x.data[0])" class="tag">{{x.style}}</a>
+                            <a href="" ng-click="goProduct(x.data[0])" class="title">{{(x.data[0].shortdesc_en | translate).replace('amp;', '')}}</a>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="traditional-cart-entry">
                     <a href="product.html?style:{{x.style}}" class="image"><img src="{{x.data[0].modelimageurl}}" alt="" data-zoom="{{x.modelimageurl}}" /></a>
                     <div class="content">
                         <div class="cell-view">
@@ -19,7 +28,7 @@
                             <a href="product.html?style:{{x.style}}" class="title">{{(x.data[0].shortdesc_en | translate).replace('amp;', '')}}</a>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="col-sm-8">
                 <div class="table-responsive">
@@ -28,6 +37,7 @@
                             <td>{{'sku'  | translate}}</td>
                             <td colspan="2" class="text-center">{{'color' | translate}}</td>
                             <td>{{'size' | translate}}</td>
+                            <td>{{'stock_' | translate}}</td>
                             <td>{{'unit price' | translate}}</td>
                             <td>{{'quantity' | translate}}</td>
                             <td>{{'net price' | translate}}</td>
@@ -44,6 +54,7 @@
                             </td>
                             <td>{{y.color | translate}}</td>
                             <td>{{y.size}}</td>
+                            <td>{{'stock_' | translate}} {{stockNo(y.supplier)}}</td>
                             <td><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(y.myprice.net * config.currency.course) | number:2}}</td>
                             <td><input ng-model="y.quantity" ng-change="priceSumTotal()" type="number" class="form-control" min="0" style="width:80px" /></td>
                             <td><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(y.myprice.net * y.quantity * config.currency.course) | number:2}}</td>
@@ -51,7 +62,7 @@
                             <td><a class="remove-button" ng-click="removeVariant(y)"><i class="fa fa-trash-o"></i></a></td>
                         </tr>
                         <tr>
-                            <td colspan="6"></td>
+                            <td colspan="7"></td>
                             <td><div class="subtotal"><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{(productPriceTotal(x.data).net  * config.currency.course) | number:2}}</div></td>
                             <td><a class="remove-button" ng-click="remove(x)"><i class="fa fa-trash-o"></i></a></td>
                         </tr>
@@ -109,7 +120,15 @@
                                 <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.netWithDiscountPlusVat | number:2}}</h4></td>
                             </tr>
                             <tr>
-                                <td><label class="lead">{{'delivery price' | translate}}:</label></td>
+                                <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 1:</label></td>
+                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery1 | number:2}}</h4></td>
+                            </tr>
+                            <tr>
+                                <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 2:</label></td>
+                                <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery2 | number:2}}</h4></td>
+                            </tr>
+                            <tr>
+                                <td><label class="lead">{{'delivery price' | translate}} {{'total' | translate}}:</label></td>
                                 <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery | number:2}}</h4></td>
                             </tr>
                             <tr>

@@ -77,15 +77,30 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
 
 .controller('appCtrl', ['$scope', '$http', '$rootScope', '$sessionStorage', 'functions', '$translate', '$localStorage', '$window', '$state', '$stateParams', function ($scope, $http, $rootScope, $sessionStorage, functions, $translate, $localStorage, $window, $state, $stateParams) {
 
-    if (window.location.pathname === '/index.html') {
-        window.location.href = "../";
+    
+    var removeHtmlFromUrl = function (page) {
+        if (window.location.pathname === page) {
+            window.location.href = "../";
+        }
     }
+    removeHtmlFromUrl('/index.html');
 
     $rootScope.title_seo = 'Promo Tekstil';
 
     $scope.go = function (x) {
         $state.go(x);
     }
+
+    $scope.goProduct = function (x) {
+        var title_seo = functions.titleseo(functions.shortdesc(x, $rootScope.config.language.code));
+        $state.go('product', { title_seo: title_seo, style: x.style });
+    }
+
+    //$scope.goProduct = function (style, shortdesc) {
+    //    debugger;
+    //    var title_seo = functions.titleseo(shortdesc);
+    //    $state.go('product', { title_seo: title_seo, style: style });
+    //}
 
     if (angular.isDefined($sessionStorage.u)) {
         $rootScope.u = JSON.parse($sessionStorage.u);
@@ -226,6 +241,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     $scope.shortdesc = function (x, lang) {
+        debugger;
         return (functions.shortdesc(x, lang));
     }
 
@@ -236,6 +252,10 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     $state.go('shop');
 
     $scope.year = new Date().getFullYear();
+
+    $scope.stockNo = function (supplier) {
+        return supplier === 'utt' ? 1 : 2;
+    }
 
 }])
 
@@ -280,10 +300,10 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     $scope.displayFilters = false;
     var type = "";
 
-    $scope.go = function (style, shortdesc) {
-        var title_seo = functions.titleseo(shortdesc);
-        $state.go('product', { title_seo: title_seo, style: style });
-    }
+    //$scope.go = function (style, shortdesc) {
+    //    var title_seo = functions.titleseo(shortdesc);
+    //    $state.go('product', { title_seo: title_seo, style: style });
+    //}
 
     var queryString = location.search;
     var params = queryString.split('&');
@@ -959,6 +979,7 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     $scope.shortdesc = function (x, lang) {
+        debugger;
         return (functions.shortdesc(x, lang));
     }
 

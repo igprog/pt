@@ -1133,5 +1133,7 @@
   "different from the billing address": "Različita od adrese za naplatu",
   "offer": "Ponuda",
   "invoice": "Račun",
-  "Bag and Accessories": "Ostale torbe"
+  "Bag and Accessories": "Ostale torbe",
+  "in stock": "Dostupno u skladištu",
+  "stock_": "Skladište"
 }

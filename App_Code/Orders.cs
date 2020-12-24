@@ -96,13 +96,16 @@ public class Orders : System.Web.Services.WebService {
         public double vat { get; set; }  // vat
         public double netWithDiscount { get; set; } // amount without vat minus discount
         public double netWithDiscountPlusVat { get; set; } // net minus discount + vat
-        public double delivery { get; set; } // delivery price
+        public double delivery { get; set; }
+        public double delivery1 { get; set; } // delivery price (utt delivery price - stock 1: 30kn)
+        public double delivery2 { get; set; } // delivery price (other suppliers - stock 2: 60kn)
         public double total { get; set; }  // total
 
     }
 
     public class OrderOption {
-        public double deliveryprice;
+        public double deliveryprice1;
+        public double deliveryprice2;
         public List<CodeTitle> deliverytype = new List<CodeTitle>();
         public List<CodeTitle> paymentmethod = new List<CodeTitle>();
         public List<CodeTitle> orderstatus = new List<CodeTitle>();
@@ -632,15 +635,30 @@ public class Orders : System.Web.Services.WebService {
             Price p = new Price();
             Price.PriceCoeff priceCoeff = p.GetCoeff();
             PriceTotal x = new PriceTotal();
+
+            bool isUtt = false;
+            bool isOtherThanUtt = false;
+
             foreach (Cart.NewCart c in groupingCart) {
                 x.net += Math.Round(c.data.Sum(a => a.myprice.net * course * a.quantity), 2);
                 x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * course * a.quantity), 2);
+                if (c.data.Where(a => a.supplier == "utt").Count()>1) {
+                    isUtt = true;
+                }
+                if (c.data.Where(a => a.supplier != "utt").Count() > 1) {
+                    isOtherThanUtt = true;
+                }
             }
             x.discount = Math.Round(x.net * (user != null ? user.discount.coeff : 0), 2);
             x.vat = (user != null ? (user.deliveryCountry.Code == "HR" ? Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2) : 0) : Math.Round((x.net - x.discount) * (priceCoeff.vat - 1), 2));
             x.netWithDiscount = Math.Round(x.net - x.discount, 2);
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
-            x.delivery = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice * course), 2) : 0;
+            //x.delivery = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice * course), 2) : 0;
+
+            x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * course), 2) : 0;
+            x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * course), 2) : 0;
+            x.delivery = x.delivery1 + x.delivery2;
+
             x.total = x.netWithDiscountPlusVat + x.delivery;
             return JsonConvert.SerializeObject(x, Formatting.None);
         } catch (Exception e) {

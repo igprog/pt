@@ -309,5 +309,7 @@
   "different from the billing address": "Different from the billing address",
   "offer": "Offer",
   "invoice": "Invoice",
-  "Bag and Accessories": "Other Bags"
+  "Bag and Accessories": "Other Bags",
+  "in stock": "In stock",
+  "stock_":  "Stock"
 }

@@ -44,10 +44,13 @@ public class Price : System.Web.Services.WebService{
 
     public class Total {
         public double net;
+        public double gross;
         public double discount;
         public double noVat;
         public double vat;
         public double delivery;
+        public double delivery1;
+        public double delivery2;
         public double total;
     }
     #endregion Class
@@ -216,7 +219,11 @@ public class Price : System.Web.Services.WebService{
         x.discount = Math.Round(order.items.Sum(a => a.price * a.quantity * a.discount), 2);
         x.noVat = x.net - x.discount;
         x.vat = (x.net - x.discount) * (vat - 1);
-        x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice * eurHrkCourse : 0;
+        //x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice * eurHrkCourse : 0;
+        x.gross = x.net + x.vat;
+        x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * eurHrkCourse), 2) : 0;
+        x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * eurHrkCourse), 2) : 0;
+        x.delivery = x.delivery1 + x.delivery2;
         x.total = x.noVat + x.vat + x.delivery;
         return x;
     }
