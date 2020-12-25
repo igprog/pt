@@ -23,6 +23,7 @@ public class Products : System.Web.Services.WebService {
     DataBase db = new DataBase();
     Price pr = new Price();
     Categories categories = new Categories();
+    Orders O = new Orders();
 
     public Products() {
     }
@@ -162,7 +163,9 @@ public class Products : System.Web.Services.WebService {
         public string supplier { get; set; }
 
         public string imageurl { get; set; }
-       // public double myprice { get; set; }
+
+        public Orders.DeliveryDays deliveryDays = new Orders.DeliveryDays();
+        // public double myprice { get; set; }
 
         //   public int max_stock { get; set; }
     }
@@ -1003,6 +1006,7 @@ public class Products : System.Web.Services.WebService {
     public string GetProduct(string style, string color) {
         try {
             Price.PriceCoeff priceCoeff = pr.GetCoeff();
+            Orders.OrderOption orderOptions = O.GetOrderOptions();
             ProductData x = new ProductData();
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + Server.MapPath("~/App_Data/" + productDataBase))) {
                 connection.Open();
@@ -1058,6 +1062,8 @@ public class Products : System.Web.Services.WebService {
                             x.isnew = reader.GetValue(25) == DBNull.Value ? 0 : Convert.ToInt32(reader.GetString(25));
                             x.shortdesc_hr = reader.GetValue(26) == DBNull.Value ? "" : reader.GetString(26);
                             x.longdesc_hr = reader.GetValue(27) == DBNull.Value ? null : reader.GetString(27).Split(';');
+                            x.deliveryDays = new Orders.DeliveryDays();
+                            x.deliveryDays = orderOptions.deliverydays;
                         }
                     } 
                 }

@@ -59,17 +59,17 @@
 
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn mt40" title="cancel" onclick="closeNav()">&times;</a>
-        <div class="p20 text-capitalize">
+        <div class="p20 text-capitalize small">
             <form>
-                <div ng-if="islogin" ng-click="toggleTpl('orders')"><a href="#">Orders</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('customers')"><a href="#">Customers</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('products')"><a href="#">Products</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('featured')"><a href="#">Featured Products</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('pricecoeff')"><a href="#">Price Coefficient</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('orderoptions')"><a href="#">Order Options</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('categories')"><a href="#">Categories</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('countries')"><a href="#">Countries</a></div>
-                <div ng-if="islogin" ng-click="toggleTpl('companyinfo')"><a href="#">Company Info</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('orders')"><a href="#"><i class="fa fa-shopping-cart"></i> Orders</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('customers')"><a href="#"><i class="fa fa-users"></i> Customers</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('products')"><a href="#"><i class="fa fa-product-hunt"></i> Products</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('featured')"><a href="#"><i class="fa fa-star"></i> Featured Products</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('pricecoeff')"><a href="#"><i class="fa fa-dollar"></i> Price Coefficient</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('orderoptions')"><a href="#"><i class="fa fa-cogs"></i> Order Options</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('categories')"><a href="#"><i class="fa fa-list"></i> Categories</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('countries')"><a href="#"><i class="fa fa-globe"></i> Countries</a></div>
+                <div ng-if="islogin" ng-click="toggleTpl('companyinfo')"><a href="#"><i class="fa fa-info"></i> Company Info</a></div>
             </form>
         </div>
     </div>
@@ -841,6 +841,16 @@
                         <input ng-model="d.deliveryprice2" class="form-control" />
                         <span class="input-group-addon">€</span>
                     </div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-sm-3">
+                    <h4>Delivery days (hr)</h4>
+                    <input ng-model="d.deliverydays.hr" class="form-control" />
+                </div>
+                <div class="col-sm-3">
+                    <h4>Delivery days (en)</h4>
+                    <input ng-model="d.deliverydays.en" class="form-control" />
                 </div>
             </div>
             <div class="row">

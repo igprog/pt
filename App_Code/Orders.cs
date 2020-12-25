@@ -106,6 +106,7 @@ public class Orders : System.Web.Services.WebService {
     public class OrderOption {
         public double deliveryprice1;
         public double deliveryprice2;
+        public DeliveryDays deliverydays = new DeliveryDays();
         public List<CodeTitle> deliverytype = new List<CodeTitle>();
         public List<CodeTitle> paymentmethod = new List<CodeTitle>();
         public List<CodeTitle> orderstatus = new List<CodeTitle>();
@@ -131,6 +132,10 @@ public class Orders : System.Web.Services.WebService {
         public string link { get; set; }
     }
 
+    public class DeliveryDays {
+        public string hr;
+        public string en;
+    }
 
     #region WebMethods
     [WebMethod]
@@ -642,7 +647,7 @@ public class Orders : System.Web.Services.WebService {
             foreach (Cart.NewCart c in groupingCart) {
                 x.net += Math.Round(c.data.Sum(a => a.myprice.net * course * a.quantity), 2);
                 x.gross += Math.Round(c.data.Sum(a => a.myprice.gross * course * a.quantity), 2);
-                if (c.data.Where(a => a.supplier == "utt").Count()>1) {
+                if (c.data.Where(a => a.supplier == "utt").Count() > 1) {
                     isUtt = true;
                 }
                 if (c.data.Where(a => a.supplier != "utt").Count() > 1) {

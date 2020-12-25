@@ -84,12 +84,13 @@ legend.fieldset-border {
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 80px;
+    opacity: 0.9;
 }
 
 .sidenav a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 20px;
     color: #818181;
     display: block;
     transition: 0.3s;
@@ -105,6 +106,10 @@ legend.fieldset-border {
     right: 25px;
     font-size: 50px;
     margin-left: 50px;
+}
+
+.sidenav i {
+    width: 25px;
 }
 
 @media screen and (max-height: 450px) {

@@ -69,7 +69,8 @@
                                         <span ng-if="p.isnew==1" class="inline-label green ng-binding ng-scope">{{'product_new' | translate}} {{year}}</span>
                                         <span class="inline-label blue">{{'in stock' | translate}} {{stockNo(p.supplier)}}</span>
                                         <!--<span class="inline-label green">{{'warehouse_status' | translate}}</span>-->
-                                        <span class="inline-label green">{{'delivery_status' | translate}}</span>
+                                        <span ng-if="config.language.code==='hr'" class="inline-label green">{{p.deliveryDays.hr}}</span>
+                                        <span ng-if="config.language.code==='en'" class="inline-label green">{{p.deliveryDays.en}}</span>
                                         <div class="col-sm-12" style="margin-top:10px">
                                             <h3 class="block-title inline-product-column-title">{{'pieces in the box' | translate}}</h3>
                                             <div class="table-responsive">
