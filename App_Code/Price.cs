@@ -213,6 +213,16 @@ public class Price : System.Web.Services.WebService{
         double eurHrkCourse = Convert.ToDouble(ConfigurationManager.AppSettings["eurHrkCourse"]);
         Total x = new Total();
         Orders o = new Orders();
+        bool isUtt = false;
+        bool isOtherThanUtt = false;
+
+        if (order.items.Where(a => a.supplier == "utt").Count() > 1) {
+            isUtt = true;
+        }
+        if (order.items.Where(a => a.supplier != "utt").Count() > 1) {
+            isOtherThanUtt = true;
+        }
+
         Orders.OrderOption orderOptions = o.GetOrderOptions();
         double vat = GetCoeff().vat;
         x.net = order.items.Sum(a => a.price * a.quantity);
@@ -221,8 +231,12 @@ public class Price : System.Web.Services.WebService{
         x.vat = (x.net - x.discount) * (vat - 1);
         //x.delivery = (x.net + x.vat) < 1000 ? orderOptions.deliveryprice * eurHrkCourse : 0;
         x.gross = x.net + x.vat;
-        x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * eurHrkCourse), 2) : 0;
-        x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * eurHrkCourse), 2) : 0;
+        if (isUtt) {
+            x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * eurHrkCourse), 2) : 0;
+        }
+        if (isOtherThanUtt) {
+            x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * eurHrkCourse), 2) : 0;
+        }
         x.delivery = x.delivery1 + x.delivery2;
         x.total = x.noVat + x.vat + x.delivery;
         return x;

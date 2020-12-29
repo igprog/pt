@@ -271,15 +271,15 @@
                                         <td><label class="lead">{{'amounth with vat' | translate}}:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.netWithDiscountPlusVat | number:2}}</h4></td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-if="price.delivery1>0">
                                         <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 1:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery1 | number:2}}</h4></td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-if="price.delivery2>0">
                                         <td><label class="lead">{{'delivery price' | translate}} - {{'stock_' | translate}} 2:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery2 | number:2}}</h4></td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-if="price.delivery1>0&&price.delivery2>0">
                                         <td><label class="lead">{{'delivery price' | translate}} - {{'total' | translate}}:</label></td>
                                         <td><h4><span ng-if="config.currency.symbol!=''">{{config.currency.symbol}}</span><span ng-if="config.currency.symbol==''" class="text-uppercase">{{config.currency.code}}</span> {{price.delivery | number:2}}</h4></td>
                                     </tr>

@@ -241,7 +241,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     $scope.shortdesc = function (x, lang) {
-        debugger;
         return (functions.shortdesc(x, lang));
     }
 
@@ -979,7 +978,6 @@ angular.module('app', ['ui.router', 'ngStorage', 'pascalprecht.translate', 'func
     }
 
     $scope.shortdesc = function (x, lang) {
-        debugger;
         return (functions.shortdesc(x, lang));
     }
 

@@ -660,8 +660,12 @@ public class Orders : System.Web.Services.WebService {
             x.netWithDiscountPlusVat = x.netWithDiscount + x.vat;
             //x.delivery = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice * course), 2) : 0;
 
-            x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * course), 2) : 0;
-            x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * course), 2) : 0;
+            if (isUtt) {
+                x.delivery1 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice1 * course), 2) : 0;
+            }
+            if (isOtherThanUtt) {
+                x.delivery2 = (x.gross) < 1000 ? Math.Round((orderOptions.deliveryprice2 * course), 2) : 0;
+            }
             x.delivery = x.delivery1 + x.delivery2;
 
             x.total = x.netWithDiscountPlusVat + x.delivery;
