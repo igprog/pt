@@ -668,14 +668,22 @@ public class Products : System.Web.Services.WebService {
                             //double price_min = stock.Where(a => a.style == s.style).Min(a => a.price);
                             double price_min = stock.Where(a => a.style == s.style).DefaultIfEmpty().Min(a => a == null ? 0 : a.price);
                             var tran = tt.Find(a => a.style == s.style);
-                            sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
-                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
-                                                , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
-                                                , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
-                                                , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier
-                                                , prod.brand.Replace("'", ""), prod.shortdesc_en.Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", ""), prod.brand.Replace("&", "And").Replace(" ", "").Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", "")
-                                                , tran!=null?tran.shortdesc_hr:"", price_min);
-                            command.CommandText = sql;
+                                //sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
+                                //                    VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
+                                //                    , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
+                                //                    , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
+                                //                    , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier
+                                //                    , prod.brand.Replace("'", ""), prod.shortdesc_en.Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", ""), prod.brand.Replace("&", "And").Replace(" ", "").Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", "")
+                                //                    , tran!=null?tran.shortdesc_hr:"", price_min);
+                                sql = string.Format(@"INSERT OR REPLACE INTO style (style, gsmweight, sizes, colors, outlet, coo, imageurl, altimageurl, fabric_en, cut_en, details_en, carelabels_en, carelabellogos, category_en, category_code, specimageurl, isnew, supplier, brand, shortdesc_en, gender_en, brand_code, gender_code, shortdesc_hr, price_min)
+                                                VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', @Carelabels_en, '{12}', '{13}', '{14}', '{15}', '{16}', '{17}', '{18}', '{19}', '{20}', '{21}', '{22}', '{23}', '{24}')"
+                                                    , s.style, s.gsmweight, s.sizes, s.colors, s.outlet, s.coo, s.imageurl, s.altimageurl, s.fabric_en, s.cut_en
+                                                    , s.details_en, s.carelabels_en, s.carelabellogos, s.category_en.Replace("&", "and")
+                                                    , s.category_en.Replace("&", "And").Replace(" ", ""), s.specimageurl, s.isnew, supplier
+                                                    , prod.brand.Replace("'", ""), prod.shortdesc_en.Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", ""), prod.brand.Replace("&", "And").Replace(" ", "").Replace("'", ""), prod.gender_en.Replace(" ", "").Replace("'", "")
+                                                    , tran != null ? tran.shortdesc_hr : "", price_min);
+                                command.Parameters.Add(new SQLiteParameter("Carelabels_en", s.carelabels_en));
+                                command.CommandText = sql;
                             command.ExecuteNonQuery();
 
                             string sql_tran = string.Format(@"INSERT OR IGNORE INTO translation (style, shortdesc_en, longdesc_en, category_en, supplier)
@@ -721,7 +729,7 @@ public class Products : System.Web.Services.WebService {
                                     , products.Count(), uttTime, (stopwatch.Elapsed.TotalSeconds - uttTime), errorStyles.Count(), GetErrorItems(errorStyles));
         } catch (Exception e) {
             uttTime = stopwatch.Elapsed.TotalSeconds;
-            return string.Format("ERROR: {0} ({1} seconds)", e.Message, uttTime);
+            return string.Format("ERROR: {0}; SQL: {1} ({2} seconds)", e.Message, sql, uttTime);
         }
     }
 

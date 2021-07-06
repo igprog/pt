@@ -63,8 +63,8 @@
                                         <p><span class="text-capitalize">{{'product category' | translate}}</span>: {{p.category_en}}</p>
                                         <p><span class="text-capitalize">{{'gender' | translate}}</span>: {{p.gender_en}}</p>
                                         <p><span class="text-capitalize">{{'sizes' | translate}}</span>: {{p.sizes}}</p>
-                                        <p ng-if="p.carelabel[0].carelabels_en !== ''"><span class="text-capitalize">{{'care labels' | translate}}</span>: <img src="../assets/img/{{p.supplier}}{{x.carelabellogos}}" alt="" ng-repeat="x in p.carelabel track by $index" style="width:40px; padding-left:5px" data-toggle="tooltip" title="{{x.carelabels_en}}" /></p>
-                                        <div style="padding:10px"><img src="../assets/img/brand_logo/{{p.brand_code}}.png" /></div>
+                                        <p ng-if="p.carelabel[0].carelabels_en !== ''"><span class="text-capitalize">{{'care labels' | translate}}</span>: <img src="../assets/img/{{p.supplier}}{{x.carelabellogos}}" alt="{{x.carelabels_en}}" ng-repeat="x in p.carelabel track by $index" style="width:40px; padding-left:5px" data-toggle="tooltip" title="{{x.carelabels_en}}" /></p>
+                                        <div style="padding:10px"><img src="../assets/img/brand_logo/{{p.brand_code}}.png" alt="{{p.brand_code}}" /></div>
                                         <span ng-if="p.outlet==1" class="inline-label red ng-binding ng-scope">{{'product_is_on_sale' | translate}}!</span>
                                         <span ng-if="p.isnew==1" class="inline-label green ng-binding ng-scope">{{'product_new' | translate}} {{year}}</span>
                                         <span class="inline-label blue">{{'in stock' | translate}} {{stockNo(p.supplier)}}</span>
